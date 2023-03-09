@@ -8,6 +8,10 @@
 }
 :root {
     font-size: 62.5%;
+    --color-primary: rgba(34, 32, 51);
+    --color-secondary: rgb(19, 17, 33);
+    --color-tertiary: rgb(240, 240, 240);
+    --color-quaternary: rgb(2, 241, 181);
 }
 
 html, body {
@@ -15,4 +19,11 @@ height: 100vh;
 width: 100vw;
 font-size: 1.6rem;
 overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+::-webkit-scrollbar-thumb {
+    display: none;
 }
