@@ -5,13 +5,20 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Satoshi', sans-serif;
+    color: #fff;
 }
+
+*:focus {
+    outline: none;
+}
+
 :root {
     font-size: 62.5%;
-    --color-primary: rgba(34, 32, 51);
-    --color-secondary: rgb(19, 17, 33);
-    --color-tertiary: rgb(240, 240, 240);
-    --color-quaternary: rgb(2, 241, 181);
+    --color-primary: #131313;
+    --color-secondary: #1f2528;
+    --color-tertiary: #26343a;
+    --color-accent: #00889E;
 }
 
 html, body {
@@ -22,8 +29,6 @@ overflow: hidden;
 }
 
 ::-webkit-scrollbar {
-    width: 4px;
-}
-::-webkit-scrollbar-thumb {
-    display: none;
+    width: 0px;
+    height: 0px;
 }
