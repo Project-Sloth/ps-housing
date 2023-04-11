@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ReceiveNUI } from '@utils/ReceiveNUI'
 	import { debugData } from '@utils/debugData'
-	import { browserMode, visibility } from '@store/stores'
+	import { FURNITURES, SHOWFURNITURES, browserMode, visibility } from '@store/stores'
 
 
 
@@ -33,6 +33,12 @@
 		} else {
 			window.removeEventListener('keydown', browserHideAndShow)
 		}
+	})
+
+	ReceiveNUI('setFurnituresData', (data: any) => {
+		FURNITURES.set(data)
+		SHOWFURNITURES.set($FURNITURES[Object.keys($FURNITURES)[0]])
+		console.log($FURNITURES)
 	})
 
 </script>

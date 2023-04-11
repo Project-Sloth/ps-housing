@@ -2,14 +2,251 @@
     import { debugData } from '../utils/debugData';
 
 	let show = false;
-    //EXAMPLE
-    
-    // debugData([
-	// 	{
-	// 		action: 'setVisible',
-	// 		data: true,
-	// 	},
-	// ])
+	const debugFurnitures = {
+		"Couches": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Tables": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Chairs": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Lighting": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Lamps": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Bathrooms": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Storage": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Electronics": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+		"Misc": [
+			{
+				label: "Item 1",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 2",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 3",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 4",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+			{
+				label: "Item 5",
+				object: "v_res_d_coffeetable",
+				price: 100,
+			},
+		],
+	}
 
 	let options = [
 		{
@@ -27,25 +264,16 @@
 					},
 				]
 		},
-		// {
-		// 	component: 'Example',
-		// 	actions : [
-		// 		{
-		// 			name: "debugLocation",
-		// 			custom: true,
-		// 			customFunction: () => {
-					// CUSTOM LOGIC
-		// 			}
-		// 		},
-		// 		{
-		// 			name: "toggle Show",
-		// 			custom: true,
-		// 			customFunction: () => {
-					// CUSTOM LOGIC
-		// 			}
-		// 		},
-		// 	]
-		// },
+		{
+			component: 'Furniture',
+			actions : [
+				{
+					name: "Set Furniture Data",
+					action: "setFurnituresData",
+					data: debugFurnitures,
+				},
+			]
+		},
 
 	]
 </script>

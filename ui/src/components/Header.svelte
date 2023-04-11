@@ -1,16 +1,5 @@
 <script lang="ts">
-	const DEBUG = [
-		'All Objects',
-		'Couches',
-		'Tables',
-		'Chairs',
-		'Lighting',
-		'Lamps',
-		'Bathrooms',
-		'Storage',
-		'Electronics',
-		'Misc',
-	]
+	import { FURNITURES, SHOWFURNITURES } from "@store/stores"
 
 	let selected = 0
 </script>
@@ -21,12 +10,18 @@
 	</button>
 
 	<div class=" w-full h-[6vh] items-end flex flex-row gap-2 overflow-y-visible overflow-x-scroll categories ">
-		{#each DEBUG as debug}
+		<button
+			class="min-w-[8vw] h-[5vh] text-[1vw] bg-[color:var(--color-secondary)] grid place-items-center transition-all duration-200 ease-in-out"
+			on:click={() => {selected = -1; $SHOWFURNITURES = Object.values($FURNITURES).reduce((accumulator, currentValue) => accumulator.concat(currentValue));;}}
+			class:selected={selected === -1}
+			>Show All</button
+	>
+		{#each Object.keys($FURNITURES) as category, i}
 			<button
 				class="min-w-[8vw] h-[5vh] text-[1vw] bg-[color:var(--color-secondary)] grid place-items-center transition-all duration-200 ease-in-out"
-				on:click={() => (selected = DEBUG.indexOf(debug))}
-				class:selected={selected === DEBUG.indexOf(debug)}
-				>{debug}</button
+				on:click={() => {selected = i; $SHOWFURNITURES = $FURNITURES[Object.keys($FURNITURES)[i]];} }
+				class:selected={selected === i}
+				>{category}</button
 			>
 		{/each}
 	</div>

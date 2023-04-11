@@ -6,10 +6,21 @@ local function toggleUI(bool)
 	})
 end
 
+local UIOpen = false
 RegisterCommand("UI", function()
-	toggleUI(true)
+	UIOpen = not UIOpen
+	toggleUI(UIOpen)
 end, false)
 
-RegisterNUICallback("hideUI", function()
-    toggleUI(false)
+
+AddEventHandler("onResourceStart", function(resourceName)
+	if (GetCurrentResourceName() ~= resourceName) then
+		return
+	end
+	
+	SendNUIMessage({
+		action = "setFurnituresData",
+		data = Furnitures
+	})
+
 end)
