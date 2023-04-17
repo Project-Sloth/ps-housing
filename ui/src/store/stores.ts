@@ -11,12 +11,27 @@ interface IFurniture {
 }
 
 interface IFurnitures {
-    [key: string]: IFurniture[];
+    category: string
+    items: IFurniture[];
 }
 
 
 
 
-export const FURNITURES = writable<IFurnitures>(null);
+export const FURNITURES = writable<IFurnitures[]>(null);
 
-export const SHOWFURNITURES = writable<IFurniture[]>(null);
+export const SHOWFURNITURES = writable<IFurnitures>(null);
+
+
+interface ICurrentFurniture extends IFurniture {
+    position: {
+        x: number;
+        y: number;
+        z: number;
+        w: number;
+    };
+}
+
+export const CURRENTFURNITURE = writable<ICurrentFurniture>(null);
+
+export const IS_MENU_MINIMIZED = writable<boolean>(false);

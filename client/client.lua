@@ -1,26 +1,19 @@
-local function toggleUI(bool)
-	SetNuiFocus(bool, bool)
-	SendNUIMessage({
-		action = "setVisible",
-		data = bool
-	})
-end
 
-local UIOpen = false
-RegisterCommand("UI", function()
-	UIOpen = not UIOpen
-	toggleUI(UIOpen)
+RegisterCommand("ui", function()
+	if not Modeler.IsMenuActive then
+		Modeler:OpenMenu()
+	else
+		Modeler:CloseMenu()
+	end
 end, false)
 
-
-AddEventHandler("onResourceStart", function(resourceName)
-	if (GetCurrentResourceName() ~= resourceName) then
-		return
+AddEventHandler("onResourceStop", function(resourceName)
+	if (GetCurrentResourceName() == resourceName) then
+		Modeler:CancelPlacement()
 	end
-	
-	SendNUIMessage({
-		action = "setFurnituresData",
-		data = Furnitures
-	})
+end)
 
+RegisterNUICallback("previewFurniture", function(data, cb)
+	Modeler:StartPlacement(data)
+	cb("ok")
 end)

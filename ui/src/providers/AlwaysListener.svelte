@@ -2,6 +2,7 @@
 	import { ReceiveNUI } from '@utils/ReceiveNUI'
 	import { debugData } from '@utils/debugData'
 	import { FURNITURES, SHOWFURNITURES, browserMode, visibility } from '@store/stores'
+	import ModelStore from '@store/ModelStore'
 
 
 
@@ -35,10 +36,35 @@
 		}
 	})
 
+
+	// MODELR STUFF
+	ReceiveNUI('setupModel', (data: any) => {
+		ModelStore.show.set(true)
+		ModelStore.setupModel(data)
+	})
+
+	ReceiveNUI('updateCamera', (data: any) => {
+		ModelStore.updateCamera(data)
+	})
+
+	ReceiveNUI('updateCameraPosition', (data: any) => {
+		ModelStore.updateCameraPosition(data)
+	})
+
+	ReceiveNUI('updateCameraLookAt', (data: any) => {
+		ModelStore.updateCameraLookAt(data)
+	})
+
+
+
+
+	// FURNITURES STUFF
+
 	ReceiveNUI('setFurnituresData', (data: any) => {
 		FURNITURES.set(data)
-		SHOWFURNITURES.set($FURNITURES[Object.keys($FURNITURES)[0]])
-		console.log($FURNITURES)
+		SHOWFURNITURES.set($FURNITURES[0])
 	})
+
+
 
 </script>

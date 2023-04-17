@@ -19,7 +19,7 @@ export default defineConfig({
       "@providers": resolve("./src/providers"),
       "@store": resolve("./src/store"),
       "@utils": resolve("./src/utils"),
-      "@types": resolve("./src/types"),
+      "@customTypes": resolve("./src/customTypes"),
     },
   },
   build: {
@@ -34,6 +34,5 @@ export default defineConfig({
         assetFileNames: `[name].[ext]`
       }
     }
-  }
-  
+  },
 })

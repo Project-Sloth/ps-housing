@@ -2,251 +2,57 @@
     import { debugData } from '../utils/debugData';
 
 	let show = false;
-	const debugFurnitures = {
-		"Couches": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Tables": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Chairs": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Lighting": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Lamps": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Bathrooms": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Storage": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Electronics": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-		"Misc": [
-			{
-				label: "Item 1",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 2",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 3",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 4",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-			{
-				label: "Item 5",
-				object: "v_res_d_coffeetable",
-				price: 100,
-			},
-		],
-	}
+
+	let debugItems = [
+		{
+			label: "Item 1",
+			object: "v_res_d_coffeetable",
+			price: 100,
+		},
+		{
+			label: "Item 2",
+			object: "v_res_d_coffeetable",
+			price: 100,
+		},
+		{
+			label: "Item 3",
+			object: "v_res_d_coffeetable",
+			price: 100,
+		},
+		{
+			label: "Item 4",
+			object: "v_res_d_coffeetable",
+			price: 100,
+		},
+		{
+			label: "Item 5",
+			object: "v_res_d_coffeetable",
+			price: 100,
+		},
+	]
+
+	const debugFurnitures = [
+		{
+			category: "Category 1",
+			items: debugItems
+		},
+		{
+			category: "Category 2",
+			items: debugItems
+		},
+		{
+			category: "Category 3",
+			items: debugItems
+		},
+		{
+			category: "Category 4",
+			items: debugItems
+		},
+		{
+			category: "Category 5",
+			items: debugItems
+		},
+	]
 
 	let options = [
 		{

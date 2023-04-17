@@ -2,8 +2,9 @@
   import { ReceiveNUI } from '../utils/ReceiveNUI';
   import { SendNUI } from '../utils/SendNUI';
   import { onMount } from 'svelte';
-  import { visibility } from '../store/stores';
+  import { IS_MENU_MINIMIZED, visibility } from '../store/stores';
   import BackdropFix from './BackdropFix.svelte';
+	import ModelStore from '@store/ModelStore'
 
 
 let isVisible: boolean;
@@ -14,6 +15,9 @@ visibility.subscribe((visible: boolean) => {
 
 ReceiveNUI<boolean>('setVisible', (visible: boolean) => {
   visibility.set(visible);
+  if (visible) {
+    $IS_MENU_MINIMIZED = false;
+  }
 });
 
 onMount(() => {
@@ -21,6 +25,7 @@ onMount(() => {
     if (isVisible && ['Escape'].includes(e.code)) {
       SendNUI('hideUI');
       visibility.set(false);
+      ModelStore.show.set(false)
     }
   };
 
