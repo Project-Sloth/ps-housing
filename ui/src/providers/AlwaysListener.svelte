@@ -47,14 +47,6 @@
 		ModelStore.updateCamera(data)
 	})
 
-	ReceiveNUI('updateCameraPosition', (data: any) => {
-		ModelStore.updateCameraPosition(data)
-	})
-
-	ReceiveNUI('updateCameraLookAt', (data: any) => {
-		ModelStore.updateCameraLookAt(data)
-	})
-
 
 
 

@@ -1,4 +1,7 @@
 local Freecam = exports['fivem-freecam']
+Freecam:SetKeyboardSetting('BASE_MOVE_MULTIPLIER', 0.1)
+Freecam:SetKeyboardSetting('FAST_MOVE_MULTIPLIER', 2)
+Freecam:SetKeyboardSetting('SLOW_MOVE_MULTIPLIER', 2)
 
 local function RequestSpawnObject(object)
     local hash = GetHashKey(object)
@@ -6,67 +9,47 @@ local function RequestSpawnObject(object)
     while not HasModelLoaded(hash) do 
         Wait(0)
     end
-  end
-
-local function RotationToDirection(rotation)
-	local adjustedRotation =
-	{
-		x = (math.pi / 180) * rotation.x,
-		y = (math.pi / 180) * rotation.y,
-		z = (math.pi / 180) * rotation.z
-	}
-	local direction =
-	{
-		x = -math.sin(adjustedRotation.z) * math.abs(math.cos(adjustedRotation.x)),
-		y = math.cos(adjustedRotation.z) * math.abs(math.cos(adjustedRotation.x)),
-		z = math.sin(adjustedRotation.x)
-	}
-	return direction
 end
 
-
-local function RayCastGamePlayCamera(distance)
-    local cameraRotation = GetGameplayCamRot()
-    local cameraCoord = GetGameplayCamCoord()
-    CurrentCamera = cameraCoord
-    local direction = RotationToDirection(cameraRotation)
-    local destination =
-    {
-      x = cameraCoord.x + direction.x * distance,
-      y = cameraCoord.y + direction.y * distance,
-      z = cameraCoord.z + direction.z * distance
-    }
-    local a, b, c, d, e = GetShapeTestResult(StartShapeTestSweptSphere(cameraCoord.x, cameraCoord.y, cameraCoord.z, destination.x, destination.y, destination.z, 0.2, 339, PlayerPedId(), 4))
-    return b, c, e
-end
-  
-
-local function KeyThread()
+local function CamThread()
     CreateThread(function()
-        print("KeyThread Started")
         while Modeler.IsFreecamMode do
             if IsDisabledControlJustPressed(0, 26) then -- C
                 Modeler.IsFreecamMode = false
                 Modeler:FreecamMode(false)
-                print("FreeCam Frozen")
                 break
             end
+            DisableControlAction(0, 199, true)
+            DisableControlAction(0, 200, true)
             Wait(0)
         end
-        print("KeyThread Ended")
     end)
 end
+
+
+AddEventHandler('freecam:onTick', function()
+    if not Modeler.IsFreecamMode then return end
+    Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
+    Modeler.CurrentCameraPosition = Freecam:GetPosition()
+    SendNUIMessage({
+        action = "updateCamera",
+        data = {
+            cameraPosition = Modeler.CurrentCameraPosition,
+            cameraLookAt = Modeler.CurrentCameraLookAt,
+        }
+    })
+  end)
+
 
 -- WHERE THE ACTUAL CLASS STARTS
 
 Modeler = {
 
-
     IsMenuActive = false,
     IsFreecamMode = false,
 
     CurrentObject = nil,
-    CurrentCamera = nil,
+    CurrentCameraPosition = nil,
     CurrentCameraLookAt = nil,
     CurrentObjectAlpha = 200,
 
@@ -94,6 +77,8 @@ Modeler = {
         SetNuiFocus(false, false)
         self:CancelPlacement()
         self:FreecamActive(false)
+        self.CurrentCameraPosition = nil
+        self.CurrentCameraLookAt = nil
     end,
 
     FreecamActive = function(self, bool)
@@ -108,7 +93,7 @@ Modeler = {
     FreecamMode = function(self, bool)
         if bool then --not in UI
             self.IsFreecamMode = true
-            KeyThread()
+            CamThread()
             Freecam:SetFrozen(false)
             SetNuiFocus(false, false)
         else -- in UI
@@ -134,25 +119,25 @@ Modeler = {
         FreezeEntityPosition(curObject, true)
         SetEntityCollision(curObject, false, false)
         SetEntityAlpha(curObject, self.CurrentObjectAlpha, false)
+        SetEntityDrawOutline(curObject, true)
+        SetEntityDrawOutlineColor(255, 255, 255, 255)
+        SetEntityDrawOutlineShader(0)
         SendNUIMessage({
             action = "setObjectAlpha",
             data = self.CurrentObjectAlpha
         })
-
-        self.CurrentCamera = GetGameplayCamCoord()
-        local _, rayCastCoords, _ = RayCastGamePlayCamera(100.0, self.CurrentCamera)
-        self.CurrentCameraLookAt = rayCastCoords
-        SetEntityCoords(curObject, rayCastCoords.x, rayCastCoords.y, rayCastCoords.z)
-    
+        self.CurrentCameraLookAt = Freecam:GetTarget(5.0)
+        self.CurrentCameraPosition = Freecam:GetPosition()
+        SetEntityCoords(curObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
         local x , y , z, w = GetEntityQuaternion(curObject)
         local objectRotation = GetEntityRotation(curObject)
         SendNUIMessage({ 
             action = "setupModel",
             data = {
-                objectPosition = rayCastCoords,
+                objectPosition = self.CurrentCameraLookAt,
                 objectQuaternion = { x = x, y = y, z = z, w = w},
                 objectRotation = objectRotation,
-                cameraPosition = self.CurrentCamera,
+                cameraPosition = self.CurrentCameraPosition,
                 cameraLookAt = self.CurrentCameraLookAt,
             }
         })
@@ -170,16 +155,22 @@ Modeler = {
     end,
 
     CancelPlacement = function (self)
+        SetEntityDrawOutline(self.CurrentObject, true)
         DeleteEntity(self.CurrentObject)
         self.CurrentObject = nil
-        self.CurrentCamera = nil
-        self.CurrentCameraLookAt = nil
-        SetNuiFocus(false, false)
     end,
 
     SetObjectAlpha = function (self, data)
         self.CurrentObjectAlpha = data.alpha
         SetEntityAlpha(self.CurrentObject, self.CurrentObjectAlpha, false)
+    end,
+
+    PlaceOnGround = function (self)
+        local x, y, z = table.unpack(GetEntityCoords(self.CurrentObject))
+        local ground, z = GetGroundZFor_3dCoord(x, y, z, 0)
+        SetEntityCoords(self.CurrentObject, x, y, z)
+
+        return {x = x, y = y, z = z}
     end,
 
 }
@@ -212,4 +203,9 @@ end)
 RegisterNUICallback("freecamMode", function(data, cb)
     Modeler:FreecamMode(data)
     cb("ok")
+end)
+
+RegisterNUICallback("placeOnGround", function(data, cb)
+    local coords = Modeler:PlaceOnGround()
+    cb(coords)
 end)

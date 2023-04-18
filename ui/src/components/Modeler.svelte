@@ -20,7 +20,7 @@
 	import { CURRENTFURNITURE, browserMode } from '@store/stores'
 	import type { position, quaternion } from '@customTypes/type'
 	import { onDestroy, onMount } from 'svelte'
-	import { convertToGTACordSystem } from '@customTypes/type'
+	import { convertToGTACordSystem, convertToThreeCordSystem } from '@customTypes/type'
 	import ModelStore from '@store/ModelStore'
 	import { SendNUI } from '@utils/SendNUI'
 	import { ReceiveNUI } from '@utils/ReceiveNUI'
@@ -124,7 +124,7 @@
 			: ''} "
 	>
 		<div
-			class="w-[15vw] bg-[color:var(--color-primary)] top-1/2 -translate-y-1/2 absolute {isPanelOpen
+			class="w-[15vw] bg-[color:var(--color-primary)] top-[2vh] origin-top absolute {isPanelOpen
 				? 'left-[1.5vw]'
 				: '-left-[15vw]'}  flex flex-row gap-[1vw] items-center justify-between"
 		>
@@ -187,6 +187,20 @@
 						class="w-full"
 					/>
 				</div>
+					<button
+						class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full"
+						on:click={() => {
+							SendNUI('placeOnGround').then((data) => {
+								const coords = convertToThreeCordSystem(data)
+								mesh.position.set(
+									coords.x,
+									coords.y,
+									coords.z
+								)
+								getMeshLocation()
+							})
+						}}>Place On Ground</button
+					>
 				<div class="flex flex-col items-center text-[0.8vw]">
 					<p class="text-[0.8vw] h-[1.7vw]">Rotation Snap</p>
 					<div class="flex flex-row gap-[0.5vw] text-center">
@@ -227,6 +241,7 @@
 					class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full"
 					on:click={() => {
 						SendNUI('cancelPlacement')
+						ModelStore.show.set(false)
 					}}>Cancel Placement</button
 				>
 			</div>

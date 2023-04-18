@@ -70,9 +70,9 @@ const store = () => {
     updateCamera(data: updateCameraMessage) {
       ModelStore.cameraPosition.set(convertToThreeCordSystem(data.cameraPosition));
       ModelStore.cameraLookAt.set(convertToThreeCordSystem(data.cameraLookAt));
-      ModelStore.objectPosition.set(convertToThreeCordSystem(data.objectPosition));
-      ModelStore.objectQuaternion.set(new Quan(
-        data.objectQuaternion.x, data.objectQuaternion.y, data.objectQuaternion.z, data.objectQuaternion.w));
+      // ModelStore.objectPosition.set(convertToThreeCordSystem(data.objectPosition));
+      // ModelStore.objectQuaternion.set(new Quan(
+      //   data.objectQuaternion.x, data.objectQuaternion.y, data.objectQuaternion.z, data.objectQuaternion.w));
     },
     updateCameraPosition(data: updateCameraPositionMessage) {
       // console.log("Update Camera Position in store:", data.cameraPosition);
