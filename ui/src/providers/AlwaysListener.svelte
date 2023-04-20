@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { ReceiveNUI } from '@utils/ReceiveNUI'
 	import { debugData } from '@utils/debugData'
-	import { FURNITURES, SHOWFURNITURES, browserMode, visibility } from '@store/stores'
+	import { FURNITURES, SHOWFURNITURES, browserMode, visibility, CART, IS_MENU_MINIMIZED } from '@store/stores'
 	import ModelStore from '@store/ModelStore'
+	import ItemList from '@components/ItemList.svelte'
 
 
 
@@ -55,6 +56,21 @@
 	ReceiveNUI('setFurnituresData', (data: any) => {
 		FURNITURES.set(data)
 		SHOWFURNITURES.set($FURNITURES[0])
+	})
+
+
+
+	// Cart Stuff
+	
+	ReceiveNUI('addToCart', (cartEntry: any) => {
+		$CART = [...$CART, cartEntry]
+		ModelStore.show.set(false)
+		$IS_MENU_MINIMIZED = false
+	})
+
+	ReceiveNUI('removeFromCart', (data: any) => {
+		$CART = $CART.filter((item) => {item.index !== data})
+		$CART = [...$CART]
 	})
 
 

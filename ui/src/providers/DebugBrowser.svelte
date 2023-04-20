@@ -53,7 +53,7 @@
 			items: debugItems
 		},
 	]
-
+	
 	let options = [
 		{
 				component: 'Show',
@@ -80,7 +80,6 @@
 				},
 			]
 		},
-
 	]
 </script>
 

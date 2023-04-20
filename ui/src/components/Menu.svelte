@@ -5,6 +5,12 @@
 	import { onMount } from "svelte"
 	import { SendNUI } from "@utils/SendNUI"
 	import { ReceiveNUI } from "@utils/ReceiveNUI"
+	import Cart from "./Cart.svelte"
+	import ModelStore from "@store/ModelStore"
+
+    const {
+		cartIndex,
+	} = ModelStore
 
     let isFreeCamMode: boolean = false
 
@@ -36,13 +42,15 @@
 
 
 
-<div class="w-[97vw] h-fit flex flex-col absolute left-1/2 overflow-visible -translate-x-1/2 {$IS_MENU_MINIMIZED ? "-bottom-[24vh]" : "bottom-[3vh]"} z-[1]">
+<div class="w-[97%] h-fit flex flex-col absolute left-1/2 overflow-visible -translate-x-1/2 {$IS_MENU_MINIMIZED ? "-bottom-[24rem]" : "bottom-[3rem]"} z-[1]">
     <Header />
     <ItemList />
+    <Cart />
     <div 
     style="border-color: {isFreeCamMode?"white":"var(--color-tertiary)"};"
-    class="absolute -top-[2vw] text-[1.2vw] right-[0.2vw] w-[4vw] border-[0.3vw] h-[2vw] bg-[color:var(--color-secondary)] flex flex-row gap-[0.5vw] items-center justify-center">
+    class="absolute -top-[4rem] text-[2rem] right-0 w-[8rem] border-[0.3rem] h-[4rem] bg-[color:var(--color-secondary)] flex flex-row gap-[1rem] items-center justify-center">
         <i class="fa-solid fa-video text-[white]"></i>
         <p class=" font-semibold">C</p>
     </div>
+
 </div>

@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 import type { Writable } from 'svelte/store';
 import { SendNUI } from "@utils/SendNUI";
 import type { position, quaternion } from '@customTypes/type';
-import { convertToThreeCordSystem } from '@customTypes/type';
+import { convertToThreeCordSystem, convertToGTACordSystem } from '@customTypes/type';
 import { type Quaternion, Euler } from "three";
 import { Quaternion as Quan, MathUtils } from 'three'
 
@@ -11,16 +11,16 @@ interface modelState {
   cameraLookAt: Writable<position>;
   cameraPosition: Writable<position>;
   objectPosition: Writable<position>;
-  objectQuaternion: Writable<Quaternion>;
   objectEuler: Writable<Euler>;
+  cartIndex: Writable<number>;
 }
 
 interface setupModelMessage {
   objectPosition: position;
-  objectQuaternion: Quaternion;
   objectRotation: position;
   cameraPosition: position;
   cameraLookAt: position;
+  cartIndex: number;
 }
 
 interface updateCameraPositionMessage {
@@ -33,7 +33,6 @@ interface updateCameraLookAtMessage {
 
 interface updateCameraMessage extends updateCameraPositionMessage, updateCameraLookAtMessage {
   objectPosition: position;
-  objectQuaternion: quaternion;
 }
 
 function directionalVector(startPos: position, endPos: position): position {
@@ -50,8 +49,8 @@ const store = () => {
     cameraPosition: writable({ x: 0, y: 0, z: 1 }),
     cameraLookAt: writable({ x: 0, y: 0, z: 10 }),
     objectPosition: writable({ x: 0, y: 0, z: 10 }),
-    objectQuaternion: writable( new Quan(0, 0, 0, 1)),
     objectEuler: writable(new Euler(0, 0, 0, "ZXY")),
+    cartIndex: writable(0),
   }
 
   const methods = {
@@ -59,13 +58,13 @@ const store = () => {
       ModelStore.cameraPosition.set(convertToThreeCordSystem(data.cameraPosition));
       ModelStore.cameraLookAt.set(convertToThreeCordSystem(data.cameraLookAt));
       ModelStore.objectPosition.set(convertToThreeCordSystem(data.objectPosition));
-      ModelStore.objectQuaternion.set(data.objectQuaternion);
       ModelStore.objectEuler.set(new Euler(
         MathUtils.degToRad(data.objectRotation.x),
         MathUtils.degToRad(data.objectRotation.z),
         MathUtils.degToRad(data.objectRotation.y),
         'YZX'))
       ModelStore.show.set(true);
+      ModelStore.cartIndex.set(data.cartIndex);
     },
     updateCamera(data: updateCameraMessage) {
       ModelStore.cameraPosition.set(convertToThreeCordSystem(data.cameraPosition));
@@ -85,11 +84,11 @@ const store = () => {
         SendNUI("moveObject", pos);
     },
     sendRotationUpdate(euler: position) {
-      
+      const gtaCoords = convertToGTACordSystem(euler);
       SendNUI("rotateObject", {
-        x: MathUtils.radToDeg(euler.x).toFixed(2),
-        y: -MathUtils.radToDeg(euler.z).toFixed(2), //for some reason the z axis is inverted
-        z: MathUtils.radToDeg(euler.y).toFixed(2),
+        x: MathUtils.radToDeg(gtaCoords.x).toFixed(2),
+        y: MathUtils.radToDeg(gtaCoords.y).toFixed(2), //for some reason the z axis is inverted
+        z: MathUtils.radToDeg(gtaCoords.z).toFixed(2),
       });
     }
 

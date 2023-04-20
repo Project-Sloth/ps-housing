@@ -32,3 +32,22 @@ overflow: hidden;
     width: 0px;
     height: 0px;
 }
+
+.scroll-style-horizontal::-webkit-scrollbar {
+    height: 0.5rem;
+    width: 100%;
+}
+
+.scroll-style-vertical::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 100%;
+}
+
+.scroll-style::-webkit-scrollbar-track {
+    background: whtie;
+}
+
+.scroll-style::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 1rem;
+}

@@ -1,3 +1,4 @@
+import type { position } from "@customTypes/type";
 import { writable } from "svelte/store";
 
 export const visibility = writable<boolean>(false);
@@ -22,16 +23,17 @@ export const FURNITURES = writable<IFurnitures[]>(null);
 
 export const SHOWFURNITURES = writable<IFurnitures>(null);
 
-
-interface ICurrentFurniture extends IFurniture {
-    position: {
-        x: number;
-        y: number;
-        z: number;
-        w: number;
-    };
-}
-
-export const CURRENTFURNITURE = writable<ICurrentFurniture>(null);
+export const CURRENTFURNITURE = writable<IFurniture>(null);
 
 export const IS_MENU_MINIMIZED = writable<boolean>(false);
+
+export const IS_CART_OPEN = writable<boolean>(false);
+
+interface ICartItem extends IFurniture {
+    index: number;
+    entity: number;
+    position: position
+    rotation: position
+}
+
+export const CART = writable<ICartItem[]>([]);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IS_MENU_MINIMIZED, SHOWFURNITURES } from '@store/stores'
+	import { IS_MENU_MINIMIZED, SHOWFURNITURES, CURRENTFURNITURE } from '@store/stores'
 	import { SendNUI } from '@utils/SendNUI'
 	let scrollableElement: HTMLElement
 	function scrollHorizontally(e) {
@@ -10,57 +10,47 @@
 	}
 </script>
 
-<div  class="w-full h-[24vh] bg-[color:var(--color-primary)] p-[1vw]">
+<div  class="w-full h-[24rem] bg-[color:var(--color-primary)] p-[1rem]">
 	<div
 	bind:this={scrollableElement} on:wheel={scrollHorizontally}
-		class="grid grid-rows-2 grid-flow-col-dense gap-[1vw] overflow-x-scroll overflow-y-hidden w-fit max-w-full h-full relative scroll-style"
+		class="grid grid-rows-2 grid-flow-col-dense gap-[1rem] overflow-x-scroll overflow-y-hidden w-fit max-w-full h-full relative scroll-style scroll-style-horizontal"
 	>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
 		{#each $SHOWFURNITURES.items as furniture, i}
-			<div
-				class="h-full w-[15vw] bg-[color:var(--color-secondary)] flex flex-row"
+			<button
+				class="h-full w-[30rem] bg-[color:var(--color-secondary)] flex flex-row items-center p-[1.5rem] hover:cursor-pointer"
+				on:click={() => {
+					SendNUI("previewFurniture", furniture)
+					$CURRENTFURNITURE = furniture
+					$IS_MENU_MINIMIZED = true
+				}}
 			>
 				<!-- Furniture name -->
 				<div
-					class="w-full h-full flex flex-col justify-center items-start p-[1vw]"
+					class="w-full h-full flex flex-col justify-center items-start "
 				>
 					<p
-						class="text-[color:var(--color-text)] text-[1vw] font-bold"
+						class="text-[color:var(--color-text)] text-[2rem] font-bold"
 					>
 						{furniture.label}
 					</p>
-					<p class="text-[color:var(--color-text)] text-[1vw]">
+					<p class="text-[color:var(--color-text)] text-[2rem]">
 						${furniture.price}
 					</p>
 				</div>
 				<!-- eye button -->
-				<button
-					class=" bg-[color:var(--color-tertiary)] aspect-square h-full grid place-items-center justify-center items-center"
-					on:click={() => {
-						SendNUI("previewFurniture", furniture)
-						$IS_MENU_MINIMIZED = true
-					}}
+				<div
+					class=" bg-[color:var(--color-tertiary)] aspect-square h-[5rem] grid place-items-center justify-center items-center"
 				>
 					<i
-						class="fas fa-eye text-[color:var(--color-text)] text-[1.5vw]"
+						class="fas fa-eye text-[color:var(--color-text)] text-[2.5rem]"
 					/>
-				</button>
-			</div>
+				</div>
+			</button>
 		{/each}
 	</div>
 </div>
 
 <style>
-	.scroll-style::-webkit-scrollbar {
-		height: 1vh;
-		width: 100%;
-	}
 
-	.scroll-style::-webkit-scrollbar-track {
-		background: whtie;
-	}
-
-	.scroll-style::-webkit-scrollbar-thumb {
-		background: var(--color-accent);
-		border-radius: 1vh;
-	}
 </style>

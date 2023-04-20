@@ -17,7 +17,7 @@
 		useThrelte,
 		Canvas,
 	} from '@threlte/core'
-	import { CURRENTFURNITURE, browserMode } from '@store/stores'
+	import { browserMode, CART, CURRENTFURNITURE } from '@store/stores'
 	import type { position, quaternion } from '@customTypes/type'
 	import { onDestroy, onMount } from 'svelte'
 	import { convertToGTACordSystem, convertToThreeCordSystem } from '@customTypes/type'
@@ -31,6 +31,7 @@
 		cameraLookAt,
 		objectPosition,
 		objectEuler,
+		cartIndex,
 	} = ModelStore
 
 	let mesh: any = undefined
@@ -123,14 +124,15 @@
 			? 'bg-gray-800'
 			: ''} "
 	>
+		<!-- Modeler Panel -->
 		<div
-			class="w-[15vw] bg-[color:var(--color-primary)] top-[2vh] origin-top absolute {isPanelOpen
-				? 'left-[1.5vw]'
-				: '-left-[15vw]'}  flex flex-row gap-[1vw] items-center justify-between"
+			class="w-fit text-[1.5rem] bg-[color:var(--color-primary)] top-[4rem] origin-top absolute {isPanelOpen
+				? 'left-[1.5rem]'
+				: '-left-[30rem]'}  flex flex-row gap-[1rem] items-center justify-between"
 		>
-			<div class="flex flex-col gap-[0.5vw] p-[1vw]">
+			<div class="flex flex-col gap-[1rem] p-[2rem]">
 				<button
-					class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full"
+					class="bg-[color:var(--color-secondary)] text-white p-[1rem] w-full"
 					on:click={() => {
 						if (mode == 'translate') {
 							mode = 'rotate'
@@ -142,16 +144,16 @@
 						? 'rotate'
 						: 'translate'}</button
 				>
-				<div class="flex flex-row gap-[1vw]">
+				<div class="flex flex-row gap-[1rem]">
 					<button
-						class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full whitespace-nowrap"
+						class="bg-[color:var(--color-secondary)] text-white p-[0.5rem] w-full whitespace-nowrap"
 						on:click={() => {
 							mesh.rotation.set(0.0, 0.0, 0.0, $objectEuler.order)
 							getMeshLocation()
 						}}>Reset Rotation</button
 					>
 					<button
-						class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full"
+						class="bg-[color:var(--color-secondary)]  text-white p-[1rem] w-full"
 						on:click={() => {
 							mesh.position.set(
 								$cameraLookAt.x,
@@ -162,18 +164,18 @@
 						}}>Reset Position</button
 					>
 				</div>
-				<div class="flex flex-col items-center text-[0.8vw]">
-					<p class="text-[0.8vw] h-[1.7vw]">Translation Snap</p>
-					<div class="flex flex-row gap-[0.5vw] text-center">
+				<div class="flex flex-col items-center">
+					<p class=" h-fit">Translation Snap</p>
+					<div class="flex flex-row gap-[1rem] text-center">
 						<!-- y and z are switched because it was not passed throguh convertToGTACordSystem -->
-						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[4.2vw] px-[0.1vw]"><p>x</p> <p>{$objectPosition.x.toFixed(2)}</p></div>
-						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[4.2vw] px-[0.1vw]"><p>y</p> <p>{-$objectPosition.z.toFixed(2)}</p></div>
-						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[4.2vw] px-[0.1vw]"><p>z</p> <p>{$objectPosition.y.toFixed(2)}</p></div>
+						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[8rem] px-[0.1rem]"><p>x</p> <p>{$objectPosition.x.toFixed(2)}</p></div>
+						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[8rem] px-[0.1rem]"><p>y</p> <p>{-$objectPosition.z.toFixed(2)}</p></div>
+						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[8rem] px-[0.1rem]"><p>z</p> <p>{$objectPosition.y.toFixed(2)}</p></div>
 					</div>
 				</div>
-				<div class="flex flex-row gap-[1vw] items-center">
+				<div class="flex flex-row gap-[1rem] items-center">
 					<div
-						class="w-[4vw] h-[1.7vw] text-[0.8vw] items-center flex justify-center bg-[color:var(--color-secondary)]"
+						class="w-[5rem] h-[3rem] items-center flex justify-center bg-[color:var(--color-secondary)]"
 					>
 						{translationSnap}
 					</div>
@@ -188,7 +190,7 @@
 					/>
 				</div>
 					<button
-						class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full"
+						class="bg-[color:var(--color-secondary)]  text-white p-[1rem] w-full"
 						on:click={() => {
 							SendNUI('placeOnGround').then((data) => {
 								const coords = convertToThreeCordSystem(data)
@@ -201,17 +203,17 @@
 							})
 						}}>Place On Ground</button
 					>
-				<div class="flex flex-col items-center text-[0.8vw]">
-					<p class="text-[0.8vw] h-[1.7vw]">Rotation Snap</p>
-					<div class="flex flex-row gap-[0.5vw] text-center">
-						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[4.2vw] px-[0.1vw]"><p>x</p> <p>{MathUtils.radToDeg($objectEuler.x).toFixed(2)}</p></div>
-						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[4.2vw] px-[0.1vw]"><p>y</p> <p>{MathUtils.radToDeg($objectEuler.y).toFixed(2)}</p></div>
-						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[4.2vw] px-[0.1vw]"><p>z</p> <p>{MathUtils.radToDeg($objectEuler.z).toFixed(2)}</p></div>
+				<div class="flex flex-col items-center ">
+					<p class=" h-fit">Rotation Snap</p>
+					<div class="flex flex-row gap-[1rem] text-center">
+						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[8rem] px-[0.1rem]"><p>x</p> <p>{MathUtils.radToDeg($objectEuler.x).toFixed(2)}</p></div>
+						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[8rem] px-[0.1rem]"><p>y</p> <p>{MathUtils.radToDeg($objectEuler.y).toFixed(2)}</p></div>
+						<div class="bg-[color:var(--color-secondary)] relative flex flex-col w-[8rem] px-[0.1rem]"><p>z</p> <p>{MathUtils.radToDeg($objectEuler.z).toFixed(2)}</p></div>
 					</div>
 				</div>
-				<div class="flex flex-row gap-[1vw] items-center">
+				<div class="flex flex-row gap-[1rem] items-center">
 						<div
-							class="w-[4vw] h-[1.7vw] items-center flex justify-center bg-[color:var(--color-secondary)]"
+							class="w-[5rem] h-[3rem] items-center flex justify-center bg-[color:var(--color-secondary)]"
 						>
 							{rotationSnapDegrees}
 						</div>
@@ -225,8 +227,8 @@
 						class="w-full"
 					/>
 				</div>
-				<p class="text-[0.8vw]">Object Alpha</p>
-				<div class="flex flex-row gap-[1vw] items-center">
+				<p class="">Object Alpha</p>
+				<div class="flex flex-row gap-[1rem] items-center">
 					<input
 						id="slider"
 						type="range"
@@ -238,26 +240,40 @@
 					/>
 				</div>
 				<button
-					class="bg-[color:var(--color-secondary)] text-[0.8vw] text-white p-[0.5vw] w-full"
+					class="bg-[color:var(--color-secondary)] text-white p-[1rem] w-full"
 					on:click={() => {
 						SendNUI('cancelPlacement')
 						ModelStore.show.set(false)
+						$CURRENTFURNITURE = null
 					}}>Cancel Placement</button
 				>
 			</div>
 			<button
-				class="h-full absolute -right-[2vw] w-[2vw] grid place-items-center bg-[color:var(--color-secondary)]"
+				class="h-full absolute -right-[4rem] w-[4rem] grid place-items-center bg-[color:var(--color-secondary)]"
 				on:click={() => {
 					isPanelOpen = !isPanelOpen
 				}}
 			>
 				<i
-					class="fas text-[1vw] fa-chevron-{isPanelOpen
+					class="fas text-[2rem] fa-chevron-{isPanelOpen
 						? 'left'
 						: 'right'}"
 				/>
 			</button>
 		</div>
+
+		<!-- Add To Cart -->
+		{#if $cartIndex !== null}
+		<button
+			class="absolute text-[2rem] hover:brightness-110 top-1/2 -translate-y-1/2 right-[1rem] w-fit gap-[1rem] px-8 py-4  h-fit bg-[color:var(--color-secondary)] flex flex-row items-center justify-between"
+			on:click={() => {
+				SendNUI('addToCart', $CURRENTFURNITURE)
+			}}
+		>        
+			<i class="fa-solid fa-shopping-cart text-[white]"></i>
+        	<p class=" font-semibold">Add To Cart</p>
+		</button>	
+		{/if}
 
 		<Canvas>
 			<PerspectiveCamera
@@ -283,6 +299,20 @@
 					on:objectChange={(event) => {
 						getMeshLocation()
 					}}
+					on:dragging-changed={(event) => {
+						const isDragging = event.detail.value
+						if (!isDragging) {
+							if ($cartIndex !== null && $cartIndex !== undefined) {
+								const item = $CART[$cartIndex]
+								const gtaPos = convertToGTACordSystem($objectPosition);
+								item.position = gtaPos
+								const gtaRot = convertToGTACordSystem($objectEuler);
+								item.rotation = gtaRot
+								$CART = [...$CART]
+								SendNUI('updateCartItem', item)
+							}
+						}
+					}}
 					{translationSnap}
 					rotationSnap={MathUtils.degToRad(rotationSnapDegrees)}
 					size={0.5}
@@ -295,21 +325,21 @@
 
 <style>
 	input#slider[type='range'] {
-		height: 1vw;
+		height: 1rem;
 		-webkit-appearance: none;
 		width: 100%;
 	}
 
 	input#slider[type='range']::-webkit-slider-runnable-track {
 		width: 100%;
-		height: 1vw;
+		height: 2rem;
 		cursor: pointer;
 		background: var(--color-secondary);
 	}
 
 	input#slider[type='range']::-webkit-slider-thumb {
-		height: 1vw;
-		width: 1vw;
+		height: 2rem;
+		width: 2rem;
 		background: white;
 		cursor: pointer;
 		-webkit-appearance: none;
