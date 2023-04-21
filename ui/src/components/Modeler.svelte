@@ -31,7 +31,7 @@
 		cameraLookAt,
 		objectPosition,
 		objectEuler,
-		cartIndex,
+		cartEntity,
 	} = ModelStore
 
 	let mesh: any = undefined
@@ -263,7 +263,7 @@
 		</div>
 
 		<!-- Add To Cart -->
-		{#if $cartIndex !== null}
+		{#if $cartEntity !== null}
 		<button
 			class="absolute text-[2rem] hover:brightness-110 top-1/2 -translate-y-1/2 right-[1rem] w-fit gap-[1rem] px-8 py-4  h-fit bg-[color:var(--color-secondary)] flex flex-row items-center justify-between"
 			on:click={() => {
@@ -302,8 +302,8 @@
 					on:dragging-changed={(event) => {
 						const isDragging = event.detail.value
 						if (!isDragging) {
-							if ($cartIndex !== null && $cartIndex !== undefined) {
-								const item = $CART[$cartIndex]
+							if ($cartEntity !== null && $cartEntity !== undefined) {
+								const item = $CART.find((item) => item.entity === $cartEntity)
 								const gtaPos = convertToGTACordSystem($objectPosition);
 								item.position = gtaPos
 								const gtaRot = convertToGTACordSystem($objectEuler);
@@ -322,26 +322,3 @@
 		</Canvas>
 	</div>
 {/if}
-
-<style>
-	input#slider[type='range'] {
-		height: 1rem;
-		-webkit-appearance: none;
-		width: 100%;
-	}
-
-	input#slider[type='range']::-webkit-slider-runnable-track {
-		width: 100%;
-		height: 2rem;
-		cursor: pointer;
-		background: var(--color-secondary);
-	}
-
-	input#slider[type='range']::-webkit-slider-thumb {
-		height: 2rem;
-		width: 2rem;
-		background: white;
-		cursor: pointer;
-		-webkit-appearance: none;
-	}
-</style>

@@ -12,7 +12,7 @@ interface modelState {
   cameraPosition: Writable<position>;
   objectPosition: Writable<position>;
   objectEuler: Writable<Euler>;
-  cartIndex: Writable<number>;
+  cartEntity: Writable<number>;
 }
 
 interface setupModelMessage {
@@ -20,7 +20,7 @@ interface setupModelMessage {
   objectRotation: position;
   cameraPosition: position;
   cameraLookAt: position;
-  cartIndex: number;
+  cartEntity: number;
 }
 
 interface updateCameraPositionMessage {
@@ -50,7 +50,7 @@ const store = () => {
     cameraLookAt: writable({ x: 0, y: 0, z: 10 }),
     objectPosition: writable({ x: 0, y: 0, z: 10 }),
     objectEuler: writable(new Euler(0, 0, 0, "ZXY")),
-    cartIndex: writable(0),
+    cartEntity: writable(0),
   }
 
   const methods = {
@@ -64,7 +64,7 @@ const store = () => {
         MathUtils.degToRad(data.objectRotation.y),
         'YZX'))
       ModelStore.show.set(true);
-      ModelStore.cartIndex.set(data.cartIndex);
+      ModelStore.cartEntity.set(data.cartEntity);
     },
     updateCamera(data: updateCameraMessage) {
       ModelStore.cameraPosition.set(convertToThreeCordSystem(data.cameraPosition));

@@ -69,10 +69,13 @@
 	})
 
 	ReceiveNUI('removeFromCart', (data: any) => {
-		$CART = $CART.filter((item) => {item.index !== data})
+		// This code removes a product from the cart
+		// The product is identified by the entity ID
+		// The code is used in the removeFromCart function
+
+		$CART = $CART.filter((entry: any) => entry.entity !== data.entity)
 		$CART = [...$CART]
 	})
-
 
 
 </script>

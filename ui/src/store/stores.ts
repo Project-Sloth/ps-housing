@@ -30,7 +30,6 @@ export const IS_MENU_MINIMIZED = writable<boolean>(false);
 export const IS_CART_OPEN = writable<boolean>(false);
 
 interface ICartItem extends IFurniture {
-    index: number;
     entity: number;
     position: position
     rotation: position

@@ -1,4 +1,48 @@
-Furnitures = {
+Config = {}
+
+
+Config.Shells = {
+    {
+        label = "Apartment 1 Furnished",
+        hash = `furnitured_midapart`,
+        doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
+        img = {
+            {
+                url = "https://static.wikia.nocookie.net/gtawiki/images/a/a0/Apartments-GTAOe-Medium-Entry.png/revision/latest/scale-to-width-down/1000?cb=20230214031353",
+                label = "Entry",
+            },
+            {
+                url = "https://static.wikia.nocookie.net/gtawiki/images/3/31/Apartments-GTAOe-Medium-Kitchen.png/revision/latest/scale-to-width-down/1000?cb=20230214031354",
+                label = "Kitchen",
+            },
+            {
+                url = "https://static.wikia.nocookie.net/gtawiki/images/5/54/Apartments-GTAOe-Medium-DiningRoom.png/revision/latest/scale-to-width-down/1000?cb=20230214031351",
+                label = "Dining Room",
+            },
+            {
+                url = "https://static.wikia.nocookie.net/gtawiki/images/5/55/Apartments-GTAOe-Medium-LivingRoom.png/revision/latest/scale-to-width-down/1000?cb=20230214031355",
+                label = "Living Room",
+            },
+            {
+                url = "https://static.wikia.nocookie.net/gtawiki/images/5/51/Apartments-GTAOe-Medium-Bedroom.png/revision/latest/scale-to-width-down/1000?cb=20230214031350",
+                label = "Bedroom",
+            },
+            {
+                url = "https://static.wikia.nocookie.net/gtawiki/images/2/2f/Apartments-GTAOe-Medium-Bathroom.png/revision/latest/scale-to-width-down/1000?cb=20230214031349",
+                label = "Bathroom",
+            },
+        },
+    }
+}
+
+
+
+
+
+
+
+
+Config.Furnitures = {
     {
         category = "Couches",
         items = {

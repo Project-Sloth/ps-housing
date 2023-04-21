@@ -18,7 +18,7 @@
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 		{#each $SHOWFURNITURES.items as furniture, i}
 			<button
-				class="h-full w-[30rem] bg-[color:var(--color-secondary)] flex flex-row items-center p-[1.5rem] hover:cursor-pointer"
+				class="h-full w-[30rem] bg-[color:var(--color-secondary)] flex flex-row items-center px-[1.5rem] py-[0.5rem] hover:cursor-pointer"
 				on:click={() => {
 					SendNUI("previewFurniture", furniture)
 					$CURRENTFURNITURE = furniture
@@ -30,7 +30,7 @@
 					class="w-full h-full flex flex-col justify-center items-start "
 				>
 					<p
-						class="text-[color:var(--color-text)] text-[2rem] font-bold"
+						class="text-[color:var(--color-text)] text-[2rem] font-bold text-start"
 					>
 						{furniture.label}
 					</p>
@@ -41,6 +41,13 @@
 				<!-- eye button -->
 				<div
 					class=" bg-[color:var(--color-tertiary)] aspect-square h-[5rem] grid place-items-center justify-center items-center"
+					on:mouseenter={() => {
+						SendNUI("hoverIn", furniture)
+						console.log("hovered")
+					}}
+					on:mouseleave={() => {
+						SendNUI("hoverOut")
+					}}
 				>
 					<i
 						class="fas fa-eye text-[color:var(--color-text)] text-[2.5rem]"

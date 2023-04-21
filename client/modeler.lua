@@ -63,7 +63,7 @@ Modeler = {
         })
         SendNUIMessage({
             action = "setFurnituresData",
-            data = Furnitures
+            data = Config.Furnitures
         })
         SetNuiFocus(true, true)
         self:FreecamActive(true)
@@ -159,7 +159,7 @@ Modeler = {
                 objectRotation = objectRot,
                 cameraPosition = self.CurrentCameraPosition,
                 cameraLookAt = self.CurrentCameraLookAt,
-                cartIndex = data.index or nil,
+                cartIndex = data.entity or nil,
             }
         })
         SetNuiFocus(true, true)
@@ -176,8 +176,8 @@ Modeler = {
 
     CancelPlacement = function (self)
         local inCart = false
-        for i = 1, #self.Cart do
-            if self.Cart[i].entity == self.CurrentObject then
+        for k, v in pairs(self.Cart) do
+            if k == self.CurrentObject then
                 inCart = true
                 break
             end
@@ -213,9 +213,7 @@ Modeler = {
     end,
 
     AddToCart = function (self, data)
-        local index = #self.Cart + 1
         local item = {
-            index = index,
             label = data.label,
             object = data.object,
             price = data.price,
@@ -223,7 +221,7 @@ Modeler = {
             position = GetEntityCoords(self.CurrentObject),
             rotation = GetEntityRotation(self.CurrentObject),
         }
-        self.Cart[index] = item
+        self.Cart[self.CurrentObject] = item
         SendNUIMessage({
             action = "addToCart",
             data = item
@@ -238,19 +236,55 @@ Modeler = {
             DeleteEntity(item.entity)
             SendNUIMessage({
                 action = "removeFromCart",
-                data = data.index
+                data = item
             })
-            table.remove(self.Cart, data.index)
+            self.Cart[data.entity] = nil
         end
     end,
 
     UpdateCartItem = function (self, data)
-        local item = self.Cart[data.index]
+        local item = self.Cart[data.entity]
         if item ~= nil then
             item = data
         end
     end,
 
+
+    -- Hover stuff
+    IsHovering = false,
+    HoverObject = nil,
+    HoverDistance = 5.0,
+
+    SetHoverDistance = function (self, data)
+        self.HoverDistance = data + 0.0
+    end,
+
+    HoverIn = function (self, data)
+        self:HoverOut()
+        local object = data.object
+        if object == nil then return end
+        RequestSpawnObject(object)
+        self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, true, true, false)
+        Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
+        local camRot = Freecam:GetRotation()
+
+        SetEntityCoords(self.HoverObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
+        FreezeEntityPosition(self.HoverObject, true)
+        SetEntityCollision(self.HoverObject, false, false)
+        SetEntityRotation(self.HoverObject, 0.0, 0.0, camRot.z)
+        self.IsHovering = true
+        while self.IsHovering do
+            local rot = GetEntityRotation(self.HoverObject)
+            SetEntityRotation(self.HoverObject, rot.x, rot.y, rot.z + 0.1)
+            Wait(0)
+        end
+    end,
+
+    HoverOut = function (self)
+        DeleteEntity(self.HoverObject)
+        self.HoverObject = nil
+        self.IsHovering = false
+    end,
 }
 
 RegisterNUICallback("moveObject", function(data, cb)
@@ -305,5 +339,20 @@ end)
 
 RegisterNUICallback("updateCartItem", function(data, cb)
     Modeler:UpdateCartItem(data)
+    cb("ok")
+end)
+
+RegisterNUICallback("hoverIn", function(data, cb)
+    Modeler:HoverIn(data)
+    cb("ok")
+end)
+
+RegisterNUICallback("hoverOut", function(data, cb)
+    Modeler:HoverOut()
+    cb("ok")
+end)
+
+RegisterNUICallback("setHoverDistance", function(data, cb)
+    Modeler:SetHoverDistance(data)
     cb("ok")
 end)
