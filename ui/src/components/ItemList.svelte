@@ -43,7 +43,6 @@
 					class=" bg-[color:var(--color-tertiary)] aspect-square h-[5rem] grid place-items-center justify-center items-center"
 					on:mouseenter={() => {
 						SendNUI("hoverIn", furniture)
-						console.log("hovered")
 					}}
 					on:mouseleave={() => {
 						SendNUI("hoverOut")

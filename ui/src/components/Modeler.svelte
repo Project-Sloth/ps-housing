@@ -83,12 +83,9 @@
 	function getMeshLocation() {
 		if (mesh) {
 			if (hasPositionChanged(mesh.position)) {
-				// console.log("Mesh?", mesh.position);
-				// console.log("HMM?", $objectPosition);
 				$objectPosition.x = mesh.position.x
 				$objectPosition.y = mesh.position.y
 				$objectPosition.z = mesh.position.z
-				// Fetch client event to move entity
 				ModelStore.sendMovementUpdate(
 					convertToGTACordSystem($objectPosition)
 				)

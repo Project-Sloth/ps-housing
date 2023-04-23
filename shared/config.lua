@@ -2,37 +2,372 @@ Config = {}
 
 
 Config.Shells = {
-    {
-        label = "Apartment 1 Furnished",
+    ["Standard Motel"] = {
+        label = "Standard Motel",
+        hash = `standardmotel_shell`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/q7PQTJZk/motel.webp",
+                label = "Motel",
+            },
+        }
+    },
+
+    ["Modern Hotel"] = {
+        label = "Modern Hotel",
+        hash = `modernhotel_shell`,
+        doorOffset = { x = 4.98, y = 4.35, z = 1.16, w = 179.79 },
+        img = {
+            {
+                url = "https://i.postimg.cc/BQ7T3ZXd/angle-1.webp",
+                label = "Angle 1",
+            },
+            {
+                url = "https://i.postimg.cc/SxXWx09j/angle-2.webp",
+                label = "Angle 2",
+            },
+        }
+    },
+
+    ["Apartment Furnished"] = {
+        label = "Apartment Furnished",
         hash = `furnitured_midapart`,
         doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
         img = {
             {
-                url = "https://static.wikia.nocookie.net/gtawiki/images/a/a0/Apartments-GTAOe-Medium-Entry.png/revision/latest/scale-to-width-down/1000?cb=20230214031353",
-                label = "Entry",
+                url = "https://i.postimg.cc/g2PYn8XR/bathroom.webp",
+                label = "Bathroom",
             },
             {
-                url = "https://static.wikia.nocookie.net/gtawiki/images/3/31/Apartments-GTAOe-Medium-Kitchen.png/revision/latest/scale-to-width-down/1000?cb=20230214031354",
-                label = "Kitchen",
-            },
-            {
-                url = "https://static.wikia.nocookie.net/gtawiki/images/5/54/Apartments-GTAOe-Medium-DiningRoom.png/revision/latest/scale-to-width-down/1000?cb=20230214031351",
-                label = "Dining Room",
-            },
-            {
-                url = "https://static.wikia.nocookie.net/gtawiki/images/5/55/Apartments-GTAOe-Medium-LivingRoom.png/revision/latest/scale-to-width-down/1000?cb=20230214031355",
-                label = "Living Room",
-            },
-            {
-                url = "https://static.wikia.nocookie.net/gtawiki/images/5/51/Apartments-GTAOe-Medium-Bedroom.png/revision/latest/scale-to-width-down/1000?cb=20230214031350",
+                url = "https://i.postimg.cc/zBMN5gYy/Bedroom.webp",
                 label = "Bedroom",
             },
             {
-                url = "https://static.wikia.nocookie.net/gtawiki/images/2/2f/Apartments-GTAOe-Medium-Bathroom.png/revision/latest/scale-to-width-down/1000?cb=20230214031349",
-                label = "Bathroom",
+                url = "https://i.postimg.cc/MTXwhYNk/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/GtyCpmbq/Kitchen-and-Dining.webp",
+                label = "Kitchen and Dining",
+            },
+            {
+                url = "https://i.postimg.cc/ThvX5vwG/living-room-1.webp",
+                label = "Living Room Angle 1",
+            },
+            {
+                url = "https://i.postimg.cc/dQkkCR1S/living-room-2.webp",
+                label = "Living Room Angle 2",
             },
         },
-    }
+    },
+
+    ["Apartment Unfurnished"] = {
+        label = "Apartment Unfurnished",
+        hash = `shell_v16mid`,
+        doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
+        img = {
+            {
+                url = "https://i.postimg.cc/3NstF2PQ/bathroom.webp",
+                label = "Bathroom",
+            },
+            {
+                url = "https://i.postimg.cc/WpdjSjQ5/bedroom.webp",
+                label = "Bedroom",
+            },
+            {
+                url = "https://i.postimg.cc/QNvDywDh/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/nhJJHmMW/kitchen.webp",
+                label = "Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/ZK3mtHY3/livingroom.webp",
+                label = "Living Room",
+            },
+        },
+    },
+
+    ["Apartment 2 Unfurnished"] = {
+        label = "Apartment 2 Unfurnished",
+        hash = `shell_v16low`,
+        doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
+        img = {
+            {
+                url = "https://i.postimg.cc/4404Tn6C/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/MKj6Zx5n/kitchen.webp",
+                label = "Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/qvVkzYDj/livingroom.webp",
+                label = "Living Room",
+            },
+        },
+    },
+
+    ["Garage"] = {
+        label = "Garage",
+        hash = `shell_garagem`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/QCJr7nWT/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/CMG09d6x/garage.webp",
+                label = "Garage",
+            },
+        },
+    },
+
+    ["Office"] = {
+        label = "Office",
+        hash = `shell_office1`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/LXddbMtP/entry.webp",
+                label = "Entance",
+            },
+            {
+                url = "https://i.postimg.cc/L5RcmB06/office.webp",
+                label = "Office",
+            },
+        },
+    },
+
+    ["Store"] = {
+        label = "Store",
+        hash = `shell_store1`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/wBmZJbCj/room-1.webp",
+                label = "Room 1",
+            },
+            {
+                url = "https://i.postimg.cc/vBwjvtyL/room-2.webp",
+                label = "Room 2",
+            },
+        },
+    },
+
+    ["Warehouse"] = {
+        label = "Warehouse",
+        hash = `shell_warehouse1`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/m2gnVrvq/angle1.webp",
+                label = "Angle 1",
+            },
+            {
+                url = "https://i.postimg.cc/sDHNLry2/angle2.webp",
+                label = "Angle 2",
+            },
+        },
+    },
+
+    ["Container"] = {
+        label = "Container",
+        hash = `container_shell`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/PxK48W5q/container.webp",
+                label = "Container",
+            },
+        },
+    },
+
+    ["2 Floor House"] = {
+        label = "2 Floor House",
+        hash = `shell_michael`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/TPfgqKS5/bathroom.webp",
+                label = "Bathroom",
+            },
+            {
+                url = "https://i.postimg.cc/9Mf9KvcW/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/MHMQKVcN/floor2.webp",
+                label = "Floor 2",
+            },
+            {
+                url = "https://i.postimg.cc/B6wF0Mv2/kitchen.webp",
+                label = "Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/MHCjcHVT/livingroom.webp",
+                label = "Living Room",
+            },
+            {
+                url = "https://i.postimg.cc/zXhgswYR/room1.webp",
+                label = "Room 1",
+            },
+            {
+                url = "https://i.postimg.cc/fWpdq2pN/room2.webp",
+                label = "Room 2",
+            },
+            {
+                url = "https://i.postimg.cc/TP0mkRM7/room3.webp",
+                label = "Room 3",
+            },
+            {
+                url = "https://i.postimg.cc/dV8Gy2WK/room3dresser.webp",
+                label = "Room 3 Dresser",
+            },
+        },
+    },
+
+    ["House 1"] = {
+        label = "House 1",
+        hash = `shell_frankaunt`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/Df96DdYt/bathroom.webp",
+                label = "Bathroom",
+            },
+            {
+                url = "https://i.postimg.cc/Pr1ykpgN/diningroom.webp",
+                label = "Dining Room",
+            },
+            {
+                url = "https://i.postimg.cc/HLk95SV7/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/CxYNMM07/kitchen.webp",
+                label = "Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/P54MCGrj/livingroom.webp",
+                label = "Living Room",
+            },
+            {
+                url = "https://i.postimg.cc/FKCgxjLC/room1.webp",
+                label = "Room 1",
+            },
+            {
+                url = "https://i.postimg.cc/sXBPHvPj/room2.webp",
+                label = "Room 2",
+            },
+        },
+    },
+
+    ["House 2"] = {
+        label = "House 2",
+        hash = `shell_ranch`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/251Brg1T/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/TwmLWmqD/hallway.webp",
+                label = "Hallway",
+            },
+            {
+                url = "https://i.postimg.cc/QMvKtS5D/kitchen.webp",
+                label = "Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/3NTyjRnb/mainarea.webp",
+                label = "Main Area",
+            },
+            {
+                url = "https://i.postimg.cc/mkyPmsnZ/room.webp",
+                label = "Room",
+            },
+        },
+    },
+
+    ["House 3"] = {
+        label = "House 3",
+        hash = `shell_lester`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/HLbdwtRd/angle1.webp",
+                label = "Angle 1",
+            },
+            {
+                url = "https://i.postimg.cc/C1YYmqpD/angle2.webp",
+                label = "Angle 2",
+            },
+            {
+                url = "https://i.postimg.cc/26wYJSCt/entry.webp",
+                label = "Entrance",
+            },
+        },
+    },
+
+    ["House 4"] = {
+        label = "House 4",
+        hash = `shell_trevor`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/FzC7MZhw/bathroom.webp",
+                label = "Bathroom",
+            },
+            {
+                url = "https://i.postimg.cc/9XLRwWy1/entry.webp",
+                label = "Entrance",
+            },
+            {
+                url = "https://i.postimg.cc/cLnrzw25/kitchen.webp",
+                label = "Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/8CgjgsVk/livingroom.webp",
+                label = "Living Room",
+            },
+            {
+                url = "https://i.postimg.cc/CLtRJmPq/room1.webp",
+                label = "Room 1",
+            },
+            {
+                url = "https://i.postimg.cc/YSNjrkp6/room2.webp",
+                label = "Room 2",
+            },
+        },
+    },
+
+    ["Trailer"] = {
+        label = "Trailer",
+        hash = `shell_trailer`,
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
+        img = {
+            {
+                url = "https://i.postimg.cc/L5xHq67P/entranceandkitchen.webp",
+                label = "Entrance and Kitchen",
+            },
+            {
+                url = "https://i.postimg.cc/05n5XcQN/main.webp",
+                label = "Main",
+            },
+            {
+                url = "https://i.postimg.cc/qM7JPyhx/room1.webp",
+                label = "Room",
+            },
+        },
+    },
+
+
+
 }
 
 
