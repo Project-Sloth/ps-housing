@@ -7,7 +7,7 @@
 		CART
 	} from '@store/stores'
 
-	let selected: number = 0
+	let selected: number = -1
 	let scrollableElement: HTMLElement
 
 	function scrollHorizontally(e) {

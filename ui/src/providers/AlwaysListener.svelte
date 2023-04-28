@@ -77,5 +77,9 @@
 		$CART = [...$CART]
 	})
 
+	ReceiveNUI('clearCart', () => {
+		$CART = []
+	})
+
 
 </script>

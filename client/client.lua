@@ -1,3 +1,21 @@
+QBCore = exports['qb-core']:GetCoreObject()
+PropertiesTable = {}
+
+exports('GetProperties', function()
+	local properties = {}
+	for k, v in pairs(PropertiesTable) do
+		properties[#properties+1] = v.propertyData
+	end
+	return properties
+end)
+
+exports('GetProperty', function(property_id)
+	return PropertiesTable[property_id]
+end)
+
+exports('GetShells', function()
+	return Config.Shells
+end)
 
 RegisterCommand("ui", function()
 	if not Modeler.IsMenuActive then
@@ -7,36 +25,52 @@ RegisterCommand("ui", function()
 	end
 end, false)
 
-
-local house = nil
 AddEventHandler("onResourceStop", function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if Modeler.IsMenuActive then
 			Modeler:CloseMenu()
 		end
-		if house then
-			DeleteObject(house)
+		for k, v in pairs(PropertiesTable) do
+			v:DeleteProperty()
 		end
 	end
 end)
 
-RegisterNUICallback("previewFurniture", function(data, cb)
-	Modeler:StartPlacement(data)
-	cb("ok")
+
+
+local function createProperty(property)
+	PropertiesTable[property.property_id] = Property:new(property)
+end
+RegisterNetEvent('ps-housing:client:addProperty', createProperty)
+
+RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
+	local property = PropertiesTable[property_id]
+	if property then
+		property:DeleteProperty()
+	end
+	PropertiesTable[property_id] = nil
 end)
 
-RegisterCommand("test", function()
-	local ped = PlayerPedId()
-	local coords = GetEntityCoords(ped)
-	local model = 'shell_v16high'
-	RequestModel(GetHashKey(model))
-	while not HasModelLoaded(GetHashKey(model)) do Wait(0) end
-	house = CreateObject(GetHashKey(model), coords.x, coords.y, coords.z - 50.0, false, false, false)
-	FreezeEntityPosition(house, true)
-	SetEntityCoordsNoOffset(ped, GetEntityCoords(house))
+
+AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
+	QBCore.Functions.TriggerCallback('ps-housing:server:requestProperties', function (properties)
+		for k, v in pairs(properties) do
+			createProperty(v)
+		end
+	end)
 end)
 
-RegisterCommand('del', function()
-	DeleteObject(house)
+AddEventHandler("onResourceStart", function(resourceName)
+	if (GetCurrentResourceName() == resourceName) then
+		QBCore.Functions.TriggerCallback('ps-housing:server:requestProperties', function (properties)
+			for k, v in pairs(properties) do
+				createProperty(v)
+			end
+		end)
+	end
 end)
+
+
+
+
 

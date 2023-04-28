@@ -58,6 +58,9 @@
 			</h1>
 			<button
 				class="bg-[color:var(--color-secondary)] text-[2rem] h-full gap-4 whitespace-nowrap flex flex-row items-center justify-center px-8 text-center"
+				on:click={()=>{
+					SendNUI('buyCartItems')
+				}}
 			>
 				<p>Buy</p>
 				<i class="fa-solid fa-check" />

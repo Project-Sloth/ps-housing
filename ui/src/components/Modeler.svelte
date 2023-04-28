@@ -276,6 +276,7 @@
 			<PerspectiveCamera
 				position={$cameraPosition}
 				lookAt={$cameraLookAt}
+				fov={45.0}
 			>
 				<!-- <OrbitControls /> -->
 			</PerspectiveCamera>

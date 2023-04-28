@@ -2,9 +2,8 @@ local Freecam = exports['fivem-freecam']
 
 
 local function RequestSpawnObject(object)
-    local hash = GetHashKey(object)
-    RequestModel(hash)
-    while not HasModelLoaded(hash) do 
+    RequestModel(object)
+    while not HasModelLoaded(object) do 
         Wait(0)
     end
 end
@@ -52,10 +51,10 @@ Modeler = {
     CurrentCameraPosition = nil,
     CurrentCameraLookAt = nil,
     CurrentObjectAlpha = 200,
-
     Cart = {},
 
     OpenMenu = function(self)
+        if not Property.inShell and Property.hasKey then return end
         self.IsMenuActive = true
         SendNUIMessage({
             action = "setVisible",
@@ -72,6 +71,7 @@ Modeler = {
 
     CloseMenu = function(self)
         self.IsMenuActive = false
+        self:ClearCart()
         SendNUIMessage({
             action = "setVisible",
             data = false
@@ -89,6 +89,7 @@ Modeler = {
             Freecam:SetKeyboardSetting('BASE_MOVE_MULTIPLIER', 0.1)
             Freecam:SetKeyboardSetting('FAST_MOVE_MULTIPLIER', 2)
             Freecam:SetKeyboardSetting('SLOW_MOVE_MULTIPLIER', 2)
+            Freecam:SetFov(45.0)
         else
             Freecam:SetActive(false)
             --reset to default
@@ -122,7 +123,7 @@ Modeler = {
         local objectRot
         local objectPos
 
-        if data.index then
+        if data.entity then
             curObject = data.entity
             objectPos = data.position
             objectRot = data.rotation
@@ -131,7 +132,7 @@ Modeler = {
                 self:CancelPlacement()
             end
             RequestSpawnObject(object)
-            curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, true, true, false)
+            curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
             Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
             Modeler.CurrentCameraPosition = Freecam:GetPosition()
             SetEntityCoords(curObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
@@ -249,6 +250,52 @@ Modeler = {
         end
     end,
 
+    ClearCart = function (self)
+        for k, v in pairs(self.Cart) do
+            DeleteEntity(v.entity)
+        end
+        self.Cart = {}
+        SendNUIMessage({
+            action = "clearCart"
+        })
+    end,
+
+    BuyCart = function (self)
+
+        local shellPos = GetEntityCoords(Property.shellObj)
+        print(json.encode(self.Cart, { indent = true}))
+        local items = {}
+        local totalPrice = 0
+        -- seperate loop to get total price so it doesnt have to do all that math for no reason
+        for k, v in pairs(self.Cart) do
+            totalPrice = totalPrice + v.price
+        end
+
+        local PlayerData = QBCore.Functions.GetPlayerData()
+        if PlayerData.money.cash < totalPrice then
+            QBCore.Functions.Notify("You don't have enough money!", "error")
+            return
+        end
+
+        for k, v in pairs(self.Cart) do
+            local offsetPos = {
+                x = math.floor((v.position.x - shellPos.x) * 100) / 100,
+                y = math.floor((v.position.y - shellPos.y) * 100) / 100,
+                z = math.floor((v.position.z - shellPos.z) * 100) / 100,
+            }
+            items[#items + 1] = {
+                object = v.object, 
+                position = offsetPos,
+                rotation = v.rotation,
+            }
+        end
+
+        if totalPrice > 0 then
+            local currentproperty_id = Property.property_id
+            TriggerServerEvent("ps-housing:server:buyFurniture", currentproperty_id, items, totalPrice)
+        end
+        self:ClearCart()
+    end,
 
     -- Hover stuff
     IsHovering = false,
@@ -264,7 +311,7 @@ Modeler = {
         local object = data.object
         if object == nil then return end
         RequestSpawnObject(object)
-        self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, true, true, false)
+        self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
         local camRot = Freecam:GetRotation()
 
@@ -286,6 +333,15 @@ Modeler = {
         self.IsHovering = false
     end,
 }
+
+AddEventHandler("ps-housing:client:furnitureMenu", function(resource)
+    Modeler:OpenMenu()
+end)
+
+RegisterNUICallback("previewFurniture", function(data, cb)
+	Modeler:StartPlacement(data)
+	cb("ok")
+end)
 
 RegisterNUICallback("moveObject", function(data, cb)
     Modeler:MoveObject(data)
@@ -339,6 +395,11 @@ end)
 
 RegisterNUICallback("updateCartItem", function(data, cb)
     Modeler:UpdateCartItem(data)
+    cb("ok")
+end)
+
+RegisterNUICallback("buyCartItems", function(data, cb)
+    Modeler:BuyCart()
     cb("ok")
 end)
 

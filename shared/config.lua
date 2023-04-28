@@ -1,14 +1,17 @@
 Config = {}
 
 
+Config.AccessCanEditFurniture = true -- anyone who is given keys to a property can edit furniture
+
+
 Config.Shells = {
     ["Standard Motel"] = {
         label = "Standard Motel",
         hash = `standardmotel_shell`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = -0.5, y = -2.3, z = 0.0, heading = 90.0, width = 1.5 },
+        imgs = {
             {
-                url = "https://i.postimg.cc/q7PQTJZk/motel.webp",
+                url = "https://i.postimgs.cc/q7PQTJZk/motel.webp",
                 label = "Motel",
             },
         }
@@ -17,14 +20,14 @@ Config.Shells = {
     ["Modern Hotel"] = {
         label = "Modern Hotel",
         hash = `modernhotel_shell`,
-        doorOffset = { x = 4.98, y = 4.35, z = 1.16, w = 179.79 },
-        img = {
+        doorOffset = { x = 4.98, y = 4.35, z = 0.0, heading = 179.79, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/BQ7T3ZXd/angle-1.webp",
+                url = "https://i.postimgs.cc/BQ7T3ZXd/angle-1.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimg.cc/SxXWx09j/angle-2.webp",
+                url = "https://i.postimgs.cc/SxXWx09j/angle-2.webp",
                 label = "Angle 2",
             },
         }
@@ -33,30 +36,30 @@ Config.Shells = {
     ["Apartment Furnished"] = {
         label = "Apartment Furnished",
         hash = `furnitured_midapart`,
-        doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
-        img = {
+        doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/g2PYn8XR/bathroom.webp",
+                url = "https://i.postimgs.cc/g2PYn8XR/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimg.cc/zBMN5gYy/Bedroom.webp",
+                url = "https://i.postimgs.cc/zBMN5gYy/Bedroom.webp",
                 label = "Bedroom",
             },
             {
-                url = "https://i.postimg.cc/MTXwhYNk/entry.webp",
+                url = "https://i.postimgs.cc/MTXwhYNk/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/GtyCpmbq/Kitchen-and-Dining.webp",
+                url = "https://i.postimgs.cc/GtyCpmbq/Kitchen-and-Dining.webp",
                 label = "Kitchen and Dining",
             },
             {
-                url = "https://i.postimg.cc/ThvX5vwG/living-room-1.webp",
+                url = "https://i.postimgs.cc/ThvX5vwG/living-room-1.webp",
                 label = "Living Room Angle 1",
             },
             {
-                url = "https://i.postimg.cc/dQkkCR1S/living-room-2.webp",
+                url = "https://i.postimgs.cc/dQkkCR1S/living-room-2.webp",
                 label = "Living Room Angle 2",
             },
         },
@@ -65,26 +68,26 @@ Config.Shells = {
     ["Apartment Unfurnished"] = {
         label = "Apartment Unfurnished",
         hash = `shell_v16mid`,
-        doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
-        img = {
+        doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/3NstF2PQ/bathroom.webp",
+                url = "https://i.postimgs.cc/3NstF2PQ/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimg.cc/WpdjSjQ5/bedroom.webp",
+                url = "https://i.postimgs.cc/WpdjSjQ5/bedroom.webp",
                 label = "Bedroom",
             },
             {
-                url = "https://i.postimg.cc/QNvDywDh/entry.webp",
+                url = "https://i.postimgs.cc/QNvDywDh/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/nhJJHmMW/kitchen.webp",
+                url = "https://i.postimgs.cc/nhJJHmMW/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimg.cc/ZK3mtHY3/livingroom.webp",
+                url = "https://i.postimgs.cc/ZK3mtHY3/livingroom.webp",
                 label = "Living Room",
             },
         },
@@ -93,18 +96,18 @@ Config.Shells = {
     ["Apartment 2 Unfurnished"] = {
         label = "Apartment 2 Unfurnished",
         hash = `shell_v16low`,
-        doorOffset = { x = -1.50, y = 10.0, z = 1.3, w = 358.50 },
-        img = {
+        doorOffset = { x = 4.69, y = -6.5, z = -1.0, heading = 358.50, width = 1.5  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/4404Tn6C/entry.webp",
+                url = "https://i.postimgs.cc/4404Tn6C/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/MKj6Zx5n/kitchen.webp",
+                url = "https://i.postimgs.cc/MKj6Zx5n/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimg.cc/qvVkzYDj/livingroom.webp",
+                url = "https://i.postimgs.cc/qvVkzYDj/livingroom.webp",
                 label = "Living Room",
             },
         },
@@ -113,14 +116,14 @@ Config.Shells = {
     ["Garage"] = {
         label = "Garage",
         hash = `shell_garagem`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/QCJr7nWT/entry.webp",
+                url = "https://i.postimgs.cc/QCJr7nWT/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/CMG09d6x/garage.webp",
+                url = "https://i.postimgs.cc/CMG09d6x/garage.webp",
                 label = "Garage",
             },
         },
@@ -129,14 +132,14 @@ Config.Shells = {
     ["Office"] = {
         label = "Office",
         hash = `shell_office1`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/LXddbMtP/entry.webp",
+                url = "https://i.postimgs.cc/LXddbMtP/entry.webp",
                 label = "Entance",
             },
             {
-                url = "https://i.postimg.cc/L5RcmB06/office.webp",
+                url = "https://i.postimgs.cc/L5RcmB06/office.webp",
                 label = "Office",
             },
         },
@@ -145,14 +148,14 @@ Config.Shells = {
     ["Store"] = {
         label = "Store",
         hash = `shell_store1`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/wBmZJbCj/room-1.webp",
+                url = "https://i.postimgs.cc/wBmZJbCj/room-1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimg.cc/vBwjvtyL/room-2.webp",
+                url = "https://i.postimgs.cc/vBwjvtyL/room-2.webp",
                 label = "Room 2",
             },
         },
@@ -161,14 +164,14 @@ Config.Shells = {
     ["Warehouse"] = {
         label = "Warehouse",
         hash = `shell_warehouse1`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/m2gnVrvq/angle1.webp",
+                url = "https://i.postimgs.cc/m2gnVrvq/angle1.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimg.cc/sDHNLry2/angle2.webp",
+                url = "https://i.postimgs.cc/sDHNLry2/angle2.webp",
                 label = "Angle 2",
             },
         },
@@ -177,10 +180,10 @@ Config.Shells = {
     ["Container"] = {
         label = "Container",
         hash = `container_shell`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/PxK48W5q/container.webp",
+                url = "https://i.postimgs.cc/PxK48W5q/container.webp",
                 label = "Container",
             },
         },
@@ -189,42 +192,42 @@ Config.Shells = {
     ["2 Floor House"] = {
         label = "2 Floor House",
         hash = `shell_michael`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/TPfgqKS5/bathroom.webp",
+                url = "https://i.postimgs.cc/TPfgqKS5/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimg.cc/9Mf9KvcW/entry.webp",
+                url = "https://i.postimgs.cc/9Mf9KvcW/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/MHMQKVcN/floor2.webp",
+                url = "https://i.postimgs.cc/MHMQKVcN/floor2.webp",
                 label = "Floor 2",
             },
             {
-                url = "https://i.postimg.cc/B6wF0Mv2/kitchen.webp",
+                url = "https://i.postimgs.cc/B6wF0Mv2/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimg.cc/MHCjcHVT/livingroom.webp",
+                url = "https://i.postimgs.cc/MHCjcHVT/livingroom.webp",
                 label = "Living Room",
             },
             {
-                url = "https://i.postimg.cc/zXhgswYR/room1.webp",
+                url = "https://i.postimgs.cc/zXhgswYR/room1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimg.cc/fWpdq2pN/room2.webp",
+                url = "https://i.postimgs.cc/fWpdq2pN/room2.webp",
                 label = "Room 2",
             },
             {
-                url = "https://i.postimg.cc/TP0mkRM7/room3.webp",
+                url = "https://i.postimgs.cc/TP0mkRM7/room3.webp",
                 label = "Room 3",
             },
             {
-                url = "https://i.postimg.cc/dV8Gy2WK/room3dresser.webp",
+                url = "https://i.postimgs.cc/dV8Gy2WK/room3dresser.webp",
                 label = "Room 3 Dresser",
             },
         },
@@ -233,34 +236,34 @@ Config.Shells = {
     ["House 1"] = {
         label = "House 1",
         hash = `shell_frankaunt`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/Df96DdYt/bathroom.webp",
+                url = "https://i.postimgs.cc/Df96DdYt/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimg.cc/Pr1ykpgN/diningroom.webp",
+                url = "https://i.postimgs.cc/Pr1ykpgN/diningroom.webp",
                 label = "Dining Room",
             },
             {
-                url = "https://i.postimg.cc/HLk95SV7/entry.webp",
+                url = "https://i.postimgs.cc/HLk95SV7/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/CxYNMM07/kitchen.webp",
+                url = "https://i.postimgs.cc/CxYNMM07/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimg.cc/P54MCGrj/livingroom.webp",
+                url = "https://i.postimgs.cc/P54MCGrj/livingroom.webp",
                 label = "Living Room",
             },
             {
-                url = "https://i.postimg.cc/FKCgxjLC/room1.webp",
+                url = "https://i.postimgs.cc/FKCgxjLC/room1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimg.cc/sXBPHvPj/room2.webp",
+                url = "https://i.postimgs.cc/sXBPHvPj/room2.webp",
                 label = "Room 2",
             },
         },
@@ -269,26 +272,26 @@ Config.Shells = {
     ["House 2"] = {
         label = "House 2",
         hash = `shell_ranch`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/251Brg1T/entry.webp",
+                url = "https://i.postimgs.cc/251Brg1T/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/TwmLWmqD/hallway.webp",
+                url = "https://i.postimgs.cc/TwmLWmqD/hallway.webp",
                 label = "Hallway",
             },
             {
-                url = "https://i.postimg.cc/QMvKtS5D/kitchen.webp",
+                url = "https://i.postimgs.cc/QMvKtS5D/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimg.cc/3NTyjRnb/mainarea.webp",
+                url = "https://i.postimgs.cc/3NTyjRnb/mainarea.webp",
                 label = "Main Area",
             },
             {
-                url = "https://i.postimg.cc/mkyPmsnZ/room.webp",
+                url = "https://i.postimgs.cc/mkyPmsnZ/room.webp",
                 label = "Room",
             },
         },
@@ -297,18 +300,18 @@ Config.Shells = {
     ["House 3"] = {
         label = "House 3",
         hash = `shell_lester`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgss = {
             {
-                url = "https://i.postimg.cc/HLbdwtRd/angle1.webp",
+                url = "https://i.postimgs.cc/HLbdwtRd/angle1.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimg.cc/C1YYmqpD/angle2.webp",
+                url = "https://i.postimgs.cc/C1YYmqpD/angle2.webp",
                 label = "Angle 2",
             },
             {
-                url = "https://i.postimg.cc/26wYJSCt/entry.webp",
+                url = "https://i.postimgs.cc/26wYJSCt/entry.webp",
                 label = "Entrance",
             },
         },
@@ -317,30 +320,30 @@ Config.Shells = {
     ["House 4"] = {
         label = "House 4",
         hash = `shell_trevor`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgss = {
             {
-                url = "https://i.postimg.cc/FzC7MZhw/bathroom.webp",
+                url = "https://i.postimgs.cc/FzC7MZhw/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimg.cc/9XLRwWy1/entry.webp",
+                url = "https://i.postimgs.cc/9XLRwWy1/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimg.cc/cLnrzw25/kitchen.webp",
+                url = "https://i.postimgs.cc/cLnrzw25/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimg.cc/8CgjgsVk/livingroom.webp",
+                url = "https://i.postimgs.cc/8CgjgsVk/livingroom.webp",
                 label = "Living Room",
             },
             {
-                url = "https://i.postimg.cc/CLtRJmPq/room1.webp",
+                url = "https://i.postimgs.cc/CLtRJmPq/room1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimg.cc/YSNjrkp6/room2.webp",
+                url = "https://i.postimgs.cc/YSNjrkp6/room2.webp",
                 label = "Room 2",
             },
         },
@@ -349,33 +352,23 @@ Config.Shells = {
     ["Trailer"] = {
         label = "Trailer",
         hash = `shell_trailer`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, w = 0.0 },
-        img = {
+        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        imgs = {
             {
-                url = "https://i.postimg.cc/L5xHq67P/entranceandkitchen.webp",
+                url = "https://i.postimgs.cc/L5xHq67P/entranceandkitchen.webp",
                 label = "Entrance and Kitchen",
             },
             {
-                url = "https://i.postimg.cc/05n5XcQN/main.webp",
+                url = "https://i.postimgs.cc/05n5XcQN/main.webp",
                 label = "Main",
             },
             {
-                url = "https://i.postimg.cc/qM7JPyhx/room1.webp",
+                url = "https://i.postimgs.cc/qM7JPyhx/room1.webp",
                 label = "Room",
             },
         },
     },
-
-
-
 }
-
-
-
-
-
-
-
 
 Config.Furnitures = {
     {

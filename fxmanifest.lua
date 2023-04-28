@@ -7,8 +7,8 @@ version '1.0.0'
 
 lua54 'yes'
 
--- ui_page 'html/index.html'
-ui_page 'http://localhost:3000/' --for dev
+ui_page 'html/index.html'
+-- ui_page 'http://localhost:3000/' --for dev
 
 dependency 'fivem-freecam'
 
@@ -17,11 +17,17 @@ shared_script {
   }
 
 client_script {
-  'client/**',
+  '@PolyZone/client.lua',
+  '@PolyZone/BoxZone.lua',
+  'client/cl_property.lua',
+  'client/client.lua',
+  'client/modeler.lua',
 }
 
 server_script {
-  "server/**",
+  '@oxmysql/lib/MySQL.lua',
+  "server/sv_property.lua",
+  "server/server.lua",
   }
 
 files {
