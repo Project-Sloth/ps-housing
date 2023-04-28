@@ -68,7 +68,7 @@ Config.Shells = {
     ["Apartment Unfurnished"] = {
         label = "Apartment Unfurnished",
         hash = `shell_v16mid`,
-        doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
+        doorOffset = { x = 1.34, y = -14.36, z = -0.5, heading = 354.08, width = 1.5  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/3NstF2PQ/bathroom.webp",
@@ -116,7 +116,7 @@ Config.Shells = {
     ["Garage"] = {
         label = "Garage",
         hash = `shell_garagem`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = 14.0, y = 1.7, z = -0.76, heading = 88.49, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/QCJr7nWT/entry.webp",
@@ -132,7 +132,7 @@ Config.Shells = {
     ["Office"] = {
         label = "Office",
         hash = `shell_office1`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = 1.2, y = 4.90, z = -0.73, heading = 180.0, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/LXddbMtP/entry.webp",
@@ -148,7 +148,7 @@ Config.Shells = {
     ["Store"] = {
         label = "Store",
         hash = `shell_store1`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -2.69, y = -4.56, z = -0.62, heading = 1.91, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/wBmZJbCj/room-1.webp",
@@ -164,7 +164,7 @@ Config.Shells = {
     ["Warehouse"] = {
         label = "Warehouse",
         hash = `shell_warehouse1`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -8.96, y = 0.11, z = -0.95, heading = 270.64, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/m2gnVrvq/angle1.webp",
@@ -180,7 +180,7 @@ Config.Shells = {
     ["Container"] = {
         label = "Container",
         hash = `container_shell`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = 0.05, y = -5.7, z = -0.22, heading = 1.7, width = 2.2  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/PxK48W5q/container.webp",
@@ -192,7 +192,7 @@ Config.Shells = {
     ["2 Floor House"] = {
         label = "2 Floor House",
         hash = `shell_michael`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -9.6, y = 5.63, z = -4.07, heading = 268.55, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/TPfgqKS5/bathroom.webp",
@@ -236,7 +236,7 @@ Config.Shells = {
     ["House 1"] = {
         label = "House 1",
         hash = `shell_frankaunt`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -0.34, y = -5.97, z = -0.57, heading = 357.23, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/Df96DdYt/bathroom.webp",
@@ -272,7 +272,7 @@ Config.Shells = {
     ["House 2"] = {
         label = "House 2",
         hash = `shell_ranch`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -1.23, y = -5.54, z = -1.1, heading = 272.21, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/251Brg1T/entry.webp",
@@ -300,7 +300,7 @@ Config.Shells = {
     ["House 3"] = {
         label = "House 3",
         hash = `shell_lester`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -1.61, y = -6.02, z = -0.37, heading = 357.7, width = 2.0  },
         imgss = {
             {
                 url = "https://i.postimgs.cc/HLbdwtRd/angle1.webp",
@@ -320,7 +320,7 @@ Config.Shells = {
     ["House 4"] = {
         label = "House 4",
         hash = `shell_trevor`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = 0.2, y = -3.82, z = -0.41, heading = 358.4, width = 2.0  },
         imgss = {
             {
                 url = "https://i.postimgs.cc/FzC7MZhw/bathroom.webp",
@@ -352,7 +352,7 @@ Config.Shells = {
     ["Trailer"] = {
         label = "Trailer",
         hash = `shell_trailer`,
-        doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
+        doorOffset = { x = -1.27, y = -2.08, z = -0.48, heading = 358.84, width = 2.0  },
         imgs = {
             {
                 url = "https://i.postimgs.cc/L5xHq67P/entranceandkitchen.webp",
