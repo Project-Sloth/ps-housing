@@ -22,6 +22,7 @@ Property = {
         local offset = GetOffsetFromEntityInWorldCoords(self.shellObj, doorOffset.x, doorOffset.y, doorOffset.z)
         self:RegisterDoorZone(offset)
         SetEntityCoordsNoOffset(ped, offset.x, offset.y, offset.z, false, false, true)
+        SetEntityHeading(ped, self.shellData.doorOffset.heading)
     end,
 
     RegisterDoorZone = function(self, offset)
@@ -71,7 +72,6 @@ Property = {
         DeleteObject(self.shellObj)
         self.shellObj = nil
         self.shellData = nil
-
     end,
 
     LoadFurnitures = function(self)
