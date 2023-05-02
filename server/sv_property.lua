@@ -52,7 +52,7 @@ Property = {
             ["@furnitures"] = json.encode(furnitures),
             ["@property_id"] = self.property_id
         })
-        TriggerClientEvent('ps-housing:client:updateProperty', -1, self.propertyData)
+        TriggerClientEvent('ps-housing:client:updateFurniture', -1, self.propertyData)
     end,
 
     UpdateLabel = function (self, data)
@@ -276,7 +276,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         TriggerClientEvent('QBCore:Notify', src, "You do not have enough money!", "error")
         return
     end
-    Player.Functions.RemoveMoney('bank', price, "bought furniture")
+    Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     property:UpdateFurnitures(items)
     TriggerClientEvent('QBCore:Notify', src, "You bought furniture for $" .. price, "success")
 end)

@@ -134,6 +134,10 @@ Property = {
     end,
 
     OpenDoorbellMenu = function (self)
+        if not self.doorbellPool then 
+            TriggerEvent('QBCore:Notify', 'No one is at the door', 'error')
+            return 
+        end
         local menu = {}
         table.insert(menu,
         {
@@ -208,6 +212,7 @@ function Property:new(propertyData)
     self.__index = self
     obj:RegisterPropertyEntrance()
     obj:RegisterGarageZone()
+    obj:LoadFurnitures()
     return obj
 end
 
@@ -219,6 +224,15 @@ end)
 RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, data)
     local property = PropertiesTable[property_id]
     property.doorbellPool = data
+end)
+
+-- seperate event so the player doesnt have to leave the shell to update the furniture
+RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
+    local property_id = propertyData.property_id
+    local property = PropertiesTable[property_id]
+    property.propertyData.furnitures = propertyData.furnitures
+    property:UnloadFurnitures()
+    property:LoadFurnitures()
 end)
 
 RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
