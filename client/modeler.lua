@@ -18,8 +18,8 @@ local function CamThread()
                 Modeler:FreecamMode(false)
                 break
             end
-            DisableControlAction(0, 199, true)
-            DisableControlAction(0, 200, true)
+            DisableControlAction(0, 199, true) -- P
+            DisableControlAction(0, 200, true) -- ESC
             Wait(0)
         end
     end)
@@ -263,7 +263,6 @@ Modeler = {
     BuyCart = function (self)
 
         local shellPos = GetEntityCoords(Property.shellObj)
-        print(json.encode(self.Cart, { indent = true}))
         local items = {}
         local totalPrice = 0
         -- seperate loop to get total price so it doesnt have to do all that math for no reason

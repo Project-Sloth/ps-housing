@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `properties` (
     `owner_citizenid` varchar(50) NULL,
     `label` VARCHAR(50) NOT NULL,
     `description` LONGTEXT NULL,
-    `has_access` JSON NULL DEFAULT (JSON_ARRAY()),
+    `has_access` JSON NULL DEFAULT (JSON_ARRAY()), -- [citizenid1, citizenid2, ...]
     `extra_imgs` JSON NULL DEFAULT (JSON_ARRAY()),
     `furnitures` JSON NULL DEFAULT (JSON_ARRAY()),
     `for_sale` boolean NOT NULL DEFAULT 0,

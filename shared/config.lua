@@ -4,6 +4,7 @@ Config = {}
 Config.AccessCanEditFurniture = true -- anyone who is given keys to a property can edit furniture
 
 
+-- Shells provided by K4MB1 https://www.k4mb1maps.com/
 Config.Shells = {
     ["Standard Motel"] = {
         label = "Standard Motel",
@@ -11,7 +12,7 @@ Config.Shells = {
         doorOffset = { x = -0.5, y = -2.3, z = 0.0, heading = 90.0, width = 1.5 },
         imgs = {
             {
-                url = "https://i.postimgs.cc/q7PQTJZk/motel.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712181017460736/motel.webp",
                 label = "Motel",
             },
         }
@@ -23,11 +24,11 @@ Config.Shells = {
         doorOffset = { x = 4.98, y = 4.35, z = 0.0, heading = 179.79, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/BQ7T3ZXd/angle-1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712459691208704/angle_1.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimgs.cc/SxXWx09j/angle-2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712460110643210/angle_2.webp",
                 label = "Angle 2",
             },
         }
@@ -39,27 +40,27 @@ Config.Shells = {
         doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/g2PYn8XR/bathroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712598019354684/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimgs.cc/zBMN5gYy/Bedroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712598409420850/Bedroom.webp",
                 label = "Bedroom",
             },
             {
-                url = "https://i.postimgs.cc/MTXwhYNk/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712598807887942/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/GtyCpmbq/Kitchen-and-Dining.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712599185371146/Kitchen_and_Dining.webp",
                 label = "Kitchen and Dining",
             },
             {
-                url = "https://i.postimgs.cc/ThvX5vwG/living-room-1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712599629963366/living_room_1.webp",
                 label = "Living Room Angle 1",
             },
             {
-                url = "https://i.postimgs.cc/dQkkCR1S/living-room-2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712599982293022/living_room_2.webp",
                 label = "Living Room Angle 2",
             },
         },
@@ -71,23 +72,23 @@ Config.Shells = {
         doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/3NstF2PQ/bathroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712919412088955/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimgs.cc/WpdjSjQ5/bedroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712919735054417/bedroom.webp",
                 label = "Bedroom",
             },
             {
-                url = "https://i.postimgs.cc/QNvDywDh/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712920083189770/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/nhJJHmMW/kitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712920464859257/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/ZK3mtHY3/livingroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712920846544907/livingroom.webp",
                 label = "Living Room",
             },
         },
@@ -99,15 +100,15 @@ Config.Shells = {
         doorOffset = { x = 4.69, y = -6.5, z = -1.0, heading = 358.50, width = 1.5  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/4404Tn6C/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713104288612384/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/MKj6Zx5n/kitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713104926154853/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/qvVkzYDj/livingroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713105333006357/livingroom.webp",
                 label = "Living Room",
             },
         },
@@ -119,11 +120,11 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/QCJr7nWT/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713200220745748/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/CMG09d6x/garage.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713200677933126/garage.webp",
                 label = "Garage",
             },
         },
@@ -135,11 +136,11 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/LXddbMtP/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713285117648976/entry.webp",
                 label = "Entance",
             },
             {
-                url = "https://i.postimgs.cc/L5RcmB06/office.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713285449007196/office.webp",
                 label = "Office",
             },
         },
@@ -151,11 +152,11 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/wBmZJbCj/room-1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713353291878420/room_1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimgs.cc/vBwjvtyL/room-2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713353937789018/room_2.webp",
                 label = "Room 2",
             },
         },
@@ -167,11 +168,11 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/m2gnVrvq/angle1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713451149172766/angle1.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimgs.cc/sDHNLry2/angle2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713451551838278/angle2.webp",
                 label = "Angle 2",
             },
         },
@@ -183,7 +184,7 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/PxK48W5q/container.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713526319497267/container.webp",
                 label = "Container",
             },
         },
@@ -195,39 +196,39 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/TPfgqKS5/bathroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713596683145267/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimgs.cc/9Mf9KvcW/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713597232586777/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/MHMQKVcN/floor2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713597698166844/floor2.webp",
                 label = "Floor 2",
             },
             {
-                url = "https://i.postimgs.cc/B6wF0Mv2/kitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713598201471106/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/MHCjcHVT/livingroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713598734159962/livingroom.webp",
                 label = "Living Room",
             },
             {
-                url = "https://i.postimgs.cc/zXhgswYR/room1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713599178752020/room1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimgs.cc/fWpdq2pN/room2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713599690448956/room2.webp",
                 label = "Room 2",
             },
             {
-                url = "https://i.postimgs.cc/TP0mkRM7/room3.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713600176996394/room3.webp",
                 label = "Room 3",
             },
             {
-                url = "https://i.postimgs.cc/dV8Gy2WK/room3dresser.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713596179816499/room3dresser.webp",
                 label = "Room 3 Dresser",
             },
         },
@@ -239,31 +240,31 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/Df96DdYt/bathroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713982059974656/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimgs.cc/Pr1ykpgN/diningroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713982491983942/diningroom.webp",
                 label = "Dining Room",
             },
             {
-                url = "https://i.postimgs.cc/HLk95SV7/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713982848512030/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/CxYNMM07/kitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713983175659530/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/P54MCGrj/livingroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713983490228285/livingroom.webp",
                 label = "Living Room",
             },
             {
-                url = "https://i.postimgs.cc/FKCgxjLC/room1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713983821590578/room1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimgs.cc/sXBPHvPj/room2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713984169709690/room2.webp",
                 label = "Room 2",
             },
         },
@@ -275,23 +276,23 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/251Brg1T/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714310809518131/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/TwmLWmqD/hallway.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714311228964956/hallway.webp",
                 label = "Hallway",
             },
             {
-                url = "https://i.postimgs.cc/QMvKtS5D/kitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714311623213177/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/3NTyjRnb/mainarea.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714311988133910/mainarea.webp",
                 label = "Main Area",
             },
             {
-                url = "https://i.postimgs.cc/mkyPmsnZ/room.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714312394977370/room.webp",
                 label = "Room",
             },
         },
@@ -323,27 +324,27 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgss = {
             {
-                url = "https://i.postimgs.cc/FzC7MZhw/bathroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714761596543107/bathroom.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://i.postimgs.cc/9XLRwWy1/entry.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714761994997760/entry.webp",
                 label = "Entrance",
             },
             {
-                url = "https://i.postimgs.cc/cLnrzw25/kitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714762343133227/kitchen.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/8CgjgsVk/livingroom.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714762741588018/livingroom.webp",
                 label = "Living Room",
             },
             {
-                url = "https://i.postimgs.cc/CLtRJmPq/room1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714763140042772/room1.webp",
                 label = "Room 1",
             },
             {
-                url = "https://i.postimgs.cc/YSNjrkp6/room2.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714763500761158/room2.webp",
                 label = "Room 2",
             },
         },
@@ -355,15 +356,15 @@ Config.Shells = {
         doorOffset = { x = 0.0, y = 0.0, z = 0.0, heading = 0.0, width = 2.0  },
         imgs = {
             {
-                url = "https://i.postimgs.cc/L5xHq67P/entranceandkitchen.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714470985809920/entranceandkitchen.webp",
                 label = "Entrance and Kitchen",
             },
             {
-                url = "https://i.postimgs.cc/05n5XcQN/main.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714471329747026/main.webp",
                 label = "Main",
             },
             {
-                url = "https://i.postimgs.cc/qM7JPyhx/room1.webp",
+                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714471665274980/room1.webp",
                 label = "Room",
             },
         },

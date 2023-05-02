@@ -1,13 +1,15 @@
 QBCore = exports['qb-core']:GetCoreObject()
 PropertiesTable = {}
 
-exports('GetProperties', function()
+
+local function GetProperties()
 	local properties = {}
 	for k, v in pairs(PropertiesTable) do
 		properties[#properties+1] = v.propertyData
 	end
 	return properties
-end)
+end
+exports('GetProperties',  GetProperties)
 
 exports('GetProperty', function(property_id)
 	return PropertiesTable[property_id]
@@ -36,10 +38,12 @@ AddEventHandler("onResourceStop", function(resourceName)
 	end
 end)
 
-
-
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
+	if GetResourceState('bl-realtor') == 'started' then
+		local properties = GetProperties()
+		TriggerEvent("bl-realtor:client:updateProperties", properties)
+	end
 end
 RegisterNetEvent('ps-housing:client:addProperty', createProperty)
 

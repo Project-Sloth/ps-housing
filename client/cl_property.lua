@@ -125,7 +125,7 @@ function Property:new(propertyData)
 	local door_data = propertyData.door_data
     local targetname = string.gsub(propertyData.label, "%s+", "")..tostring(propertyData.property_id)
 	exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
-		name="Entrance",
+		name=targetname,
 		heading=door_data.h,
 		debugPoly=true,
 		minZ=door_data.z - 1.0,
@@ -151,16 +151,16 @@ RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
     property:EnterShell()
 end)
 
-RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData, furniturechange)
+RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
     local property_id = propertyData.property_id
     local property = PropertiesTable[property_id]
     property.propertyData = propertyData
-    if property.inShell and property.property_id == property_id then
-        if furniturechange then
-            property:UnloadFurnitures()
-            property:LoadFurnitures()
-        end
+    if property.inShell then
+        property:LeaveShell()
     end
+    property:DeleteProperty()
+    property = nil
+    PropertiesTable[property_id] = Property:new(propertyData)
 end)
 
 
