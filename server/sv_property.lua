@@ -2,10 +2,35 @@ Property = {
     property_id = nil,
     propertyData = nil,
     playersInside = {},  -- src
+    playersDoorbell = {}, -- src
 
     PlayerEnter = function (self, src)
         self.playersInside[src] = true
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
+        if next(self.playersDoorbell) then
+            TriggerClientEvent("ps-housing:client:updateDoorbellPool", src, self.property_id, self.playersDoorbell)
+            if self.playersDoorbell[src] then
+                self.playersDoorbell[src] = nil
+            end
+        end
+    end,
+
+    AddToDoorbellPoolTemp = function (self, src)
+        self.playersDoorbell[src] = true
+        for k, v in pairs(self.playersInside) do
+            TriggerClientEvent('QBCore:Notify', k, "Someone is at the door.", "success")
+            TriggerClientEvent("ps-housing:client:updateDoorbellPool", k, self.property_id, self.playersDoorbell)
+        end
+        TriggerClientEvent('QBCore:Notify', src, "Ringing Doorbell.", "success")
+        SetTimeout(30000, function ()
+            if self.playersDoorbell[src] then
+                self.playersDoorbell[src] = nil
+                TriggerClientEvent('QBCore:Notify', src, "No one answered the door.", "error")
+            end
+            for k, v in pairs(self.playersInside) do
+                TriggerClientEvent("ps-housing:client:updateDoorbellPool", k, self.property_id, self.playersDoorbell)
+            end
+        end)
     end,
 
     PlayerLeave = function (self, src)
@@ -201,20 +226,25 @@ function Property:new(propertyData)
     return obj
 end
 
+local function getCitizenid(src)
+    local Player = QBCore.Functions.GetPlayer(src)
+    local PlayerData = Player.PlayerData
+    local citizenid = PlayerData.citizenid
+    return citizenid, PlayerData, Player
+end
+
 RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
     local property = PropertiesTable[property_id]
     if not property then return end
-    local Player = QBCore.Functions.GetPlayer(src)
-    local PlayerData = Player.PlayerData
-    local citizenid = PlayerData.citizenid
+    local citizenid = getCitizenid(src)
     
     if property.propertyData.owner == citizenid or property:CheckForAccess(citizenid) then
         property:PlayerEnter(src)
         return
     end
-
-    TriggerClientEvent('QBCore:Notify', src, "You do not have access to this property! Ring the doorbell instead.", "error")
+    property:AddToDoorbellPoolTemp(src)
+    TriggerClientEvent('QBCore:Notify', src, "Ringing Doorbell.", "success")
 end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
@@ -224,11 +254,20 @@ RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
     property:PlayerLeave(src)
 end)
 
+-- When player presses doorbell, owner can let them in and this is what is triggered (didnt know what else to name it)
+RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data) 
+    local src = source
+    local targetSrc = data.targetSrc
+    local property = PropertiesTable[data.property_id]
+    if not property then return end
+    local ownerCitizenid = getCitizenid(src)
+    if property.propertyData.owner ~= ownerCitizenid then return end
+    property:PlayerEnter(targetSrc)
+end)
+
 RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, price)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local PlayerData = Player.PlayerData
-    local citizenid = PlayerData.citizenid
+    local citizenid, PlayerData, Player = getCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property then return end
     if not property:CheckForAccess(citizenid) then return end
@@ -244,9 +283,7 @@ end)
 
 RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local PlayerData = Player.PlayerData
-    local citizenid = PlayerData.citizenid
+    local citizenid = getCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
@@ -255,9 +292,7 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     end
     local has_access = property.propertyData.has_access
     local srcToAdd = tonumber(srcToAdd)
-    local TargetPlayer = QBCore.Functions.GetPlayer(src)
-    local TargetPlayerData = TargetPlayer.PlayerData
-    local TargetCitizenid = TargetPlayerData.citizenid
+    local TargetCitizenid = getCitizenid(srcToAdd)
     if not property:CheckForAccess(TargetCitizenid) then
         has_access[#has_access+1] = TargetCitizenid
         property:UpdateHas_access(has_access)
@@ -270,9 +305,7 @@ end)
 
 RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, srcToRemove)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local PlayerData = Player.PlayerData
-    local citizenid = PlayerData.citizenid
+    local citizenid = getCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
@@ -281,9 +314,7 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, srcToRe
     end
     local has_access = property.propertyData.has_access
     local srcToRemove = tonumber(srcToRemove)
-    local TargetPlayer = QBCore.Functions.GetPlayer(src)
-    local TargetPlayerData = TargetPlayer.PlayerData
-    local TargetCitizenid = TargetPlayerData.citizenid
+    local TargetCitizenid = getCitizenid(srcToRemove)
     if property:CheckForAccess(TargetCitizenid) then
         for i = 1, #has_access do
             if has_access[i] == TargetCitizenid then

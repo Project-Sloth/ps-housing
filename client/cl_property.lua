@@ -8,6 +8,8 @@ Property = {
     property_id = nil,
     propertyData = nil,
     furnitureObjs = {},
+    garageZone = nil,
+    doorbellPool = {},
 
     CreateShell = function (self)
         local ped = PlayerPedId()
@@ -29,7 +31,7 @@ Property = {
         exports['qb-target']:AddBoxZone("shellExit", vector3(offset.x, offset.y, offset.z),  1.0, self.shellData.doorOffset.width, {
             name="shellExit",
             heading= self.shellData.doorOffset.heading,
-            debugPoly=true,
+            debugPoly=Config.DebugPoly,
             minZ=offset.z-2.0,
             maxZ=offset.z+1.0,
         }, {
@@ -43,6 +45,55 @@ Property = {
                 }
             }
         })
+    end,
+
+    RegisterPropertyEntrance = function (self)
+        local door_data = self.propertyData.door_data
+        local targetname = string.gsub(self.propertyData.label, "%s+", "")..tostring(self.propertyData.property_id)
+        local label = self.has_access and 'Enter Property' or 'Ring Doorbell'
+        exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
+            name=targetname,
+            heading=door_data.h,
+            debugPoly=true,
+            minZ=door_data.z - 1.0,
+            maxZ=door_data.z + 2.0,
+        }, {
+            options = {
+                {
+                    label = label,
+                    action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
+                        if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
+                        TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id)
+                    end,
+                }
+            }
+        })
+    end,
+
+    -- QBCORE Did house garages the shittiest way possible so I did my own version of it. Might not be a very framework friendly decision but fuck qb
+    RegisterGarageZone = function (self)
+        if not self.propertyData.garage_data.x then return end
+        local garageData = self.propertyData.garage_data
+        local garageName = "propert"..self.property_id.."garage"
+        self.garageZone = BoxZone:Create(vector3(garageData.x, garageData.y, garageData.z), garageData.length, garageData.width, {
+            name=garageName,
+            debugPoly=Config.DebugPoly,
+        })
+        self.garageZone:onPlayerInOut(function(isPointInside, point)
+            if isPointInside then
+                exports['qb-radialmenu']:AddOption({
+                    id = garageName,
+                    title = "Open Property Garage",
+                    icon = "warehouse",
+                    type = "server",
+                    event = "ps-housing:client:handlerGarage",
+                    garage = garageName,
+                    shouldClose = true,
+                }, garageName)
+            else
+                exports['qb-radialmenu']:RemoveOption(garageName)
+            end
+        end)
     end,
 
     EnterShell = function(self)
@@ -66,12 +117,37 @@ Property = {
         SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, true)
         exports['qb-target']:RemoveZone("shellExit")
         exports['qb-radialmenu']:RemoveOption("furnituremenu")
+        self.garageZone:destroy()
         TriggerServerEvent("ps-housing:server:leaveShell", self.property_id)
         self.inShell = false
         self:UnloadFurnitures()
         DeleteObject(self.shellObj)
         self.shellObj = nil
         self.shellData = nil
+    end,
+
+    OpenDoorbellMenu = function (self)
+        local menu = {}
+        table.insert(menu,
+        {
+            header = 'People at the door',
+            icon = 'fas fa-door',
+            isMenuHeader = true,
+        })
+        for i = 1, #self.doorbellPool do
+            local src = self.doorbellPool[i]
+            table.insert(menu,{
+                header = GetPlayerName(src),
+                params = {
+                    event = "ps-housing:server:doorbellAnswer",
+                    args = {
+                        targetSrc = src,
+                        property_id = self.property_id,
+                    },
+                }
+            })
+        end
+        exports['qb-menu']:openMenu(menu)
     end,
 
     LoadFurnitures = function(self)
@@ -122,33 +198,21 @@ function Property:new(propertyData)
     end
     obj.isOwner = isOwner
     obj.has_access = has_access
-	local door_data = propertyData.door_data
-    local targetname = string.gsub(propertyData.label, "%s+", "")..tostring(propertyData.property_id)
-	exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
-		name=targetname,
-		heading=door_data.h,
-		debugPoly=true,
-		minZ=door_data.z - 1.0,
-		maxZ=door_data.z + 2.0,
-	}, {
-		options = {
-			{
-				label = 'Enter Property',
-				action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-					if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-					TriggerServerEvent('ps-housing:server:enterProperty', propertyData.property_id)
-				end,
-			}
-		}
-	})
     setmetatable(obj, self)
     self.__index = self
+    obj:RegisterPropertyEntrance()
+    obj:RegisterGarageZone()
     return obj
 end
 
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
     local property = PropertiesTable[property_id]
     property:EnterShell()
+end)
+
+RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, data)
+    local property = PropertiesTable[property_id]
+    property.doorbellPool = data
 end)
 
 RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)

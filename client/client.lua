@@ -19,14 +19,6 @@ exports('GetShells', function()
 	return Config.Shells
 end)
 
-RegisterCommand("ui", function()
-	if not Modeler.IsMenuActive then
-		Modeler:OpenMenu()
-	else
-		Modeler:CloseMenu()
-	end
-end, false)
-
 AddEventHandler("onResourceStop", function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
 		if Modeler.IsMenuActive then
@@ -75,6 +67,7 @@ AddEventHandler("onResourceStart", function(resourceName)
 end)
 
 
-
-
-
+-- Garage Stuff because the way qb did it with houses is the most retarded shit ever.
+AddEventHandler("ps-housing:client:handlerGarage", function (data)
+	print(json.encode(data))
+end)

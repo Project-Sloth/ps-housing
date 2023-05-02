@@ -3,6 +3,7 @@ Config = {}
 
 Config.AccessCanEditFurniture = true -- anyone who is given keys to a property can edit furniture
 
+Config.DebugPoly = true -- draw the poly for the property
 
 -- Shells provided by K4MB1 https://www.k4mb1maps.com/
 Config.Shells = {

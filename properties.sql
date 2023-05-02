@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `properties` (
     `has_access` JSON NULL DEFAULT (JSON_ARRAY()), -- [citizenid1, citizenid2, ...]
     `extra_imgs` JSON NULL DEFAULT (JSON_ARRAY()),
     `furnitures` JSON NULL DEFAULT (JSON_ARRAY()),
-    `for_sale` boolean NOT NULL DEFAULT 0,
+    `for_sale` boolean NOT NULL DEFAULT 1,
     `price` int(11) NOT NULL DEFAULT 0,
     `shell` varchar(50) NOT NULL,
     `door_data` JSON NOT NULL DEFAULT (JSON_OBJECT()), -- {"x": 0.0, "y": 0.0, "z": 0.0, "h": 0.0, "length": 0.0, "width": 0.0}
