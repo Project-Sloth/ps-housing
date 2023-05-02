@@ -42,6 +42,13 @@ Property = {
                         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
                         self:LeaveShell()
                     end,
+                },
+                {
+                    label = "Check Door",
+                    action = function(entity)
+                        if IsPedAPlayer(entity) then return false end
+                        self:OpenDoorbellMenu()
+                    end
                 }
             }
         })
@@ -134,14 +141,13 @@ Property = {
             icon = 'fas fa-door',
             isMenuHeader = true,
         })
-        for i = 1, #self.doorbellPool do
-            local src = self.doorbellPool[i]
+        for k, v in pairs(self.doorbellPool) do
             table.insert(menu,{
-                header = GetPlayerName(src),
+                header = GetPlayerName(k),
                 params = {
                     event = "ps-housing:server:doorbellAnswer",
                     args = {
-                        targetSrc = src,
+                        targetSrc = k,
                         property_id = self.property_id,
                     },
                 }
@@ -227,56 +233,3 @@ RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
     PropertiesTable[property_id] = Property:new(propertyData)
 end)
 
-
-local findingOffset = false
-local function offsetThread()
-    -- find the property that the player is in
-    local propertyObj = nil
-    for k, v in pairs(PropertiesTable) do
-        if v.inShell then
-            propertyObj = v.shellObj
-            break
-        end
-    end
-    local shellCoords = GetEntityCoords(propertyObj)
-    while findingOffset do
-        local ped = PlayerPedId()
-        local coords = GetEntityCoords(ped)
-        local x = math.floor((coords.x - shellCoords.x) * 100) / 100
-        local y = math.floor((coords.y - shellCoords.y) * 100) / 100
-        local z = math.floor((coords.z - shellCoords.z) * 100) / 100
-        local heading = math.floor(GetEntityHeading(ped) * 100) / 100
-        BeginTextCommandDisplayText('STRING')
-        AddTextComponentSubstringPlayerName('x: ' .. x .. ' y: ' .. y .. ' z: ' .. z .. ' heading: ' .. heading)
-        EndTextCommandDisplayText(0, 0)
-        ClearDrawOrigin()
-        Wait(0)
-    end
-end
-
-local function markerThread()
-    print("The marker showing is the door_data boxzone that will be created. Make sure the door_data is inside for the target to work. \n"
-    .. "This box has a length of 2.0, width of 1.0 \n")
-    local length = 2.0
-    local width = 1.0
-    local zoff = 2.0
-    local height = 3.0
-    while findingOffset do
-        local ped = PlayerPedId()
-        local coords = GetEntityCoords(ped)
-        local heading = GetEntityHeading(ped)
-        DrawMarker(43, coords.x, coords.y, coords.z + zoff, 0.0, 0.0, 0.0, 0.0, 180.0, -heading, length, width, height, 255, 0, 0, 50, false, false, 2, nil, nil, false)
-        Wait(0)
-    end
-end
-
-RegisterCommand('findoffset', function()
-    findingOffset = not findingOffset
-    if not findingOffset then return end
-    CreateThread(offsetThread)
-    CreateThread(markerThread)
-end)
-
-RegisterCommand('leave', function()
-    Property:LeaveShell()
-end)
