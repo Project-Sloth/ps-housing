@@ -1,12 +1,11 @@
 ---@diagnostic disable: duplicate-set-field
 Property = {
-    inShell = false,
-    has_access = false,
-    isOwner = false,
-    shellObj = nil,
-    shellData = nil,
     property_id = nil,
     propertyData = nil,
+    shellData = nil,
+    has_access = false,
+    inShell = false,
+    shellObj = nil,
     furnitureObjs = {},
     garageZone = nil,
     doorbellPool = {},
@@ -70,7 +69,7 @@ Property = {
                     label = label,
                     action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
                         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-                        TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id)
+                        TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id) -- Dont know how to pass args with target (sorry im dumb)
                     end,
                 }
             }
@@ -131,6 +130,7 @@ Property = {
         DeleteObject(self.shellObj)
         self.shellObj = nil
         self.shellData = nil
+        self.doorbellPool = {}
     end,
 
     OpenDoorbellMenu = function (self)
@@ -193,20 +193,15 @@ function Property:new(propertyData)
     local obj = {}
     obj.property_id = propertyData.property_id
     obj.propertyData = propertyData
-    local isOwner = false
     local has_access = false
     local Player = QBCore.Functions.GetPlayerData()
     local citizenid = Player.citizenid
-    if propertyData.owner == citizenid then
-        isOwner = true
-    end
     for i = 1, #propertyData.has_access do
         if propertyData.has_access[i] == citizenid then
             has_access = true
             break
         end
     end
-    obj.isOwner = isOwner
     obj.has_access = has_access
     setmetatable(obj, self)
     self.__index = self

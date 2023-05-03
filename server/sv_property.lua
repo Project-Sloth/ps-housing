@@ -254,7 +254,7 @@ RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
     property:PlayerLeave(src)
 end)
 
--- When player presses doorbell, owner can let them in and this is what is triggered (didnt know what else to name it)
+-- When player presses doorbell, owner can let them in and this is what is triggered
 RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data) 
     local src = source
     local targetSrc = data.targetSrc
