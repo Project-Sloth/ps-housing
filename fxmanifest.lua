@@ -13,6 +13,7 @@ ui_page 'html/index.html'
 dependency 'fivem-freecam'
 
 shared_script {
+  '@ox_lib/init.lua',
   "shared/**",
   }
 

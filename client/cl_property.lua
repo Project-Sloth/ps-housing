@@ -27,77 +27,124 @@ Property = {
     end,
 
     RegisterDoorZone = function(self, offset)
-        exports['qb-target']:AddBoxZone("shellExit", vector3(offset.x, offset.y, offset.z),  1.0, self.shellData.doorOffset.width, {
-            name="shellExit",
-            heading= self.shellData.doorOffset.heading,
-            debugPoly=Config.DebugPoly,
-            minZ=offset.z-2.0,
-            maxZ=offset.z+1.0,
-        }, {
-            options = {
-                {
-                    label = 'Leave Property',
-                    action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-                        if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-                        self:LeaveShell()
-                    end,
-                },
-                {
-                    label = "Check Door",
-                    action = function(entity)
-                        if IsPedAPlayer(entity) then return false end
-                        self:OpenDoorbellMenu()
-                    end
+        if Config.Target == "qb" then
+            exports['qb-target']:AddBoxZone("shellExit", vector3(offset.x, offset.y, offset.z),  1.0, self.shellData.doorOffset.width, {
+                name="shellExit",
+                heading= self.shellData.doorOffset.heading,
+                debugPoly=Config.DebugPoly,
+                minZ=offset.z-2.0,
+                maxZ=offset.z+1.0,
+            }, {
+                options = {
+                    {
+                        label = 'Leave Property',
+                        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
+                            if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
+                            self:LeaveShell()
+                        end,
+                    },
+                    {
+                        label = "Check Door",
+                        action = function(entity)
+                            if IsPedAPlayer(entity) then return false end
+                            self:OpenDoorbellMenu()
+                        end
+                    }
                 }
-            }
-        })
+            })
+        elseif Config.Target == "ox" then
+            exports.ox_target:addBoxZone({
+                id = "shellExit",
+                coords = vector3(offset.x, offset.y, offset.z),
+                size = vector3(1.0, self.shellData.doorOffset.width, 3.0),
+                rotation = self.shellData.doorOffset.heading,
+                debug = Config.DebugZones,
+                options = {
+                    {
+                        name = "leave",
+                        label = "Leave Property",
+                        onSelect = = function()
+                            self:LeaveShell()
+                        end,
+                    },
+                    {
+                        name = "doorbell",
+                        label = "Check Door",
+                        onSelect = = function()
+                            self:OpenDoorbellMenu()
+                        end,
+                    }
+                }
+            })
+        end
     end,
 
     RegisterPropertyEntrance = function (self)
         local door_data = self.propertyData.door_data
         local targetname = string.gsub(self.propertyData.label, "%s+", "")..tostring(self.propertyData.property_id)
         local label = self.has_access and 'Enter Property' or 'Ring Doorbell'
-        exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
-            name=targetname,
-            heading=door_data.h,
-            debugPoly=true,
-            minZ=door_data.z - 1.0,
-            maxZ=door_data.z + 2.0,
-        }, {
-            options = {
-                {
-                    label = label,
-                    action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-                        if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-                        TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id) -- Dont know how to pass args with target (sorry im dumb)
-                    end,
+        if Config.Target == "qb" then
+            exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
+                name=targetname,
+                heading=door_data.h,
+                debugPoly=true,
+                minZ=door_data.z - 1.0,
+                maxZ=door_data.z + 2.0,
+            }, {
+                options = {
+                    {
+                        label = label,
+                        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
+                            if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
+                            TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id) -- Dont know how to pass args with target (sorry im dumb)
+                        end,
+                    }
                 }
-            }
-        })
+            })
+        elseif Config.Target == "ox" then
+            exports.ox_target:addBoxZone({
+                id = targetname,
+                coords = vector3(door_data.x, door_data.y, door_data.z),
+                size = vector3(door_data.length, door_data.width, 3.0),
+                rotation = door_data.h,
+                debug = Config.DebugZones,
+                options = {
+                    {
+                        name = "enter",
+                        label = label,
+                        onSelect = = function()
+                            TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id)
+                        end,
+                    }
+                }
+            })
+        end
     end,
 
     -- QBCORE Did house garages the shittiest way possible so I did my own version of it. Might not be a very framework friendly decision but fuck qb
     RegisterGarageZone = function (self)
         if not self.propertyData.garage_data.x then return end
         local garageData = self.propertyData.garage_data
-        local garageName = "propert"..self.property_id.."garage"
+        local garageName = "property-"..self.property_id.."-garage"
         self.garageZone = BoxZone:Create(vector3(garageData.x, garageData.y, garageData.z), garageData.length, garageData.width, {
             name=garageName,
             debugPoly=Config.DebugPoly,
         })
         self.garageZone:onPlayerInOut(function(isPointInside, point)
             if isPointInside then
-                exports['qb-radialmenu']:AddOption({
+                exports['qb-core']:DrawText(self.propertyData.label .. " Garage", 'left')
+                lib.showTextUI(self.propertyData.label .. " Garage")
+                lib.addRadialItem({
                     id = garageName,
-                    title = "Open Property Garage",
-                    icon = "warehouse",
-                    type = "server",
-                    event = "ps-housing:client:handlerGarage",
-                    garage = garageName,
-                    shouldClose = true,
-                }, garageName)
+                    icon = 'warehouse',
+                    label = 'Open Property Garage',
+                    onSelect = function()
+                        TriggerServerEvent('ps-housing:client:handleGarage', garageName)
+                    end
+                })
             else
-                exports['qb-radialmenu']:RemoveOption(garageName)
+                lib.hideTextUI()
+                lib.removeRadialItem(garageName)
             end
         end)
     end,
@@ -106,14 +153,15 @@ Property = {
         self.inShell = true
         self.shellData = Config.Shells[self.propertyData.shell]
         self:CreateShell()
-        exports['qb-radialmenu']:AddOption({
-            id = "furnituremenu",
-            title = "Furniture Menu",
-            icon = "house",
-            type = "client",
-            event = "ps-housing:client:furnitureMenu",
-            shouldClose = true,
-        }, "furnituremenu")
+
+        lib.addRadialItem({
+            id = 'furniture_menu',
+            icon = 'house',
+            label = 'Furniture Menu',
+            onSelect = function()
+                TriggerEvent('ps-housing:client:furnitureMenu')
+            end
+        })
     end,
 
     LeaveShell = function(self)
@@ -121,8 +169,15 @@ Property = {
         local ped = PlayerPedId()
         local coords = self.propertyData.door_data
         SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, true)
-        exports['qb-target']:RemoveZone("shellExit")
-        exports['qb-radialmenu']:RemoveOption("furnituremenu")
+
+        if Config.Target == "qb" then
+            exports['qb-target']:RemoveZone("shellExit")
+        elseif Config.Target == "ox" then
+            exports.ox_target:removeZone("shellExit")
+        end
+
+        lib.removeRadialItem('furniture_menu')
+
         self.garageZone:destroy()
         TriggerServerEvent("ps-housing:server:leaveShell", self.property_id)
         self.inShell = false
@@ -135,29 +190,26 @@ Property = {
 
     OpenDoorbellMenu = function (self)
         if not self.doorbellPool then 
-            TriggerEvent('QBCore:Notify', 'No one is at the door', 'error')
+            QBCore.Functions.Notify('No one is at the door', 'error')
             return 
         end
-        local menu = {}
-        table.insert(menu,
-        {
-            header = 'People at the door',
-            icon = 'fas fa-door',
-            isMenuHeader = true,
-        })
+        local id = "property-" .. self.property_id .. "-doorbell"
+        local menu = {
+            id = id,
+            title = "People at the door",
+            options = {}
+        }
         for k, v in pairs(self.doorbellPool) do
-            table.insert(menu,{
-                header = GetPlayerName(k),
-                params = {
-                    event = "ps-housing:server:doorbellAnswer",
-                    args = {
-                        targetSrc = k,
-                        property_id = self.property_id,
-                    },
-                }
+            table.insert(menu.options,{
+                title = GetPlayerName(k),
+                serverEvent = "ps-housing:server:doorbellAnswer",
+                args = {
+                    targetSrc = k,
+                    property_id = self.property_id,
+                },
             })
         end
-        exports['qb-menu']:openMenu(menu)
+        lib.showContext(id)
     end,
 
     LoadFurnitures = function(self)
@@ -183,7 +235,11 @@ Property = {
 
     DeleteProperty = function(self)
         local targetname = string.gsub(self.propertyData.label, "%s+", "")..tostring(self.property_id)
-        exports['qb-target']:RemoveZone(targetname)
+        if Config.Target == "qb" then
+            exports['qb-target']:RemoveZone(targetname)
+        elseif Config.Target == "ox" then
+            exports.ox_target:removeZone(targetname)
+        end
         if self.inShell then self:LeaveShell() end
     end,
 }

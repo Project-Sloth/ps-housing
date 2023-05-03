@@ -1,5 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
-
+local dbloaded = false
 PropertiesTable = {}
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)
@@ -25,15 +25,19 @@ MySQL.ready(function()
             }
             PropertiesTable[id] = Property:new(propertyData)
         end
+        dbloaded = true
     end)
 end)
 
-QBCore.Functions.CreateCallback("ps-housing:server:requestProperties", function(source, cb)
+lib.callback.register("ps-housing:server:requestProperties", function(source)
+    while not dbloaded do
+        Wait(100)
+    end
     local propertiesData = {}
     for k, v in pairs(PropertiesTable) do
         propertiesData[k] = v.propertyData
     end
-    cb(propertiesData)
+    return propertiesData
 end)
 
 AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job

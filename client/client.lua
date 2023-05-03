@@ -48,27 +48,25 @@ RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 end)
 
 
-AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
-	QBCore.Functions.TriggerCallback('ps-housing:server:requestProperties', function (properties)
-		for k, v in pairs(properties) do
-			createProperty(v)
-		end
-	end)
-end)
+-- AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
+--     local properties = lib.callback.await('ps-housing:server:requestProperties')
+--     for k, v in pairs(properties) do
+--         createProperty(v)
+--     end
+-- end)
 
 AddEventHandler("onResourceStart", function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
-		QBCore.Functions.TriggerCallback('ps-housing:server:requestProperties', function (properties)
-			for k, v in pairs(properties) do
-				createProperty(v)
-			end
-		end)
+        local properties = lib.callback.await('ps-housing:server:requestProperties')
+        for k, v in pairs(properties) do
+            createProperty(v)
+        end
 	end
 end)
 
 -- Garage Stuff because the way qb did it with houses is the most retarded shit ever.
-AddEventHandler("ps-housing:client:handlerGarage", function (data)
-	print(json.encode(data))
+AddEventHandler("ps-housing:client:handleGarage", function (data)
+    local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", )
 end)
 
 
