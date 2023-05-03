@@ -11,7 +11,7 @@ Property = {
     doorbellPool = {},
 
     CreateShell = function (self)
-        local ped = PlayerPedId()
+        local ped = cache.ped
         local coords = self.propertyData.door_data
         local modelHash = self.shellData.hash
         RequestModel(modelHash)
@@ -63,16 +63,12 @@ Property = {
                     {
                         name = "leave",
                         label = "Leave Property",
-                        onSelect = = function()
-                            self:LeaveShell()
-                        end,
+                        onSelect = self:LeaveShell(),
                     },
                     {
                         name = "doorbell",
                         label = "Check Door",
-                        onSelect = = function()
-                            self:OpenDoorbellMenu()
-                        end,
+                        onSelect = self:OpenDoorbellMenu(),
                     }
                 }
             })
@@ -134,14 +130,25 @@ Property = {
             if isPointInside then
                 exports['qb-core']:DrawText(self.propertyData.label .. " Garage", 'left')
                 lib.showTextUI(self.propertyData.label .. " Garage")
-                lib.addRadialItem({
-                    id = garageName,
-                    icon = 'warehouse',
-                    label = 'Open Property Garage',
-                    onSelect = function()
-                        TriggerServerEvent('ps-housing:client:handleGarage', garageName)
-                    end
-                })
+                if cache.vehicle then
+                    lib.addRadialItem({
+                        id = garageName,
+                        icon = 'warehouse',
+                        label = 'Store Vehicle',
+                        onSelect = function()
+                            TriggerServerEvent('ps-housing:client:handleGarage', garageName)
+                        end
+                    })
+                else 
+                    lib.addRadialItem({
+                        id = garageName,
+                        icon = 'warehouse',
+                        label = 'Open Property Garage',
+                        onSelect = function()
+                            TriggerEvent('ps-housing:client:handleGarage', garageName)
+                        end
+                    })
+                end
             else
                 lib.hideTextUI()
                 lib.removeRadialItem(garageName)
@@ -166,7 +173,7 @@ Property = {
 
     LeaveShell = function(self)
         if not self.inShell then return end
-        local ped = PlayerPedId()
+        local ped = cache.ped
         local coords = self.propertyData.door_data
         SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, true)
 

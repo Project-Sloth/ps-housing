@@ -65,10 +65,126 @@ AddEventHandler("onResourceStart", function(resourceName)
 end)
 
 -- Garage Stuff because the way qb did it with houses is the most retarded shit ever.
-AddEventHandler("ps-housing:client:handleGarage", function (data)
-    local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", )
+AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_id)
+    local garageName = gargeName
+    local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", gargeName, property_id)
+    local menu = {
+        id = gargeName,
+        title = "People at the door",
+        options = {}
+    }
+
+    for _, v in pairs(propertyVehicles) do
+        local enginePercent = math.floor(v.engine / 10)
+        local bodyPercent = math.floor(v.body / 10)
+        local currentFuel = v.fuel
+        local vname = QBCore.Shared.Vehicles[v.vehicle].name
+
+        -- only if its garaged
+        if not v.state == 1 then goto continue end
+
+        menu.options[#menu.options+1] = {
+            title = vname .. " " .. v.plate,
+            txt = string.format("Plate: %s<br>Fuel: %%s | Engine: %%s | Body: %%s", v.plate, currentFuel, enginePercent, bodyPercent),
+            serverEvent = "ps-housing:server:takeOutVehicle",
+            args = {
+                vehicle = v,
+                property_id = property_id,
+            }
+        }
+        ::continue::
+    end
+
+    if #menu.options == 0 then
+        menu.options[#menu.options+1] = {
+            title = "No vehicles in garage",
+            txt = "There are no vehicles in this garage",
+            disabled = true
+        }
+    end
+
+    lib.menu.showMenu(menu)
 end)
 
+local function doCarDamage(currentVehicle, veh)
+    local engine = veh.engine + 0.0
+    local body = veh.body + 0.0
+    local data = json.decode(veh.mods)
+    for k, v in pairs(data.doorStatus) do
+        if v then
+            SetVehicleDoorBroken(currentVehicle, tonumber(k), true)
+        end
+    end
+    for k, v in pairs(data.tireBurstState) do
+        if v then
+            SetVehicleTyreBurst(currentVehicle, tonumber(k), true)
+        end
+    end
+    for k, v in pairs(data.windowStatus) do
+        if not v then
+            SmashVehicleWindow(currentVehicle, tonumber(k))
+        end
+    end
+    SetVehicleEngineHealth(currentVehicle, engine)
+    SetVehicleBodyHealth(currentVehicle, body)
+end
+
+RegisterNetEvent("ps-housing:client:takeOutVehicle", function(data)
+    local vehicle = data.vehicle
+    local property = PropertiesTable[data.property_id]
+    local garage_data = property.propertyData.garage_data
+    local garageCoords = vector4(garage_data.x, garage_data.y, garage_data.z, garage_data.h)
+    local netId, vehProps = lib.callback.await("ps-housing:cb:spawnVehicle", vehicle, garageCoords)
+    local veh = NetToVeh(netId)
+    QBCore.Functions.SetVehicleProperties(veh, vehProps)
+    exports[Config.Fuel]:SetFuel(veh, vehicle.fuel)
+    doCarDamage(veh, vehicle)
+
+    local engine = vehicle.engine + 0.0
+    local body = vehicle.body + 0.0
+    local data = json.decode(vehicle.mods)
+    for k, v in pairs(data.doorStatus) do
+        if v then
+            SetVehicleDoorBroken(veh, tonumber(k), true)
+        end
+    end
+    for k, v in pairs(data.tireBurstState) do
+        if v then
+            SetVehicleTyreBurst(veh, tonumber(k), true)
+        end
+    end
+    for k, v in pairs(data.windowStatus) do
+        if not v then
+            SmashVehicleWindow(veh, tonumber(k))
+        end
+    end
+    SetVehicleEngineHealth(veh, engine)
+    SetVehicleBodyHealth(veh, body)
+
+    TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
+    SetVehicleEngineOn(veh, true, true)
+end)
+
+AddEventHandler("ps-housing:client:storeVehicle", function(garageName)
+    local veh = cache.veh
+    local garageName = garageName
+    local plate = QBCore.Functions.GetPlate(veh)
+
+    local owned = lib.callback.await("ps-housing:cb:allowedToStore", plate, garageName)
+    if not owned then
+        lib.notify("You do not own this vehicle or do not have access to the property garage", "error")
+        return
+    end
+    local bodyDamage = math.ceil(GetVehicleBodyHealth(veh))
+    local engineDamage = math.ceil(GetVehicleEngineHealth(veh))
+    local totalFuel = exports['LegacyFuel']:GetFuel(veh)
+    TriggerServerEvent('qb-garages:server:UpdateOutsideVehicle', plate, nil)
+    TriggerServerEvent('ps-housing:server:updateVehicle', 1, totalFuel, engineDamage, bodyDamage, plate, garageName)
+    SetVehicleDoorsLocked(veh)
+    Wait(1500)
+    SetEntityAsMissionEntity(veh, true, true)
+    DeleteVehicle(veh)
+end)
 
 
 
@@ -87,7 +203,7 @@ local function offsetThread()
     end
     local shellCoords = GetEntityCoords(propertyObj)
     while findingOffset do
-        local ped = PlayerPedId()
+        local ped = cache.ped
         local coords = GetEntityCoords(ped)
         local x = math.floor((coords.x - shellCoords.x) * 100) / 100
         local y = math.floor((coords.y - shellCoords.y) * 100) / 100
@@ -109,7 +225,7 @@ local function markerThread()
     local zoff = 2.0
     local height = 3.0
     while findingOffset do
-        local ped = PlayerPedId()
+        local ped = cache.ped
         local coords = GetEntityCoords(ped)
         local heading = GetEntityHeading(ped)
         DrawMarker(43, coords.x, coords.y, coords.z + zoff, 0.0, 0.0, 0.0, 0.0, 180.0, -heading, length, width, height, 255, 0, 0, 50, false, false, 2, nil, nil, false)

@@ -77,3 +77,109 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
         TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
     end
 end)
+
+local function getCitizenid(src)
+    local src = src
+    local Player = QBCore.Functions.GetPlayer(src)
+    local PlayerData = Player.PlayerData
+    local citizenid = PlayerData.citizenid
+    return citizenid
+end
+lib.callback.register("ps-housing:cb:getVehicles", function(source, garageName, property_id)
+    local src = source
+    local garageName = garageName
+    local citizenid = getCitizenid(src)
+    local property = PropertiesTable[property_id]
+    if not property then return end
+    if not property:CheckForAccess(citizenid) then return end
+    local citizenidCheck = Config.CanGarageAnyVehicle and " citizenid = @citizenid AND" or ""
+    local vehicles = MySQL.query.await('SELECT * FROM player_vehicles WHERE'..citizenidCheck..' garage = @garage AND state = @state', 
+    {
+        ['@citizenid'] = citizenid,
+        ['@garage'] = garageName,
+        ['@state'] = 1,
+    })
+    return vehicles
+end)
+
+RegisterNetEvent("ps-housing:server:takeOutVehicle", function(data)
+    local src = source
+    local vehicle = data.vehicle
+    local property_id = data.property_id
+    local citizenid = getCitizenid(src)
+    local property = PropertiesTable[property_id]
+    if not property then return end
+    if not property:CheckForAccess(citizenid) then return end
+    TriggerClientEvent("ps-housing:client:takeOutVehicle", src, {vehicle = vehicle, property_id = property_id})
+end)
+
+RegisterNetEvent("ps-housing:server:updateVehicle", function(state, fuel, engine, body, plate, garageName)
+    local src = source
+    local citizenid = getCitizenid(src)
+    local owned = MySQL.query.await('SELECT * FROM player_vehicles WHERE citizenid = @citizenid AND plate = @plate', 
+    {
+        ['@citizenid'] = citizenid,
+        ['@plate'] = plate,
+    })
+    if owned[1] then
+        MySQL.update('UPDATE player_vehicles SET state = @state, fuel = @fuel, engine = @engine, body = @body, garage = @garage WHERE plate = @plate', 
+        {
+            ['@state'] = state,
+            ['@fuel'] = fuel,
+            ['@engine'] = engine,
+            ['@body'] = body,
+            ['@garage'] = garageName,
+            ['@plate'] = plate,
+        })
+    else
+        TriggerClientEvent('QBCore:Notify', src, "You arent allowed to store this vehicle.", 'error')
+    end
+end)
+
+lib.callback.register("ps-housing:cb:spawnVehicle", function (source, vehicle, coords)
+    local src = source
+    local vehicle = vehicle
+    local coords = coords
+    -- Spawn vehicle
+    local veh = CreateVehicle(vehicle.vehicle, coords.x, coords.y, coords.z, coords.w, true, true)
+    SetEntityAsMissionEntity(veh, true, true)
+    SetEntityHeading(veh, coords.w)
+    SetVehicleNumberPlateText(veh, vehicle.plate)
+
+    -- Set vehicle as out
+    MySQL.update('UPDATE player_vehicles SET state = @stateWHERE plate = @plate', 
+    {
+        ['@state'] = 0,
+        ['@plate'] = vehicle.plate,
+    })
+
+    -- Get vehicle props
+    local vehProps = {}
+    local result = MySQL.query.await('SELECT mods FROM player_vehicles WHERE plate = ?', {vehicle.plate})
+    if result[1] then vehProps = json.decode(result[1].mods) end
+    local netId = NetworkGetNetworkIdFromEntity(veh)
+
+    -- Set Vehicle as out in qb garage table
+    TriggerEvent("qb-garages:server:UpdateOutsideVehicle", vehicle.plate, netId)
+    return netId, vehProps
+end)
+
+lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, property_id)
+    local src = source
+    local plate = plate
+    local property = PropertiesTable[property_id]
+    if not property then return false end
+    local citizenid = getCitizenid(src)
+    if not property:CheckForAccess(citizenid) then return false end
+    local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {['@plate'] = plate})
+    if result[1] then
+        MySQL.update('UPDATE player_vehicles SET state = @state WHERE plate = @plate', 
+        {
+            ['@state'] = 1,
+            ['@plate'] = plate,
+        })
+        return true
+    else
+        return false
+    end
+end)
