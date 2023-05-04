@@ -78,17 +78,17 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     end
 end)
 
-local function getCitizenid(src)
-    local src = src
+function GetCitizenid(src)
     local Player = QBCore.Functions.GetPlayer(src)
     local PlayerData = Player.PlayerData
     local citizenid = PlayerData.citizenid
-    return citizenid
+    return citizenid, PlayerData, Player
 end
+
 lib.callback.register("ps-housing:cb:getVehicles", function(source, garageName, property_id)
     local src = source
     local garageName = garageName
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property then return end
     if not property:CheckForAccess(citizenid) then return end
@@ -106,7 +106,7 @@ RegisterNetEvent("ps-housing:server:takeOutVehicle", function(data)
     local src = source
     local vehicle = data.vehicle
     local property_id = data.property_id
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property then return end
     if not property:CheckForAccess(citizenid) then return end
@@ -115,7 +115,7 @@ end)
 
 RegisterNetEvent("ps-housing:server:updateVehicle", function(state, fuel, engine, body, plate, garageName)
     local src = source
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     local owned = MySQL.query.await('SELECT * FROM player_vehicles WHERE citizenid = @citizenid AND plate = @plate', 
     {
         ['@citizenid'] = citizenid,
@@ -169,7 +169,7 @@ lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, p
     local plate = plate
     local property = PropertiesTable[property_id]
     if not property then return false end
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     if not property:CheckForAccess(citizenid) then return false end
     local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {['@plate'] = plate})
     if result[1] then

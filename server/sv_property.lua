@@ -226,18 +226,12 @@ function Property:new(propertyData)
     return obj
 end
 
-local function getCitizenid(src)
-    local Player = QBCore.Functions.GetPlayer(src)
-    local PlayerData = Player.PlayerData
-    local citizenid = PlayerData.citizenid
-    return citizenid, PlayerData, Player
-end
 
 RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
     local property = PropertiesTable[property_id]
     if not property then return end
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     if property.propertyData.owner == citizenid or property:CheckForAccess(citizenid) then
         print("Player has access to property")
         property:PlayerEnter(src)
@@ -260,14 +254,14 @@ RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data)
     local targetSrc = data.targetSrc
     local property = PropertiesTable[data.property_id]
     if not property then return end
-    local ownerCitizenid = getCitizenid(src)
+    local ownerCitizenid = GetCitizenid(src)
     if property.propertyData.owner ~= ownerCitizenid then return end
     property:PlayerEnter(targetSrc)
 end)
 
 RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, price)
     local src = source
-    local citizenid, PlayerData, Player = getCitizenid(src)
+    local citizenid, PlayerData, Player = GetCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property then return end
     if not property:CheckForAccess(citizenid) then return end
@@ -284,7 +278,7 @@ end)
 
 RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local src = source
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
@@ -294,9 +288,9 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local has_access = property.propertyData.has_access
     local playerToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
     local targetPlayer = playerToAdd.PlayerData
-    local targetCitizenid = targetPlayer.citizenid
-    if not property:CheckForAccess(targetCitizenid) then
-        has_access[#has_access+1] = targetCitizenid
+    local tarGetCitizenid = targetPlayer.citizenid
+    if not property:CheckForAccess(tarGetCitizenid) then
+        has_access[#has_access+1] = tarGetCitizenid
         property:UpdateHas_access(has_access)
         TriggerClientEvent("ox_lib:notify", src, {title="You added access to " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname, type="success"})
         if targetPlayer.source then
@@ -309,7 +303,7 @@ end)
 
 RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizenidToRemove)
     local src = source
-    local citizenid = getCitizenid(src)
+    local citizenid = GetCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
@@ -342,7 +336,7 @@ lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, pr
     local src = source
     local property = PropertiesTable[property_id]
     if not property then return end
-    if property.propertyData.owner ~= getCitizenid(src) then return end
+    if property.propertyData.owner ~= GetCitizenid(src) then return end
     local withAccess = {}
     local has_access = property.propertyData.has_access
     for i = 1, #has_access do
