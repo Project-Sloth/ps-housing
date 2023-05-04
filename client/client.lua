@@ -1,6 +1,6 @@
 QBCore = exports['qb-core']:GetCoreObject()
 PropertiesTable = {}
-
+ApartmentsTable = {}
 
 local function GetProperties()
 	local properties = {}
@@ -31,7 +31,7 @@ AddEventHandler("onResourceStop", function(resourceName)
 end)
 
 local function createProperty(property)
-	PropertiesTable[property.property_id] = Property:new(property)
+	PropertiesTable[tostring(property.property_id)] = Property:new(property)
 	if GetResourceState('bl-realtor') == 'started' then
 		local properties = GetProperties()
 		TriggerEvent("bl-realtor:client:updateProperties", properties)
@@ -48,19 +48,24 @@ RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 end)
 
 
--- AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
---     local properties = lib.callback.await('ps-housing:server:requestProperties')
---     for k, v in pairs(properties) do
---         createProperty(v)
---     end
--- end)
+AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
+    local properties = lib.callback.await('ps-housing:server:requestProperties')
+    for k, v in pairs(properties) do
+        createProperty(v)
+    end
+end)
 
 AddEventHandler("onResourceStart", function(resourceName)
 	if (GetCurrentResourceName() == resourceName) then
+        for k, v in pairs(Config.Apartments) do
+            ApartmentsTable[k] = Apartment:new(v)
+        end
         local properties = lib.callback.await('ps-housing:server:requestProperties')
         for k, v in pairs(properties) do
             createProperty(v)
         end
+        print("properties", json.encode(PropertiesTable, {indent=true}))
+        print("apartments", json.encode(ApartmentsTable, {indent=true}))
 	end
 end)
 
@@ -172,7 +177,7 @@ AddEventHandler("ps-housing:client:storeVehicle", function(garageName)
 
     local owned = lib.callback.await("ps-housing:cb:allowedToStore", plate, garageName)
     if not owned then
-        lib.notify("You do not own this vehicle or do not have access to the property garage", "error")
+        lib.notify({title="You do not own this vehicle or do not have access to the property garage", type="error"})
         return
     end
     local bodyDamage = math.ceil(GetVehicleBodyHealth(veh))

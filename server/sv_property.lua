@@ -7,7 +7,7 @@ Property = {
     PlayerEnter = function (self, src)
         self.playersInside[src] = true
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
-        if next(self.playersDoorbell) then
+        if self.playersDoorbell[1] then
             TriggerClientEvent("ps-housing:client:updateDoorbellPool", src, self.property_id, self.playersDoorbell)
             if self.playersDoorbell[src] then
                 self.playersDoorbell[src] = nil
@@ -18,14 +18,14 @@ Property = {
     AddToDoorbellPoolTemp = function (self, src)
         self.playersDoorbell[src] = true
         for k, v in pairs(self.playersInside) do
-            TriggerClientEvent('QBCore:Notify', k, "Someone is at the door.", "success")
+            TriggerClientEvent('ox_lib:notify', k, {title="Someone is at the door.", type="inform"})
             TriggerClientEvent("ps-housing:client:updateDoorbellPool", k, self.property_id, self.playersDoorbell)
         end
-        TriggerClientEvent('QBCore:Notify', src, "Ringing Doorbell.", "success")
+        TriggerClientEvent("ox_lib:notify", src, {title="Ringing Doorbell.", type="success"})
         SetTimeout(30000, function ()
             if self.playersDoorbell[src] then
                 self.playersDoorbell[src] = nil
-                TriggerClientEvent('QBCore:Notify', src, "No one answered the door.", "error")
+                TriggerClientEvent("ox_lib:notify", src, {title="No one answered the door.", type="error"})
             end
             for k, v in pairs(self.playersInside) do
                 TriggerClientEvent("ps-housing:client:updateDoorbellPool", k, self.property_id, self.playersDoorbell)
@@ -123,7 +123,7 @@ Property = {
         local citizenid = PlayerData.citizenid
 
         if bank < self.propertyData.price then
-            TriggerClientEvent('QBCore:Notify', targetSrc, 'You do not have enough money in your bank account', 'error')
+                TriggerClientEvent("ox_lib:notify", src, {title="You do not have enough money in your bank account", type="error"})
             return
         end
 
@@ -134,7 +134,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
         TriggerClientEvent("ps-housing:client:updateProperty", -1, self.propertyData) -- Update all clients here because it doesnt update by itself
-        TriggerClientEvent('QBCore:Notify', targetSrc, 'You have bought the property for $'..self.propertyData.price, 'success')
+        TriggerClientEvent("ox_lib:notify", targetSrc, {title='You have bought the property for $'..self.propertyData.price, type="success"})
     end,
 
     UpdateImgs = function (self, data)
@@ -238,13 +238,13 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local property = PropertiesTable[property_id]
     if not property then return end
     local citizenid = getCitizenid(src)
-    
     if property.propertyData.owner == citizenid or property:CheckForAccess(citizenid) then
+        print("Player has access to property")
         property:PlayerEnter(src)
         return
     end
-    property:AddToDoorbellPoolTemp(src)
-    TriggerClientEvent('QBCore:Notify', src, "Ringing Doorbell.", "success")
+    print("Player does not have access to property")
+    property:AddToDoorbellPoolTemp(src)    
 end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
@@ -273,12 +273,13 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
     if not property:CheckForAccess(citizenid) then return end
     local price = tonumber(price)
     if price > PlayerData.money.bank then
-        TriggerClientEvent('QBCore:Notify', src, "You do not have enough money!", "error")
+        TriggerClientEvent("ox_lib:notify", src, {title= "You do not have enough money!", type="error"})
         return
     end
     Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     property:UpdateFurnitures(items)
-    TriggerClientEvent('QBCore:Notify', src, "You bought furniture for $" .. price, "success")
+    TriggerClientEvent("ox_lib:notify", src, {title= "You bought furniture for $" .. price, type="success"})
+    
 end)
 
 RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
@@ -287,45 +288,72 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local property = PropertiesTable[property_id]
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
-        TriggerClientEvent('QBCore:Notify', src, "You are not the owner of this property!", "error")
+        TriggerClientEvent("ox_lib:notify", src, {title="You are not the owner of this property!", type="error"})
         return
     end
     local has_access = property.propertyData.has_access
-    local srcToAdd = tonumber(srcToAdd)
-    local TargetCitizenid = getCitizenid(srcToAdd)
-    if not property:CheckForAccess(TargetCitizenid) then
-        has_access[#has_access+1] = TargetCitizenid
+    local playerToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
+    local targetPlayer = playerToAdd.PlayerData
+    local targetCitizenid = targetPlayer.citizenid
+    if not property:CheckForAccess(targetCitizenid) then
+        has_access[#has_access+1] = targetCitizenid
         property:UpdateHas_access(has_access)
-        TriggerClientEvent('QBCore:Notify', src, "You added access to " .. GetPlayerName(srcToAdd), "success")
-        TriggerClientEvent('QBCore:Notify', srcToAdd, "You got access to " .. property.propertyData.label, "success")
+        TriggerClientEvent("ox_lib:notify", src, {title="You added access to " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname, type="success"})
+        if targetPlayer.source then
+            TriggerClientEvent("ox_lib:notify", targetPlayer.source, {title="You got access to " .. property.propertyData.label, type="success"})
+        end
     else
-        TriggerClientEvent('QBCore:Notify', src, "This person already has access to this property!", "error")
+        TriggerClientEvent("ox_lib:notify", src, {title="This person already has access to this property!", type="error"})
     end
 end)
 
-RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, srcToRemove)
+RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizenidToRemove)
     local src = source
     local citizenid = getCitizenid(src)
     local property = PropertiesTable[property_id]
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
-        TriggerClientEvent('QBCore:Notify', src, "You are not the owner of this property!", "error")
+        TriggerClientEvent("ox_lib:notify", src, {title="You are not the owner of this property!", type="error"})
         return
     end
     local has_access = property.propertyData.has_access
-    local srcToRemove = tonumber(srcToRemove)
-    local TargetCitizenid = getCitizenid(srcToRemove)
-    if property:CheckForAccess(TargetCitizenid) then
+    local citizenidToRemove = citizenidToRemove
+    if property:CheckForAccess(citizenidToRemove) then
         for i = 1, #has_access do
-            if has_access[i] == TargetCitizenid then
+            if has_access[i] == citizenidToRemove then
                 table.remove(has_access, i)
                 break
             end
         end 
         property:UpdateHas_access(has_access)
-        TriggerClientEvent('QBCore:Notify', src, "You removed access from " .. GetPlayerName(srcToRemove), "success")
-        TriggerClientEvent('QBCore:Notify', srcToRemove, "You lost access to " .. property.propertyData.label, "error")
+        local playerToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenidToRemove) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenidToRemove)
+        local removePlayerData = playerToAdd.PlayerData
+        local srcToRemove = removePlayerData.source
+        TriggerClientEvent("ox_lib:notify", src, {title="You removed access from " .. removePlayerData.charinfo.firstname .. " " .. removePlayerData.charinfo.lastname, type="success"})
+        if srcToRemove then
+            TriggerClientEvent("ox_lib:notify", srcToRemove, {title="You lost access to " .. property.propertyData.label, type="error"})
+        end
     else
-        TriggerClientEvent('QBCore:Notify', src, "This person does not have access to this property!", "error")
+        TriggerClientEvent("ox_lib:notify", src, {title="This person does not have access to this property!", type="error"})
     end
+end)
+
+lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, property_id)
+    local src = source
+    local property = PropertiesTable[property_id]
+    if not property then return end
+    if property.propertyData.owner ~= getCitizenid(src) then return end
+    local withAccess = {}
+    local has_access = property.propertyData.has_access
+    for i = 1, #has_access do
+        local citizenid = has_access[i]
+        local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
+        if Player then
+            withAccess[#withAccess+1] = {
+                citizenid = citizenid,
+                name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+            }
+        end
+    end
+    return withAccess
 end)

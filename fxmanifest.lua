@@ -20,6 +20,7 @@ shared_script {
 client_script {
   '@PolyZone/client.lua',
   '@PolyZone/BoxZone.lua',
+  'client/apartment.lua',
   'client/cl_property.lua',
   'client/client.lua',
   'client/modeler.lua',

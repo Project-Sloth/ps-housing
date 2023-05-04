@@ -272,7 +272,7 @@ Modeler = {
 
         local PlayerData = QBCore.Functions.GetPlayerData()
         if PlayerData.money.cash < totalPrice then
-            QBCore.Functions.Notify("You don't have enough money!", "error")
+            lib.notify({title= "You don't have enough money!", type = "error"})
             return
         end
 

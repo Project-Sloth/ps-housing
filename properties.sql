@@ -11,8 +11,9 @@ CREATE TABLE IF NOT EXISTS `properties` (
     `for_sale` boolean NOT NULL DEFAULT 1,
     `price` int(11) NOT NULL DEFAULT 0,
     `shell` varchar(50) NOT NULL,
-    `door_data` JSON NOT NULL DEFAULT (JSON_OBJECT()), -- {"x": 0.0, "y": 0.0, "z": 0.0, "h": 0.0, "length": 0.0, "width": 0.0}
-    `garage_data` JSON NULL DEFAULT (JSON_OBJECT()), -- {"x": 0.0, "y": 0.0, "z": 0.0} -- NULL if no garage
+    `apartment` varchar(50) NULL DEFAULT NULL,
+    `door_data` JSON NULL DEFAULT NULL, -- {"x": 0.0, "y": 0.0, "z": 0.0, "h": 0.0, "length": 0.0, "width": 0.0}
+    `garage_data` JSON NULL DEFAULT NULL, -- {"x": 0.0, "y": 0.0, "z": 0.0} -- NULL if no garage
     PRIMARY KEY (`property_id`),
     CONSTRAINT `FK_owner_citizenid` FOREIGN KEY (`owner_citizenid`) REFERENCES `players` (`citizenid`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1;

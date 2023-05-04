@@ -13,6 +13,23 @@ Config.Fuel = "ps-fuel" -- only used for export SetFuel | ps-fuel or LegacyFuel 
 -- if true, anyone can take out any vehicle from the garage (if they have keys). ALSO MAEANS THEY CAN PUT IN VEHICLES THAT ARE NOT THEIRS (if they have keys)
 Config.CanGarageAnyVehicle = false 
 
+
+
+Config.Apartments = {
+    ["Integrity Way"] = {
+        label = "Integrity Way",
+        door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 1 },
+    },
+    ["South Rockford Drive"] = {
+        label = "South Rockford Drive",
+        door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 1 },
+    }
+}
+
+
+
+
+
 -- Shells provided by K4MB1 https://www.k4mb1maps.com/
 Config.Shells = {
     ["Standard Motel"] = {

@@ -10,7 +10,7 @@ MySQL.ready(function()
         for _, v in pairs(result) do
             local id = tonumber(v.property_id)
             local propertyData = {
-                property_id = id,
+                property_id = tostring(id),
                 owner = v.owner_citizenid,
                 label = v.label,
                 description = v.description,
@@ -20,10 +20,11 @@ MySQL.ready(function()
                 for_sale = v.for_sale,
                 price = v.price,
                 shell = v.shell,
+                apartment = v.apartment,
                 door_data = json.decode(v.door_data),
                 garage_data = json.decode(v.garage_data),
             }
-            PropertiesTable[id] = Property:new(propertyData)
+            PropertiesTable[tostring(id)] = Property:new(propertyData)
         end
         dbloaded = true
     end)
@@ -55,15 +56,14 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         ["@has_access"] = json.encode(propertyData.has_access),
         ["@extra_imgs"] = json.encode(propertyData.extra_imgs),
         ["@furnitures"] = json.encode(propertyData.furnitures),
-        ["@for_sale"] = propertyData.for_sale and 1 or 0,
+        ["@for_sale"] = 1,
         ["@price"] = propertyData.price,
         ["@shell"] = propertyData.shell,
         ["@door_data"] = json.encode(propertyData.door_data),
         ["@garage_data"] = json.encode(propertyData.garage_data),
     })
-    propertyData.property_id = id
+    propertyData.property_id = tostring(id)
     PropertiesTable[id] = Property:new(propertyData)
-    print("Registered property: "..id.. " - "..propertyData.label .. " by: ".. GetPlayerName(propertyData.realtorSrc))
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 end)
 

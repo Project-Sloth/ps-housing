@@ -4,15 +4,29 @@ Property = {
     propertyData = nil,
     shellData = nil,
     has_access = false,
+    owner = false,
     inShell = false,
     shellObj = nil,
     furnitureObjs = {},
     garageZone = nil,
     doorbellPool = {},
 
+
+    GetDoorCoords = function(self)
+        local coords = nil
+        if self.propertyData.apartment then
+            local apartment = self.propertyData.apartment
+            coords = Config.Apartments[apartment].door
+        else
+            coords = self.propertyData.door_data
+        end
+        return coords
+    end,
+
     CreateShell = function (self)
         local ped = cache.ped
-        local coords = self.propertyData.door_data
+        -- local coords = self.propertyData.door_data
+        local coords = self:GetDoorCoords()
         local modelHash = self.shellData.hash
         RequestModel(modelHash)
         while not HasModelLoaded(modelHash) do Wait(0) end
@@ -63,12 +77,16 @@ Property = {
                     {
                         name = "leave",
                         label = "Leave Property",
-                        onSelect = self:LeaveShell(),
+                        onSelect = function()
+                            self:LeaveShell()
+                        end,
                     },
                     {
                         name = "doorbell",
                         label = "Check Door",
-                        onSelect = self:OpenDoorbellMenu(),
+                        onSelect = function()
+                            self:OpenDoorbellMenu()
+                        end,
                     }
                 }
             })
@@ -77,22 +95,29 @@ Property = {
 
     RegisterPropertyEntrance = function (self)
         local door_data = self.propertyData.door_data
-        local targetname = string.gsub(self.propertyData.label, "%s+", "")..tostring(self.propertyData.property_id)
-        local label = self.has_access and 'Enter Property' or 'Ring Doorbell'
+        local targetname = string.gsub(self.propertyData.label, "%s+", "")..tostring(self.property_id)
+        local label = nil
+
+        if self.has_access or self.owner then
+            label = 'Enter Property'
+        else
+            label = 'Ring Doorbell'
+        end
+
         if Config.Target == "qb" then
             exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
-                name=targetname,
-                heading=door_data.h,
-                debugPoly=true,
-                minZ=door_data.z - 1.0,
-                maxZ=door_data.z + 2.0,
+                name = targetname,
+                heading = door_data.h,
+                debugPoly = Config.DebugZones,
+                minZ = door_data.z - 1.0,
+                maxZ = door_data.z + 2.0,
             }, {
                 options = {
                     {
                         label = label,
                         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
                             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-                            TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id) -- Dont know how to pass args with target (sorry im dumb)
+                            TriggerServerEvent('ps-housing:server:enterProperty', self.property_id) -- Dont know how to pass args with target (sorry im dumb)
                         end,
                     }
                 }
@@ -108,8 +133,8 @@ Property = {
                     {
                         name = "enter",
                         label = label,
-                        onSelect = = function()
-                            TriggerServerEvent('ps-housing:server:enterProperty', self.propertyData.property_id)
+                        onSelect = function()
+                            TriggerServerEvent('ps-housing:server:enterProperty', self.property_id)
                         end,
                     }
                 }
@@ -160,7 +185,7 @@ Property = {
         self.inShell = true
         self.shellData = Config.Shells[self.propertyData.shell]
         self:CreateShell()
-
+        self:LoadFurnitures()
         lib.addRadialItem({
             id = 'furniture_menu',
             icon = 'house',
@@ -174,7 +199,7 @@ Property = {
     LeaveShell = function(self)
         if not self.inShell then return end
         local ped = cache.ped
-        local coords = self.propertyData.door_data
+        local coords = self:GetDoorCoords()
         SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, true)
 
         if Config.Target == "qb" then
@@ -184,8 +209,10 @@ Property = {
         end
 
         lib.removeRadialItem('furniture_menu')
-
-        self.garageZone:destroy()
+        if self.garageZone then
+            self.garageZone:destroy()
+            self.garageZone = nil
+        end
         TriggerServerEvent("ps-housing:server:leaveShell", self.property_id)
         self.inShell = false
         self:UnloadFurnitures()
@@ -195,9 +222,31 @@ Property = {
         self.doorbellPool = {}
     end,
 
+    ManageAccesMenu = function(self)
+        if not self.owner then return end
+        local id = "property-" .. self.property_id .. "-access"
+        local menu = {
+            id = id,
+            title = "Manage Access",
+            options = {}
+        }
+
+        -- only stores names and citizenids in a table so if their offline you can still remove them
+        local playersWithAccess = lib.callback.await("ps-housing:cb:getPlayersWithAccess", self.property_id)
+        for k, v in pairs(playersWithAccess) do
+            table.insert(menu.options, {
+                title = v.name,
+                description = "Remove Access",
+                onSelect = function()
+                    TriggerServerEvent('ps-housing:server:removeAccess', self.property_id, v.citizenid)
+                end,
+            })
+        end
+    end,
+
     OpenDoorbellMenu = function (self)
         if not self.doorbellPool then 
-            QBCore.Functions.Notify('No one is at the door', 'error')
+            lib.notify({ title= 'No one is at the door', type = 'error' })
             return 
         end
         local id = "property-" .. self.property_id .. "-doorbell"
@@ -209,13 +258,12 @@ Property = {
         for k, v in pairs(self.doorbellPool) do
             table.insert(menu.options,{
                 title = GetPlayerName(k),
-                serverEvent = "ps-housing:server:doorbellAnswer",
-                args = {
-                    targetSrc = k,
-                    property_id = self.property_id,
-                },
+                onSelect = function()
+                    TriggerServerEvent('ps-housing:server:doorbellAnswer', { targetSrc = k, property_id = self.property_id, })
+                end,
             })
         end
+        lib.registerContext(menu)
         lib.showContext(id)
     end,
 
@@ -248,6 +296,9 @@ Property = {
             exports.ox_target:removeZone(targetname)
         end
         if self.inShell then self:LeaveShell() end
+        if self.propertyData.apartment then
+            ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
+        end
     end,
 }
 
@@ -256,9 +307,14 @@ function Property:new(propertyData)
     local obj = {}
     obj.property_id = propertyData.property_id
     obj.propertyData = propertyData
-    local has_access = false
     local Player = QBCore.Functions.GetPlayerData()
     local citizenid = Player.citizenid
+    local owner = false
+    if propertyData.owner == citizenid then
+        owner = true
+    end
+    obj.owner = owner
+    local has_access = false
     for i = 1, #propertyData.has_access do
         if propertyData.has_access[i] == citizenid then
             has_access = true
@@ -268,14 +324,20 @@ function Property:new(propertyData)
     obj.has_access = has_access
     setmetatable(obj, self)
     self.__index = self
-    obj:RegisterPropertyEntrance()
-    obj:RegisterGarageZone()
-    obj:LoadFurnitures()
+    
+    if propertyData.apartment ~= nil then
+        local apartment = ApartmentsTable[propertyData.apartment]
+        apartment:AddProperty(propertyData.property_id)
+    else
+        obj:RegisterPropertyEntrance()
+        obj:RegisterGarageZone()
+    end
     return obj
 end
 
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
     local property = PropertiesTable[property_id]
+    print("Entering property", property_id)
     property:EnterShell()
 end)
 
