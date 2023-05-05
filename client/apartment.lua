@@ -1,3 +1,5 @@
+-- TBH I should have learnt how lua inheritance worked instead of making a new class but oh well. Maybe next time
+
 Apartment = {
     apartmentData = {},
     apartments = {},
