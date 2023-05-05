@@ -273,7 +273,23 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
     Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     property:UpdateFurnitures(items)
     TriggerClientEvent("ox_lib:notify", src, {title= "You bought furniture for $" .. price, type="success"})
-    
+end)
+
+RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item)
+    local src = source
+    local item = item
+    local citizenid, PlayerData, Player = GetCitizenid(src)
+    local property = PropertiesTable[property_id]
+    if not property then return end
+    if not property:CheckForAccess(citizenid) then return end
+    local currentFurniture = property.propertyData.furniture
+    for k, v in pairs(currentFurniture) do
+        if v.id == item.id then
+            table.remove(currentFurniture, k)
+            break
+        end
+    end
+    property:UpdateFurnitures(currentFurniture)
 end)
 
 RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)

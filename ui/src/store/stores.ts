@@ -9,6 +9,11 @@ interface IFurniture {
     label: string;
     object: string;
     price: number;
+    type?: string;
+}
+
+interface IOwnedFurniture extends IFurniture {
+    id: string;
 }
 
 interface IFurnitures {
@@ -28,6 +33,10 @@ export const CURRENTFURNITURE = writable<IFurniture>(null);
 export const IS_MENU_MINIMIZED = writable<boolean>(false);
 
 export const IS_CART_OPEN = writable<boolean>(false);
+
+export const IS_OWNEDLIST_OPEN = writable<boolean>(false);
+
+export const OWNEDLIST = writable<IFurniture[]>([]);
 
 interface ICartItem extends IFurniture {
     entity: number;

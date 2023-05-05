@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { ReceiveNUI } from '@utils/ReceiveNUI'
 	import { debugData } from '@utils/debugData'
-	import { FURNITURES, SHOWFURNITURES, browserMode, visibility, CART, IS_MENU_MINIMIZED } from '@store/stores'
+	import { FURNITURES, SHOWFURNITURES, browserMode, visibility, CART, IS_MENU_MINIMIZED, OWNEDITEMS } from '@store/stores'
 	import ModelStore from '@store/ModelStore'
 	import ItemList from '@components/ItemList.svelte'
+
 
 
 
@@ -79,6 +80,15 @@
 
 	ReceiveNUI('clearCart', () => {
 		$CART = []
+	})
+
+	ReceiveNUI("setOwnedItems", (data: any) => {
+		$OWNEDITEMS = data
+	})
+
+	ReceiveNUI("removeOwnedItem", (data: any) => {
+		$OWNEDITEMS = $OWNEDITEMS.filter((entry: any) => entry.entity !== data.entity)
+		$OWNEDITEMS = [...$OWNEDITEMS]
 	})
 
 

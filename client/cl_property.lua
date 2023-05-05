@@ -2,46 +2,60 @@
 Property = {
     property_id = nil,
     propertyData = nil,
+
     shellData = nil,
-    has_access = false,
-    owner = false,
     inShell = false,
     shellObj = nil,
+
+    has_access = false,
+    owner = false,
+
+    storageTarget = nil,
+    clothingTarget = nil,
     furnitureObjs = {},
+
     garageZone = nil,
     doorbellPool = {},
 
 
     GetDoorCoords = function(self)
         local coords = nil
+
         if self.propertyData.apartment then
             local apartment = self.propertyData.apartment
             coords = Config.Apartments[apartment].door
         else
             coords = self.propertyData.door_data
         end
+
         return coords
     end,
 
     CreateShell = function (self)
         local ped = cache.ped
-        -- local coords = self.propertyData.door_data
+
         local coords = self:GetDoorCoords()
+
         local modelHash = self.shellData.hash
         RequestModel(modelHash)
         while not HasModelLoaded(modelHash) do Wait(0) end
+
         self.shellObj = CreateObject(modelHash, coords.x, coords.y, coords.z - 50.0, false, false, false)
+
         SetModelAsNoLongerNeeded(modelHash)
         FreezeEntityPosition(self.shellObj, true)
+
         local doorOffset = self.shellData.doorOffset
         local offset = GetOffsetFromEntityInWorldCoords(self.shellObj, doorOffset.x, doorOffset.y, doorOffset.z)
         self:RegisterDoorZone(offset)
+        
         SetEntityCoordsNoOffset(ped, offset.x, offset.y, offset.z, false, false, true)
         SetEntityHeading(ped, self.shellData.doorOffset.heading)
     end,
 
     RegisterDoorZone = function(self, offset)
         if Config.Target == "qb" then
+            
             exports['qb-target']:AddBoxZone("shellExit", vector3(offset.x, offset.y, offset.z),  1.0, self.shellData.doorOffset.width, {
                 name="shellExit",
                 heading= self.shellData.doorOffset.heading,
@@ -66,7 +80,9 @@ Property = {
                     }
                 }
             })
+            
         elseif Config.Target == "ox" then
+            
             exports.ox_target:addBoxZone({
                 id = "shellExit",
                 coords = vector3(offset.x, offset.y, offset.z),
@@ -90,6 +106,7 @@ Property = {
                     }
                 }
             })
+
         end
     end,
 
@@ -105,6 +122,7 @@ Property = {
         end
 
         if Config.Target == "qb" then
+
             exports['qb-target']:AddBoxZone(targetname, vector3(door_data.x, door_data.y, door_data.z), door_data.length, door_data.width, {
                 name = targetname,
                 heading = door_data.h,
@@ -122,7 +140,9 @@ Property = {
                     }
                 }
             })
+
         elseif Config.Target == "ox" then
+
             exports.ox_target:addBoxZone({
                 id = targetname,
                 coords = vector3(door_data.x, door_data.y, door_data.z),
@@ -139,23 +159,29 @@ Property = {
                     }
                 }
             })
+
         end
     end,
 
     -- QBCORE Did house garages the shittiest way possible so I did my own version of it. Might not be a very framework friendly decision but fuck qb
     RegisterGarageZone = function (self)
         if not self.propertyData.garage_data.x then return end
+
         local garageData = self.propertyData.garage_data
         local garageName = "property-"..self.property_id.."-garage"
+
         self.garageZone = BoxZone:Create(vector3(garageData.x, garageData.y, garageData.z), garageData.length, garageData.width, {
             name=garageName,
             debugPoly=Config.DebugPoly,
         })
+
         self.garageZone:onPlayerInOut(function(isPointInside, point)
             if isPointInside then
+
                 exports['qb-core']:DrawText(self.propertyData.label .. " Garage", 'left')
                 lib.showTextUI(self.propertyData.label .. " Garage")
                 if cache.vehicle then
+                    
                     lib.addRadialItem({
                         id = garageName,
                         icon = 'warehouse',
@@ -164,7 +190,9 @@ Property = {
                             TriggerServerEvent('ps-housing:client:handleGarage', garageName)
                         end
                     })
+                    
                 else 
+                    
                     lib.addRadialItem({
                         id = garageName,
                         icon = 'warehouse',
@@ -173,6 +201,7 @@ Property = {
                             TriggerEvent('ps-housing:client:handleGarage', garageName)
                         end
                     })
+
                 end
             else
                 lib.hideTextUI()
@@ -184,20 +213,30 @@ Property = {
     EnterShell = function(self)
         self.inShell = true
         self.shellData = Config.Shells[self.propertyData.shell]
+
         self:CreateShell()
         self:LoadFurnitures()
+
+        if not self.owner and not Config.AccessCanEditFurniture then return end
+
+        SendNUIMessage({
+            action = "setOwnedItems",
+            data = self.propertyData.furnitures
+        })
+
         lib.addRadialItem({
             id = 'furniture_menu',
             icon = 'house',
             label = 'Furniture Menu',
             onSelect = function()
-                TriggerEvent('ps-housing:client:furnitureMenu')
+                Modeler:OpenMenu()
             end
         })
     end,
 
     LeaveShell = function(self)
         if not self.inShell then return end
+
         local ped = cache.ped
         local coords = self:GetDoorCoords()
         SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, true)
@@ -209,14 +248,22 @@ Property = {
         end
 
         lib.removeRadialItem('furniture_menu')
+        SendNUIMessage({
+            action = "setOwnedItems",
+            data = {}
+        })
+        
         if self.garageZone then
             self.garageZone:destroy()
             self.garageZone = nil
         end
+
         TriggerServerEvent("ps-housing:server:leaveShell", self.property_id)
-        self.inShell = false
+        
         self:UnloadFurnitures()
         DeleteObject(self.shellObj)
+        
+        self.inShell = false
         self.shellObj = nil
         self.shellData = nil
         self.doorbellPool = {}
@@ -224,6 +271,7 @@ Property = {
 
     ManageAccesMenu = function(self)
         if not self.owner then return end
+
         local id = "property-" .. self.property_id .. "-access"
         local menu = {
             id = id,
@@ -249,12 +297,14 @@ Property = {
             lib.notify({ title= 'No one is at the door', type = 'error' })
             return 
         end
+
         local id = "property-" .. self.property_id .. "-doorbell"
         local menu = {
             id = id,
             title = "People at the door",
             options = {}
         }
+
         for k, v in pairs(self.doorbellPool) do
             table.insert(menu.options,{
                 title = GetPlayerName(k),
@@ -263,6 +313,7 @@ Property = {
                 end,
             })
         end
+
         lib.registerContext(menu)
         lib.showContext(id)
     end,
@@ -272,18 +323,99 @@ Property = {
             local v = self.propertyData.furnitures[i]
             local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
             local hash = v.object
+
             while not HasModelLoaded(hash) do Wait(0) end
+
             local object = CreateObject(hash, coords.x, coords.y, coords.z, false, true, false)
             SetModelAsNoLongerNeeded(hash)
             SetEntityRotation(object, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
             FreezeEntityPosition(object, true)
+
+            -- For the prerequisites
+            if v.type == "storage" then
+
+                self.storageTarget = object
+                if Config.Target == "qb" then
+
+                    exports["qb-target"]:AddTargetEntity(object, {
+                        options = {
+                            label = "Storage",
+                            type = "client",
+                            action = function()
+                                local stash = self.propertyId.."-property" -- if you ever change this you will fuck shit up from previous stash db
+                                TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
+                                TriggerEvent("inventory:client:SetCurrentStash", stash)
+                            end
+                        }
+                    })
+
+                elseif Config.Target == "ox" then
+
+                    exports.ox_target:addLocalEntity(object, {
+                        {
+                            name = "storage",
+                            label = "Storage",
+                            onSelect = function()
+                                local stash = self.propertyId.."-property" -- if you ever change this you will fuck shit up from previous stash db
+                                TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
+                                TriggerEvent("inventory:client:SetCurrentStash", stash)
+                            end,
+                        },
+                    })
+
+                end
+
+            elseif v.type == "clothing" then
+
+                self.clothingTarget = object
+                if Config.Target == "qb" then
+
+                    exports["qb-target"]:AddTargetEntity(object, {
+                        options = {
+                            label = "Clothing",
+                            type = "client",
+                            event = "qb-clothing:client:openOutfitMenu"
+                        }
+                    })
+
+                elseif Config.Target == "ox" then
+
+                    exports.ox_target:addLocalEntity(object, {
+                        {
+                            name = "clothing",
+                            label = "Clothing",
+                            event = "qb-clothing:client:openOutfitMenu"
+                        },
+                    })
+
+                end
+
+            end
             self.furnitureObjs[#self.furnitureObjs + 1] = object
         end
     end,
 
     UnloadFurnitures = function(self)
         for i = 1, #self.furnitureObjs do
-            DeleteObject(self.furnitureObjs[i])
+            local object = self.furnitureObjs[i]
+
+            if clothingTarget == object or storageTarget == object then
+
+                if Config.Target == "qb" then
+                    exports["qb-target"]:RemoveTargetEntity(object)
+                elseif Config.Target == "ox" then
+                    exports.ox_target:removeLocalEntity(object)
+                end
+
+                if clothingTarget == object then
+                    clothingTarget = nil
+                elseif storageTarget == object then
+                    storageTarget = nil
+                end
+
+            end
+
+            DeleteObject(object)
         end
         self.furnitureObjs = {}
     end,
@@ -295,7 +427,9 @@ Property = {
         elseif Config.Target == "ox" then
             exports.ox_target:removeZone(targetname)
         end
+
         if self.inShell then self:LeaveShell() end
+
         if self.propertyData.apartment then
             ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
         end
@@ -305,15 +439,19 @@ Property = {
 
 function Property:new(propertyData)
     local obj = {}
+
     obj.property_id = propertyData.property_id
     obj.propertyData = propertyData
+
     local Player = QBCore.Functions.GetPlayerData()
     local citizenid = Player.citizenid
+
     local owner = false
     if propertyData.owner == citizenid then
         owner = true
     end
     obj.owner = owner
+
     local has_access = false
     for i = 1, #propertyData.has_access do
         if propertyData.has_access[i] == citizenid then
@@ -322,6 +460,7 @@ function Property:new(propertyData)
         end
     end
     obj.has_access = has_access
+
     setmetatable(obj, self)
     self.__index = self
     
@@ -332,12 +471,12 @@ function Property:new(propertyData)
         obj:RegisterPropertyEntrance()
         obj:RegisterGarageZone()
     end
+
     return obj
 end
 
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
     local property = PropertiesTable[property_id]
-    print("Entering property", property_id)
     property:EnterShell()
 end)
 
@@ -359,9 +498,11 @@ RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
     local property_id = propertyData.property_id
     local property = PropertiesTable[property_id]
     property.propertyData = propertyData
+
     if property.inShell then
         property:LeaveShell()
     end
+
     property:DeleteProperty()
     property = nil
     PropertiesTable[property_id] = Property:new(propertyData)

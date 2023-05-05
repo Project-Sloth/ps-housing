@@ -4,7 +4,9 @@
 		IS_CART_OPEN,
 		IS_MENU_MINIMIZED,
 		SHOWFURNITURES,
-		CART
+		CART,
+		OWNEDLIST,
+		IS_OWNEDLIST_OPEN
 	} from '@store/stores'
 
 	let selected: number = -1
@@ -101,15 +103,21 @@
 	<div class="overflow-y-visible flex flex-row gap-2 ml-auto">
 		<button
 			class="w-fit px-[2rem] items-center justify-center break h-[4.5rem] text-[2rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 transition-all duration-200 ease-in-out"
-		>
+			on:click={() => {
+				$IS_CART_OPEN = false
+				$IS_OWNEDLIST_OPEN = !$IS_OWNEDLIST_OPEN
+				
+			}}
+			>
 			<p class="w-fit whitespace-nowrap">Owned Furniture</p>
 			<span class="h-fit px-[1rem] bg-[color:var(--color-tertiary)]"
-				>0</span
+				>{$OWNEDLIST.length}</span
 			>
 		</button>
 		<button
 			class="h-[4.5rem] w-fit px-[2rem] text-[2rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 items-center justify-center transition-all duration-200 ease-in-out"
 			on:click={() => {
+				$IS_OWNEDLIST_OPEN = false
 				$IS_CART_OPEN = !$IS_CART_OPEN
 			}}
 		>

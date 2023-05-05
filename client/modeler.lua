@@ -46,15 +46,21 @@ Modeler = {
 
     IsMenuActive = false,
     IsFreecamMode = false,
-
+    
+    property_id = nil
     CurrentObject = nil,
     CurrentCameraPosition = nil,
     CurrentCameraLookAt = nil,
     CurrentObjectAlpha = 200,
     Cart = {},
 
-    OpenMenu = function(self)
-        if not Property.inShell and Property.hasKey then return end
+    OpenMenu = function(self, property_id)
+        local property = PropertiesTable[property_id]
+        if not property then return end
+        if not property.owner and not property.has_access then return end
+        if property.has_access and not Config.AccessCanEditFurniture  then return end 
+
+        self.property_id = property_id
         self.IsMenuActive = true
         SendNUIMessage({
             action = "setVisible",
@@ -64,6 +70,7 @@ Modeler = {
             action = "setFurnituresData",
             data = Config.Furnitures
         })
+        -- Owned furniture is set by the Property class
         SetNuiFocus(true, true)
         self:FreecamActive(true)
         self:FreecamMode(false)
@@ -81,6 +88,8 @@ Modeler = {
         self:FreecamActive(false)
         self.CurrentCameraPosition = nil
         self.CurrentCameraLookAt = nil
+        self.CurrentObject = nil
+        self.property_id = nil
     end,
 
     FreecamActive = function(self, bool)
@@ -118,6 +127,7 @@ Modeler = {
     end,
 
     StartPlacement = function(self, data)
+        self:HoverOut() -- stops the hover effect on the previous object because sometimes mouseleave doesnt work
         local object = data.object
         local curObject
         local objectRot
@@ -128,9 +138,7 @@ Modeler = {
             objectPos = data.position
             objectRot = data.rotation
         else 
-            if self.CurrentObject ~= nil then
-                self:CancelPlacement()
-            end
+            self:CancelPlacement()
             RequestSpawnObject(object)
             curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
             Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
@@ -176,6 +184,7 @@ Modeler = {
     end,
 
     CancelPlacement = function (self)
+        if self.CurrentObject == nil then return end
         local inCart = false
         for k, v in pairs(self.Cart) do
             if k == self.CurrentObject then
@@ -205,9 +214,7 @@ Modeler = {
     end,
 
     SelectCartItem = function (self, data)
-        if self.CurrentObject ~= nil then
-            self:CancelPlacement()
-        end
+        self:CancelPlacement()
         if data ~= nil then
             self:StartPlacement(data)
         end
@@ -282,7 +289,9 @@ Modeler = {
                 y = math.floor((v.position.y - shellPos.y) * 100) / 100,
                 z = math.floor((v.position.z - shellPos.z) * 100) / 100,
             }
+            local id = tostring(math.random(100000, 999999)..self.property)
             items[#items + 1] = {
+                id = id,
                 object = v.object, 
                 position = offsetPos,
                 rotation = v.rotation,
@@ -327,15 +336,31 @@ Modeler = {
     end,
 
     HoverOut = function (self)
+        if self.HoverObject == nil then return end
         DeleteEntity(self.HoverObject)
         self.HoverObject = nil
         self.IsHovering = false
     end,
-}
 
-AddEventHandler("ps-housing:client:furnitureMenu", function(resource)
-    Modeler:OpenMenu()
-end)
+    SelectOwnedItem = function (self, data)
+        self:CancelPlacement()
+        if data ~= nil then
+            self:StartPlacement(data)
+        end
+    end,
+
+    RemoveOwnedItem = function (self, data)
+        local item = data
+        if item ~= nil then
+            DeleteEntity(item.entity)
+            SendNUIMessage({
+                action = "removeOwnedItem",
+                data = item
+            })
+            TriggerServerEvent("ps-housing:server:removeFurniture", self.property_id, item.id)
+        end
+    end,
+}
 
 RegisterNUICallback("previewFurniture", function(data, cb)
 	Modeler:StartPlacement(data)
@@ -414,5 +439,10 @@ end)
 
 RegisterNUICallback("setHoverDistance", function(data, cb)
     Modeler:SetHoverDistance(data)
+    cb("ok")
+end)
+
+RegisterNUICallback("selectOwnedItem", function(data, cb)
+    Modeler:SelectOwnedItem(data)
     cb("ok")
 end)

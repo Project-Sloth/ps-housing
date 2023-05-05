@@ -6,8 +6,7 @@
 	import { SendNUI } from "@utils/SendNUI"
 	import { ReceiveNUI } from "@utils/ReceiveNUI"
 	import Cart from "./Cart.svelte"
-	import ModelStore from "@store/ModelStore"
-
+    import OwnedItems from "./OwnedItems.svelte"
     let isFreeCamMode: boolean = false
     let hoverDistance: number = 5.0
 
@@ -47,6 +46,7 @@
     <Header />
     <ItemList />
     <Cart />
+    <OwnedItems />
     <div 
     style="border-color: {isFreeCamMode?"white":"var(--color-tertiary)"};"
     class="absolute -top-[5rem] text-[2rem] right-0 w-[8rem] border-[0.3rem] h-[4rem] bg-[color:var(--color-primary)] flex flex-row gap-[1rem] items-center justify-center">

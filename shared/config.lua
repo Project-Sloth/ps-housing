@@ -8,7 +8,7 @@ Config.AccessCanEditFurniture = true
 -- If you arent using ox_lib what the fuck are you doing.
 Config.Target = "ox" -- "ox" or "qb"
 Config.DebugZones = true -- draw the poly for the property
-Config.Fuel = "ps-fuel" -- only used for export SetFuel | ps-fuel or LegacyFuel (maybe cdn-fuel)
+Config.Fuel = "ps-fuel" -- only used for export SetFuel | ps-fuel or LegacyFuel (maybe cdn-fuel idk sorry)
 
 -- if true, anyone can take out any vehicle from the garage (if they have keys). ALSO MAEANS THEY CAN PUT IN VEHICLES THAT ARE NOT THEIRS (if they have keys)
 Config.CanGarageAnyVehicle = false 
@@ -399,6 +399,14 @@ Config.Shells = {
 
 Config.Furnitures = {
     {
+        category = "Prerequisites",
+        items = {
+            { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage" },
+            { ["object"] = "v_57_bathmirror", ["price"] = 0, ["label"] = "Outfit Mirror", ["type"] = "clothing"}
+        }
+    },
+
+    {
         category = "Couches",
         items = {
             { ["object"] = "miss_rub_couch_01", ["price"] = 300, ["label"] = "Old couch" },
@@ -564,7 +572,6 @@ Config.Furnitures = {
             { ["object"] = "v_res_tre_bedsidetable", ["price"] = 2500, ["label"] = "Side Unit" },
             { ["object"] = "v_res_tre_bedsidetableb", ["price"] = 2500, ["label"] = "Side Unit 2" },
             { ["object"] = "v_res_tre_smallbookshelf", ["price"] = 2500, ["label"] = "Book Unit" },
-            { ["object"] = "v_res_tre_storagebox", ["price"] = 2500, ["label"] = "Box Unit" },
             { ["object"] = "v_res_tre_storageunit", ["price"] = 2500, ["label"] = "Storage Unit" },
             { ["object"] = "v_res_tre_wardrobe", ["price"] = 2500, ["label"] = "Wardrobe Unit" },
             { ["object"] = "v_res_tre_wdunitscuz", ["price"] = 2500, ["label"] = "Wood Unit" },
