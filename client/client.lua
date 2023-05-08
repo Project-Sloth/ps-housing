@@ -2,15 +2,32 @@ QBCore = exports['qb-core']:GetCoreObject()
 PropertiesTable = {}
 ApartmentsTable = {}
 
-local function GetProperties()
+local function getProperties()
 	local properties = {}
 	for k, v in pairs(PropertiesTable) do
 		properties[#properties+1] = v.propertyData
 	end
 	return properties
 end
-exports('GetProperties',  GetProperties)
 
+local function getApartments()
+    local apartments = {}
+    for k, v in pairs(ApartmentsTable) do
+        apartments[#apartments+1] = v
+    end
+    return apartments
+end
+
+local function getData()
+    local data = {
+        properties = getProperties(),
+        apartments = getApartments()
+    }
+    return data
+end
+exports('GetData', getData)
+
+-- Not used but can be used for other resources
 exports('GetProperty', function(property_id)
 	return PropertiesTable[property_id]
 end)
@@ -24,6 +41,7 @@ AddEventHandler("onResourceStop", function(resourceName)
 		if Modeler.IsMenuActive then
 			Modeler:CloseMenu()
 		end
+
 		for k, v in pairs(PropertiesTable) do
 			v:DeleteProperty()
 		end
@@ -33,8 +51,12 @@ end)
 local function createProperty(property)
 	PropertiesTable[tostring(property.property_id)] = Property:new(property)
 	if GetResourceState('bl-realtor') == 'started' then
-		local properties = GetProperties()
+		local properties = getProperties()
 		TriggerEvent("bl-realtor:client:updateProperties", properties)
+
+        if propert.apartment and property.apartment.length > 1 then
+            TriggerEvent("bl-realtor:client:updateApartments", getApartments())
+        end
 	end
 end
 RegisterNetEvent('ps-housing:client:addProperty', createProperty)
@@ -60,12 +82,11 @@ AddEventHandler("onResourceStart", function(resourceName)
         for k, v in pairs(Config.Apartments) do
             ApartmentsTable[k] = Apartment:new(v)
         end
+
         local properties = lib.callback.await('ps-housing:server:requestProperties')
         for k, v in pairs(properties) do
             createProperty(v)
         end
-        print("properties", json.encode(PropertiesTable, {indent=true}))
-        print("apartments", json.encode(ApartmentsTable, {indent=true}))
 	end
 end)
 
@@ -97,7 +118,9 @@ AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_
                 property_id = property_id,
             }
         }
+        
         ::continue::
+
     end
 
     if #menu.options == 0 then
@@ -180,21 +203,19 @@ AddEventHandler("ps-housing:client:storeVehicle", function(garageName)
         lib.notify({title="You do not own this vehicle or do not have access to the property garage", type="error"})
         return
     end
+
     local bodyDamage = math.ceil(GetVehicleBodyHealth(veh))
     local engineDamage = math.ceil(GetVehicleEngineHealth(veh))
     local totalFuel = exports['LegacyFuel']:GetFuel(veh)
+
     TriggerServerEvent('qb-garages:server:UpdateOutsideVehicle', plate, nil)
     TriggerServerEvent('ps-housing:server:updateVehicle', 1, totalFuel, engineDamage, bodyDamage, plate, garageName)
     SetVehicleDoorsLocked(veh)
     Wait(1500)
+
     SetEntityAsMissionEntity(veh, true, true)
     DeleteVehicle(veh)
 end)
-
-
-
-
-
 
 local findingOffset = false
 local function offsetThread()
@@ -206,7 +227,9 @@ local function offsetThread()
             break
         end
     end
+
     local shellCoords = GetEntityCoords(propertyObj)
+
     while findingOffset do
         local ped = cache.ped
         local coords = GetEntityCoords(ped)
@@ -214,6 +237,7 @@ local function offsetThread()
         local y = math.floor((coords.y - shellCoords.y) * 100) / 100
         local z = math.floor((coords.z - shellCoords.z) * 100) / 100
         local heading = math.floor(GetEntityHeading(ped) * 100) / 100
+
         BeginTextCommandDisplayText('STRING')
         AddTextComponentSubstringPlayerName('x: ' .. x .. ' y: ' .. y .. ' z: ' .. z .. ' heading: ' .. heading)
         EndTextCommandDisplayText(0, 0)
@@ -241,6 +265,7 @@ end
 RegisterCommand('findoffset', function()
     findingOffset = not findingOffset
     if not findingOffset then return end
+
     CreateThread(offsetThread)
     CreateThread(markerThread)
 end)
