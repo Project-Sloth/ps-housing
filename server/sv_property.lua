@@ -201,6 +201,18 @@ Property = {
         print("Changed Garage of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
+    UpdateApartment = function (self, data)
+        local apartment = data.apartment
+        local realtorSrc = data.realtorSrc
+
+        self.propertyData.apartment = apartment
+        MySQL.update("UPDATE properties SET apartment = @apartment WHERE property_id = @property_id", {
+            ["@apartment"] = apartment,
+            ["@property_id"] = self.property_id
+        })
+        print("Changed Apartment of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+    end,
+
     DeleteProperty = function (self, data)
         local realtorSrc = data.realtorSrc
         MySQL.Async.execute("DELETE FROM properties WHERE property_id = @property_id", {

@@ -78,12 +78,43 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     end
 end)
 
-function GetCitizenid(src)
-    local Player = QBCore.Functions.GetPlayer(src)
-    local PlayerData = Player.PlayerData
-    local citizenid = PlayerData.citizenid
-    return citizenid, PlayerData, Player
-end
+AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
+    local apartment = data.apartment
+    local targetSrc = data.targetSrc
+    local realtorSrc = data.realtorSrc
+    local targetCitizenid = GetCitizenid(targetSrc)
+
+    -- id of current apartment so we can change it
+    local property_id = nil
+    for k, v in pairs(PropertiesTable) do
+        local propertyData = v.propertyData
+        if propertyData.owner == targetCitizenid then
+            if propertyData.apartment == apartment then
+                lib.Notify(targetSrc, "You are already in this apartment", "error")
+                lib.Notify(realtorSrc, "This person is already in this apartment", "error")
+                return
+            elseif #propertyData.apartment > 1 then
+                property_id = propertyData.property_id
+                break
+            end
+        end
+    end
+    local property = PropertiesTable[property_id]
+    if not property then return end
+
+    property:UpdateApartment(data)
+
+    local citizenid = GetCitizenid(targetSrc)
+    local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
+    local targetPlayer = targetToAdd.PlayerData
+
+    lib.Notify(targetSrc, "Your apartment is now at "..apartment, "success")
+    lib.Notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
+end)
+
+
 
 lib.callback.register("ps-housing:cb:getVehicles", function(source, garageName, property_id)
     local src = source
@@ -183,3 +214,11 @@ lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, p
         return false
     end
 end)
+
+
+function GetCitizenid(src)
+    local Player = QBCore.Functions.GetPlayer(src)
+    local PlayerData = Player.PlayerData
+    local citizenid = PlayerData.citizenid
+    return citizenid, PlayerData, Player
+end
