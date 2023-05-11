@@ -21,12 +21,8 @@ Config.Apartments = {
         door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 1 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712459691208704/angle_1.webp",
-                label = "Angle 1",
-            },
-            {
-                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712460110643210/angle_2.webp",
-                label = "Angle 2",
+                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106153553283784704/integrity.webp",
+                label = "Outside",
             },
         }
     },
@@ -36,12 +32,8 @@ Config.Apartments = {
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 1 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712459691208704/angle_1.webp",
-                label = "Angle 1",
-            },
-            {
-                url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712460110643210/angle_2.webp",
-                label = "Angle 2",
+                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                label = "Outside",
             },
         }
     }

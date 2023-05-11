@@ -54,8 +54,10 @@ local function createProperty(property)
 		local properties = getProperties()
 		TriggerEvent("bl-realtor:client:updateProperties", properties)
 
-        if propert.apartment and property.apartment.length > 1 then
-            TriggerEvent("bl-realtor:client:updateApartments", getApartments())
+        if property.apartment then
+            if #property.apartment > 1 then
+                TriggerEvent("bl-realtor:client:updateApartments", getApartments())
+            end
         end
 	end
 end
