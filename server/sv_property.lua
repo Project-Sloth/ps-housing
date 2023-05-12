@@ -6,6 +6,7 @@ Property = {
 
     PlayerEnter = function (self, src)
         self.playersInside[src] = true
+        TriggerClientEvent('qb-weathersync:client:DisableSync', src)
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
         if self.playersDoorbell[1] then
             TriggerClientEvent("ps-housing:client:updateDoorbellPool", src, self.property_id, self.playersDoorbell)
@@ -35,6 +36,7 @@ Property = {
 
     PlayerLeave = function (self, src)
         self.playersInside[src] = nil
+        TriggerEvent('qb-weathersync:client:EnableSync', src)
     end,
 
     CheckForAccess = function (self, citizenid)
