@@ -8,12 +8,13 @@ Config.AccessCanEditFurniture = true
 -- If you arent using ox_lib what the fuck are you doing.
 Config.Target = "ox" -- "ox" or "qb"
 Config.DebugZones = true -- draw the poly for the property
-Config.Fuel = "ps-fuel" -- only used for export SetFuel | ps-fuel or LegacyFuel (maybe cdn-fuel idk sorry)
+Config.Fuel = "LegacyFuel" -- only used for export SetFuel | ps-fuel or LegacyFuel (maybe cdn-fuel idk sorry)
 
 -- if true, anyone can take out any vehicle from the garage (if they have keys). ALSO MAEANS THEY CAN PUT IN VEHICLES THAT ARE NOT THEIRS (if they have keys)
 Config.CanGarageAnyVehicle = false 
 
-
+Config.StartingApartment = "Integrity Way" -- set to false if no
+Config.DefaultApartmentShell = "Apartment Furnished"
 
 Config.Apartments = {
     ["Integrity Way"] = {

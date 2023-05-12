@@ -47,7 +47,7 @@ Modeler = {
     IsMenuActive = false,
     IsFreecamMode = false,
     
-    property_id = nil
+    property_id = nil,
     CurrentObject = nil,
     CurrentCameraPosition = nil,
     CurrentCameraLookAt = nil,

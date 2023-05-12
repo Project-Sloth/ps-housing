@@ -173,21 +173,25 @@ RegisterNetEvent("ps-housing:client:takeOutVehicle", function(data)
     local engine = vehicle.engine + 0.0
     local body = vehicle.body + 0.0
     local data = json.decode(vehicle.mods)
+
     for k, v in pairs(data.doorStatus) do
         if v then
             SetVehicleDoorBroken(veh, tonumber(k), true)
         end
     end
+
     for k, v in pairs(data.tireBurstState) do
         if v then
             SetVehicleTyreBurst(veh, tonumber(k), true)
         end
     end
+
     for k, v in pairs(data.windowStatus) do
         if not v then
             SmashVehicleWindow(veh, tonumber(k))
         end
     end
+
     SetVehicleEngineHealth(veh, engine)
     SetVehicleBodyHealth(veh, body)
 
@@ -212,7 +216,9 @@ AddEventHandler("ps-housing:client:storeVehicle", function(garageName)
 
     TriggerServerEvent('qb-garages:server:UpdateOutsideVehicle', plate, nil)
     TriggerServerEvent('ps-housing:server:updateVehicle', 1, totalFuel, engineDamage, bodyDamage, plate, garageName)
+
     SetVehicleDoorsLocked(veh)
+    
     Wait(1500)
 
     SetEntityAsMissionEntity(veh, true, true)

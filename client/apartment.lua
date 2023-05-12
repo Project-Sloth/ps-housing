@@ -116,3 +116,9 @@ function Apartment:new(apartmentData)
     obj:RegisterPropertyEntrance()
     return obj
 end
+
+RegisterNetEvent('ps-housing:client:startInApartment', function (apartmentName)
+    local apartment = ApartmentsTable[apartmentName]
+    apartment:EnterApartment()
+    
+end)

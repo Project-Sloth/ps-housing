@@ -8,9 +8,9 @@ MySQL.ready(function()
             result = {result}
         end
         for _, v in pairs(result) do
-            local id = tonumber(v.property_id)
+            local id = tostring(v.property_id)
             local propertyData = {
-                property_id = tostring(id),
+                property_id = id,
                 owner = v.owner_citizenid,
                 label = v.label,
                 description = v.description,
@@ -24,7 +24,7 @@ MySQL.ready(function()
                 door_data = json.decode(v.door_data),
                 garage_data = json.decode(v.garage_data),
             }
-            PropertiesTable[tostring(id)] = Property:new(propertyData)
+            PropertiesTable[id] = Property:new(propertyData)
         end
         dbloaded = true
     end)
@@ -49,22 +49,27 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     propertyData.furnitures = propertyData.furnitures or {}
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
-    local id = MySQL.insert.await("INSERT INTO properties (owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, door_data, garage_data) VALUES  (@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @door_data, @garage_data)", {
+    local id = MySQL.insert.await("INSERT INTO properties owner_citizenid = @owner_citizenid, label = @label, description = @description, has_access = @has_access, extra_imgs = @extra_imgs, furnitures = @furnitures, for_sale = @for_sale, price = @price, shell = @shell, apartment = @apartment door_data = @door_data, garage_data = @garage_data)", {
         ["@owner_citizenid"] = propertyData.owner or nil,
         ["@label"] = propertyData.label,
         ["@description"] = propertyData.description,
         ["@has_access"] = json.encode(propertyData.has_access),
         ["@extra_imgs"] = json.encode(propertyData.extra_imgs),
         ["@furnitures"] = json.encode(propertyData.furnitures),
-        ["@for_sale"] = 1,
-        ["@price"] = propertyData.price,
+        ["@for_sale"] = propertyData.for_sale or 1,
+        ["@price"] = propertyData.price or 0,
         ["@shell"] = propertyData.shell,
+        ["@apartment"] = propertyData.apartment,
         ["@door_data"] = json.encode(propertyData.door_data),
         ["@garage_data"] = json.encode(propertyData.garage_data),
     })
     propertyData.property_id = tostring(id)
     PropertiesTable[id] = Property:new(propertyData)
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
+    if propertyData.apartment then
+        local src = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
+        TriggerClientEvent("ps-housing:client:startInApartment", src, propertyData.apartment)
+    end
 end)
 
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
@@ -76,6 +81,31 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     else 
         TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
     end
+end)
+
+AddEventHandler("ps-housing:server:createNewApartment", function(source)
+    local src = source
+
+    if not Config.StartingApartment then return end
+    local citizenid, PlayerData = GetCitizenid(src)
+    if not citizenid then return end
+
+    local propertyData = {
+        owner = citizenid,
+        label = string.format("%s's Apartment", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname),
+        description = string.format("This is %s's apartment in %s", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, Config.StartingApartment),
+        has_access = {},
+        extra_imgs = {},
+        furnitures = {},
+        for_sale = 0,
+        price = 0,
+        shell = Config.DefaultApartmentShell,
+        apartment = Config.StartingApartment,
+        door_data = {},
+        garage_data = {},
+    }
+    print("Creating new apartment for " .. GetPlayerName(src) .. " in " .. Config.StartingApartment)
+    TriggerEvent("ps-housing:server:registerProperty", propertyData)
 end)
 
 AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
@@ -114,6 +144,17 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
 
+-- lib.callback.register("ps-housing:server:getOutfits", function(source, cb)
+--     local src = source
+--     local citizenid = GetCitizenid(src)
+
+--     if citizenid then
+--         local result = MySQL.query.await('SELECT * FROM player_outfits WHERE citizenid = @citizenid', { 
+--             ["@citizenid"] = citizenid 
+--         })
+--         return result[1]
+--     end
+-- end)
 
 
 lib.callback.register("ps-housing:cb:getVehicles", function(source, garageName, property_id)
