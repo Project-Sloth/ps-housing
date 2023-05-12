@@ -43,33 +43,43 @@ AddEventHandler('freecam:onTick', function()
 -- WHERE THE ACTUAL CLASS STARTS
 
 Modeler = {
-
     IsMenuActive = false,
     IsFreecamMode = false,
-    
+
     property_id = nil,
+
     CurrentObject = nil,
     CurrentCameraPosition = nil,
     CurrentCameraLookAt = nil,
     CurrentObjectAlpha = 200,
+
     Cart = {},
+
+    -- Hover stuff
+    IsHovering = false,
+    HoverObject = nil,
+    HoverDistance = 5.0,
 
     OpenMenu = function(self, property_id)
         local property = PropertiesTable[property_id]
+
         if not property then return end
         if not property.owner and not property.has_access then return end
         if property.has_access and not Config.AccessCanEditFurniture  then return end 
 
         self.property_id = property_id
         self.IsMenuActive = true
+
         SendNUIMessage({
             action = "setVisible",
             data = true
         })
+
         SendNUIMessage({
             action = "setFurnituresData",
             data = Config.Furnitures
         })
+
         -- Owned furniture is set by the Property class
         SetNuiFocus(true, true)
         self:FreecamActive(true)
@@ -79,13 +89,17 @@ Modeler = {
     CloseMenu = function(self)
         self.IsMenuActive = false
         self:ClearCart()
+
         SendNUIMessage({
             action = "setVisible",
             data = false
         })
+
         SetNuiFocus(false, false)
+
         self:CancelPlacement()
         self:FreecamActive(false)
+
         self.CurrentCameraPosition = nil
         self.CurrentCameraLookAt = nil
         self.CurrentObject = nil
@@ -148,18 +162,17 @@ Modeler = {
             objectPos = self.CurrentCameraLookAt
         end
 
-
         FreezeEntityPosition(curObject, true)
         SetEntityCollision(curObject, false, false)
         SetEntityAlpha(curObject, self.CurrentObjectAlpha, false)
         SetEntityDrawOutline(curObject, true)
         SetEntityDrawOutlineColor(255, 255, 255, 255)
         SetEntityDrawOutlineShader(0)
+
         SendNUIMessage({
             action = "setObjectAlpha",
             data = self.CurrentObjectAlpha
         })
-
 
         SendNUIMessage({ 
             action = "setupModel",
@@ -171,6 +184,7 @@ Modeler = {
                 cartIndex = data.entity or nil,
             }
         })
+
         SetNuiFocus(true, true)
         self.CurrentObject = curObject
     end,
@@ -186,15 +200,18 @@ Modeler = {
     CancelPlacement = function (self)
         if self.CurrentObject == nil then return end
         local inCart = false
+
         for k, v in pairs(self.Cart) do
             if k == self.CurrentObject then
                 inCart = true
                 break
             end
         end
+
         if not inCart then
             DeleteEntity(self.CurrentObject)
         end
+
         SetEntityDrawOutline(self.CurrentObject, false)
         SetEntityAlpha(self.CurrentObject, 255, false)
         self.CurrentObject = nil
@@ -215,6 +232,7 @@ Modeler = {
 
     SelectCartItem = function (self, data)
         self:CancelPlacement()
+
         if data ~= nil then
             self:StartPlacement(data)
         end
@@ -229,29 +247,36 @@ Modeler = {
             position = GetEntityCoords(self.CurrentObject),
             rotation = GetEntityRotation(self.CurrentObject),
         }
+
         self.Cart[self.CurrentObject] = item
+
         SendNUIMessage({
             action = "addToCart",
             data = item
         })
+
         self:CancelPlacement()
         self.CurrentObject = nil
     end,
 
     RemoveFromCart = function (self, data)
         local item = data
+
         if item ~= nil then
             DeleteEntity(item.entity)
+
             SendNUIMessage({
                 action = "removeFromCart",
                 data = item
             })
+
             self.Cart[data.entity] = nil
         end
     end,
 
     UpdateCartItem = function (self, data)
         local item = self.Cart[data.entity]
+
         if item ~= nil then
             item = data
         end
@@ -261,6 +286,7 @@ Modeler = {
         for k, v in pairs(self.Cart) do
             DeleteEntity(v.entity)
         end
+
         self.Cart = {}
         SendNUIMessage({
             action = "clearCart"
@@ -268,10 +294,10 @@ Modeler = {
     end,
 
     BuyCart = function (self)
-
         local shellPos = GetEntityCoords(Property.shellObj)
         local items = {}
         local totalPrice = 0
+
         -- seperate loop to get total price so it doesnt have to do all that math for no reason
         for k, v in pairs(self.Cart) do
             totalPrice = totalPrice + v.price
@@ -289,7 +315,9 @@ Modeler = {
                 y = math.floor((v.position.y - shellPos.y) * 100) / 100,
                 z = math.floor((v.position.z - shellPos.z) * 100) / 100,
             }
+
             local id = tostring(math.random(100000, 999999)..self.property)
+
             items[#items + 1] = {
                 id = id,
                 object = v.object, 
@@ -302,13 +330,11 @@ Modeler = {
             local currentproperty_id = Property.property_id
             TriggerServerEvent("ps-housing:server:buyFurniture", currentproperty_id, items, totalPrice)
         end
+
         self:ClearCart()
     end,
 
-    -- Hover stuff
-    IsHovering = false,
-    HoverObject = nil,
-    HoverDistance = 5.0,
+
 
     SetHoverDistance = function (self, data)
         self.HoverDistance = data + 0.0
@@ -318,6 +344,7 @@ Modeler = {
         self:HoverOut()
         local object = data.object
         if object == nil then return end
+
         RequestSpawnObject(object)
         self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
@@ -327,6 +354,7 @@ Modeler = {
         FreezeEntityPosition(self.HoverObject, true)
         SetEntityCollision(self.HoverObject, false, false)
         SetEntityRotation(self.HoverObject, 0.0, 0.0, camRot.z)
+
         self.IsHovering = true
         while self.IsHovering do
             local rot = GetEntityRotation(self.HoverObject)
@@ -351,12 +379,15 @@ Modeler = {
 
     RemoveOwnedItem = function (self, data)
         local item = data
+
         if item ~= nil then
             DeleteEntity(item.entity)
+
             SendNUIMessage({
                 action = "removeOwnedItem",
                 data = item
             })
+
             TriggerServerEvent("ps-housing:server:removeFurniture", self.property_id, item.id)
         end
     end,

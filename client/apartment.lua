@@ -6,10 +6,20 @@ Apartment = {
 
     RegisterPropertyEntrance = function (self)
         local door = self.apartmentData.door
-        local targetname = string.gsub(self.apartmentData.label, "%s+", "").."_apartment"
+        local targetName = string.format("%s_apartment",self.apartmentData.label)
+
+        -- not sure why but referencing self directy runs it when registering the zones
+        local function enterApartment() 
+            self:EnterApartment()
+        end
+
+        local function seeAll()
+            self:GetMenuForAll()
+        end
+
         if Config.Target == "qb" then
-            exports['qb-target']:AddBoxZone(targetname, vector3(door.x, door.y, door.z), door.length, door.width, {
-                name = targetname,
+            exports['qb-target']:AddBoxZone(targetName, vector3(door.x, door.y, door.z), door.length, door.width, {
+                name = targetName,
                 heading = door.h,
                 debugPoly = Config.DebugZones,
                 minZ = door.z - 1.0,
@@ -18,23 +28,17 @@ Apartment = {
                 options = {
                     {
                         label = "Enter Apartment",
-                        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-                            if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-                            self:EnterApartment()
-                        end,
+                        action = enterApartment,
                     },
                     {
                         label = "See all apartments",
-                        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-                            if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-                            self:GetMenuForAll()
-                        end,
+                        action = seeAll,
                     }
                 }
             })
         elseif Config.Target == "ox" then
             exports.ox_target:addBoxZone({
-                id = targetname,
+                id = targetName,
                 coords = vector3(door.x, door.y, door.z),
                 size = vector3(door.length, door.width, 3.0),
                 rotation = door.h,
@@ -43,16 +47,12 @@ Apartment = {
                     {
                         name = "enter",
                         label = "Enter Apartment",
-                        onSelect = function()
-                            self:EnterApartment()
-                        end,
+                        onSelect = enterApartment,
                     },
                     {
                         name = "seeall",
                         label = "See all apartments",
-                        onSelect = function()
-                            self:GetMenuForAll()
-                        end,
+                        onSelect = seeAll,
                     }
                 }
             })
@@ -64,8 +64,10 @@ Apartment = {
             lib.notify({title="You dont have an apartment here.", type="error"})
             return
         end
+
         for propertyId, _  in pairs(self.apartments) do
             local property = PropertiesTable[propertyId]
+
             if property.propertyData.owner then
                 TriggerServerEvent('ps-housing:server:enterProperty', property.property_id) 
             else
@@ -79,12 +81,14 @@ Apartment = {
             lib.notify({title="There are no apartments here.", type="error"})
             return
         end
+
         local id = "apartments-" .. self.apartmentData.label
         local menu = {
             id = id,
             title = "Apartments",
             options = {}
         }
+
         for propertyId, _ in pairs(self.apartments) do
             table.insert(menu.options,{
                 title = PropertiesTable[propertyId].propertyData.label,
@@ -93,6 +97,7 @@ Apartment = {
                 end,
             })
         end 
+
         lib.registerContext(menu)
         lib.showContext(id)
     end,
@@ -103,22 +108,26 @@ Apartment = {
 
     RemoveProperty = function(self, propertyId) 
         if self.apartments[propertyId] == nil then return end
+
         self.apartments[propertyId] = nil
     end,
 }
 
 function Apartment:new(apartmentData)
     local obj = {}
+
     obj.apartmentData = apartmentData
     obj.apartments = apartmentData.apartments or {}
+
     setmetatable(obj, self)
     self.__index = self
+
     obj:RegisterPropertyEntrance()
+
     return obj
 end
 
 RegisterNetEvent('ps-housing:client:startInApartment', function (apartmentName)
     local apartment = ApartmentsTable[apartmentName]
     apartment:EnterApartment()
-    
 end)

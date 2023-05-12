@@ -4,17 +4,21 @@ ApartmentsTable = {}
 
 local function getProperties()
 	local properties = {}
+
 	for k, v in pairs(PropertiesTable) do
 		properties[#properties+1] = v.propertyData
 	end
+
 	return properties
 end
 
 local function getApartments()
     local apartments = {}
+
     for k, v in pairs(ApartmentsTable) do
         apartments[#apartments+1] = v
     end
+
     return apartments
 end
 
@@ -23,6 +27,7 @@ local function getData()
         properties = getProperties(),
         apartments = getApartments()
     }
+
     return data
 end
 exports('GetData', getData)
@@ -50,13 +55,15 @@ end)
 
 local function createProperty(property)
 	PropertiesTable[tostring(property.property_id)] = Property:new(property)
+
 	if GetResourceState('bl-realtor') == 'started' then
 		local properties = getProperties()
 		TriggerEvent("bl-realtor:client:updateProperties", properties)
 
         if property.apartment then
             if #property.apartment > 1 then
-                TriggerEvent("bl-realtor:client:updateApartments", getApartments())
+                local apartments = getApartments()
+                TriggerEvent("bl-realtor:client:updateApartments", apartments)
             end
         end
 	end
@@ -65,15 +72,18 @@ RegisterNetEvent('ps-housing:client:addProperty', createProperty)
 
 RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 	local property = PropertiesTable[property_id]
+
 	if property then
 		property:DeleteProperty()
 	end
+
 	PropertiesTable[property_id] = nil
 end)
 
 
 AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
     local properties = lib.callback.await('ps-housing:server:requestProperties')
+
     for k, v in pairs(properties) do
         createProperty(v)
     end
@@ -86,6 +96,7 @@ AddEventHandler("onResourceStart", function(resourceName)
         end
 
         local properties = lib.callback.await('ps-housing:server:requestProperties')
+
         for k, v in pairs(properties) do
             createProperty(v)
         end
@@ -96,6 +107,7 @@ end)
 AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_id)
     local garageName = gargeName
     local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", gargeName, property_id)
+
     local menu = {
         id = gargeName,
         title = "People at the door",
@@ -140,21 +152,25 @@ local function doCarDamage(currentVehicle, veh)
     local engine = veh.engine + 0.0
     local body = veh.body + 0.0
     local data = json.decode(veh.mods)
+
     for k, v in pairs(data.doorStatus) do
         if v then
             SetVehicleDoorBroken(currentVehicle, tonumber(k), true)
         end
     end
+
     for k, v in pairs(data.tireBurstState) do
         if v then
             SetVehicleTyreBurst(currentVehicle, tonumber(k), true)
         end
     end
+
     for k, v in pairs(data.windowStatus) do
         if not v then
             SmashVehicleWindow(currentVehicle, tonumber(k))
         end
     end
+
     SetVehicleEngineHealth(currentVehicle, engine)
     SetVehicleBodyHealth(currentVehicle, body)
 end
@@ -166,6 +182,7 @@ RegisterNetEvent("ps-housing:client:takeOutVehicle", function(data)
     local garageCoords = vector4(garage_data.x, garage_data.y, garage_data.z, garage_data.h)
     local netId, vehProps = lib.callback.await("ps-housing:cb:spawnVehicle", vehicle, garageCoords)
     local veh = NetToVeh(netId)
+
     QBCore.Functions.SetVehicleProperties(veh, vehProps)
     exports[Config.Fuel]:SetFuel(veh, vehicle.fuel)
     doCarDamage(veh, vehicle)
@@ -218,7 +235,7 @@ AddEventHandler("ps-housing:client:storeVehicle", function(garageName)
     TriggerServerEvent('ps-housing:server:updateVehicle', 1, totalFuel, engineDamage, bodyDamage, plate, garageName)
 
     SetVehicleDoorsLocked(veh)
-    
+
     Wait(1500)
 
     SetEntityAsMissionEntity(veh, true, true)
@@ -261,6 +278,7 @@ local function markerThread()
     local width = 1.0
     local zoff = 2.0
     local height = 3.0
+    
     while findingOffset do
         local ped = cache.ped
         local coords = GetEntityCoords(ped)

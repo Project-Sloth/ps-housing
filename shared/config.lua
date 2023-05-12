@@ -1,19 +1,24 @@
 Config = {}
 
-
 -- Anyone who is given keys to a property can edit furniture
 Config.AccessCanEditFurniture = true
 
 -- Below is only for target, not menus or anything else.
 -- If you arent using ox_lib what the fuck are you doing.
 Config.Target = "ox" -- "ox" or "qb"
-Config.DebugZones = true -- draw the poly for the property
-Config.Fuel = "LegacyFuel" -- only used for export SetFuel | ps-fuel or LegacyFuel (maybe cdn-fuel idk sorry)
+
+-- draw the poly for the property
+Config.DebugZones = true 
+
+-- only used for export SetFuel | ps-fuel or LegacyFuel (maybe cdn-fuel idk sorry)
+Config.Fuel = "LegacyFuel" 
 
 -- if true, anyone can take out any vehicle from the garage (if they have keys). ALSO MAEANS THEY CAN PUT IN VEHICLES THAT ARE NOT THEIRS (if they have keys)
 Config.CanGarageAnyVehicle = false 
 
-Config.StartingApartment = "Integrity Way" -- set to false if no
+-- set to false if no
+Config.StartingApartment = "Integrity Way"
+
 Config.DefaultApartmentShell = "Apartment Furnished"
 
 Config.Apartments = {
@@ -39,10 +44,6 @@ Config.Apartments = {
         }
     }
 }
-
-
-
-
 
 -- Shells provided by K4MB1 https://www.k4mb1maps.com/
 Config.Shells = {

@@ -1,12 +1,16 @@
 QBCore = exports['qb-core']:GetCoreObject()
-local dbloaded = false
 PropertiesTable = {}
+
+
+local dbloaded = false
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)
         if not result then return end
+
         if result.id then -- If only one result
             result = {result}
         end
+
         for _, v in pairs(result) do
             local id = tostring(v.property_id)
             local propertyData = {
@@ -26,6 +30,7 @@ MySQL.ready(function()
             }
             PropertiesTable[id] = Property:new(propertyData)
         end
+
         dbloaded = true
     end)
 end)
@@ -34,21 +39,26 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
     while not dbloaded do
         Wait(100)
     end
+
     local propertiesData = {}
+
     for k, v in pairs(PropertiesTable) do
         propertiesData[k] = v.propertyData
     end
+
     return propertiesData
 end)
 
 AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
     local propertyData = propertyData
+
     propertyData.owner = propertyData.owner or nil
     propertyData.has_access = propertyData.has_access or {}
     propertyData.extra_imgs = propertyData.extra_imgs or {}
     propertyData.furnitures = propertyData.furnitures or {}
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
+
     local id = MySQL.insert.await("INSERT INTO properties owner_citizenid = @owner_citizenid, label = @label, description = @description, has_access = @has_access, extra_imgs = @extra_imgs, furnitures = @furnitures, for_sale = @for_sale, price = @price, shell = @shell, apartment = @apartment door_data = @door_data, garage_data = @garage_data)", {
         ["@owner_citizenid"] = propertyData.owner or nil,
         ["@label"] = propertyData.label,
@@ -63,9 +73,12 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         ["@door_data"] = json.encode(propertyData.door_data),
         ["@garage_data"] = json.encode(propertyData.garage_data),
     })
+
     propertyData.property_id = tostring(id)
     PropertiesTable[id] = Property:new(propertyData)
+
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
+
     if propertyData.apartment then
         local src = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         TriggerClientEvent("ps-housing:client:startInApartment", src, propertyData.apartment)
@@ -75,7 +88,9 @@ end)
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
     local property = PropertiesTable[property_id]
     if not property then return end
+
     property[type](property, data)
+
     if type == "DeleteProperty" then
         PropertiesTable[property_id] = nil
     else 
@@ -88,7 +103,6 @@ AddEventHandler("ps-housing:server:createNewApartment", function(source)
 
     if not Config.StartingApartment then return end
     local citizenid, PlayerData = GetCitizenid(src)
-    if not citizenid then return end
 
     local propertyData = {
         owner = citizenid,
@@ -104,6 +118,7 @@ AddEventHandler("ps-housing:server:createNewApartment", function(source)
         door_data = {},
         garage_data = {},
     }
+
     print("Creating new apartment for " .. GetPlayerName(src) .. " in " .. Config.StartingApartment)
     TriggerEvent("ps-housing:server:registerProperty", propertyData)
 end)
@@ -116,6 +131,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
 
     -- id of current apartment so we can change it
     local property_id = nil
+
     for k, v in pairs(PropertiesTable) do
         local propertyData = v.propertyData
         if propertyData.owner == targetCitizenid then
@@ -129,6 +145,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
             end
         end
     end
+
     local property = PropertiesTable[property_id]
     if not property then return end
 
@@ -144,33 +161,25 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
 
--- lib.callback.register("ps-housing:server:getOutfits", function(source, cb)
---     local src = source
---     local citizenid = GetCitizenid(src)
-
---     if citizenid then
---         local result = MySQL.query.await('SELECT * FROM player_outfits WHERE citizenid = @citizenid', { 
---             ["@citizenid"] = citizenid 
---         })
---         return result[1]
---     end
--- end)
-
-
 lib.callback.register("ps-housing:cb:getVehicles", function(source, garageName, property_id)
     local src = source
     local garageName = garageName
-    local citizenid = GetCitizenid(src)
+    
     local property = PropertiesTable[property_id]
     if not property then return end
+
+    local citizenid = GetCitizenid(src)
     if not property:CheckForAccess(citizenid) then return end
+
     local citizenidCheck = Config.CanGarageAnyVehicle and " citizenid = @citizenid AND" or ""
+
     local vehicles = MySQL.query.await('SELECT * FROM player_vehicles WHERE'..citizenidCheck..' garage = @garage AND state = @state', 
     {
         ['@citizenid'] = citizenid,
         ['@garage'] = garageName,
         ['@state'] = 1,
     })
+
     return vehicles
 end)
 
@@ -180,19 +189,23 @@ RegisterNetEvent("ps-housing:server:takeOutVehicle", function(data)
     local property_id = data.property_id
     local citizenid = GetCitizenid(src)
     local property = PropertiesTable[property_id]
+
     if not property then return end
     if not property:CheckForAccess(citizenid) then return end
+
     TriggerClientEvent("ps-housing:client:takeOutVehicle", src, {vehicle = vehicle, property_id = property_id})
 end)
 
 RegisterNetEvent("ps-housing:server:updateVehicle", function(state, fuel, engine, body, plate, garageName)
     local src = source
     local citizenid = GetCitizenid(src)
+
     local owned = MySQL.query.await('SELECT * FROM player_vehicles WHERE citizenid = @citizenid AND plate = @plate', 
     {
         ['@citizenid'] = citizenid,
         ['@plate'] = plate,
     })
+
     if owned[1] then
         MySQL.update('UPDATE player_vehicles SET state = @state, fuel = @fuel, engine = @engine, body = @body, garage = @garage WHERE plate = @plate', 
         {
@@ -212,8 +225,10 @@ lib.callback.register("ps-housing:cb:spawnVehicle", function (source, vehicle, c
     local src = source
     local vehicle = vehicle
     local coords = coords
+
     -- Spawn vehicle
     local veh = CreateVehicle(vehicle.vehicle, coords.x, coords.y, coords.z, coords.w, true, true)
+
     SetEntityAsMissionEntity(veh, true, true)
     SetEntityHeading(veh, coords.w)
     SetVehicleNumberPlateText(veh, vehicle.plate)
@@ -229,21 +244,27 @@ lib.callback.register("ps-housing:cb:spawnVehicle", function (source, vehicle, c
     local vehProps = {}
     local result = MySQL.query.await('SELECT mods FROM player_vehicles WHERE plate = ?', {vehicle.plate})
     if result[1] then vehProps = json.decode(result[1].mods) end
+
     local netId = NetworkGetNetworkIdFromEntity(veh)
 
     -- Set Vehicle as out in qb garage table
     TriggerEvent("qb-garages:server:UpdateOutsideVehicle", vehicle.plate, netId)
+
     return netId, vehProps
 end)
 
 lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, property_id)
     local src = source
     local plate = plate
+
     local property = PropertiesTable[property_id]
     if not property then return false end
+
     local citizenid = GetCitizenid(src)
     if not property:CheckForAccess(citizenid) then return false end
+
     local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {['@plate'] = plate})
+    
     if result[1] then
         MySQL.update('UPDATE player_vehicles SET state = @state WHERE plate = @plate', 
         {

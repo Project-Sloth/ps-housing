@@ -55,6 +55,15 @@ Property = {
 	end,
 
 	RegisterDoorZone = function(self, offset)
+
+		local function leave()
+			self:LeaveShell()
+		end
+
+		local function checkDoor()
+			self:OpenDoorbellMenu()
+		end
+
 		if Config.Target == "qb" then
 			exports["qb-target"]:AddBoxZone(
 				"shellExit",
@@ -72,21 +81,11 @@ Property = {
 					options = {
 						{
 							label = "Leave Property",
-							action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-								if IsPedAPlayer(entity) then
-									return false
-								end -- This will return false if the entity interacted with is a player and otherwise returns true
-								self:LeaveShell()
-							end,
+							action = leave,
 						},
 						{
 							label = "Check Door",
-							action = function(entity)
-								if IsPedAPlayer(entity) then
-									return false
-								end
-								self:OpenDoorbellMenu()
-							end,
+							action = checkDoor,
 						},
 					},
 				}
@@ -102,16 +101,12 @@ Property = {
 					{
 						name = "leave",
 						label = "Leave Property",
-						onSelect = function()
-							self:LeaveShell()
-						end,
+						onSelect = leave,
 					},
 					{
 						name = "doorbell",
 						label = "Check Door",
-						onSelect = function()
-							self:OpenDoorbellMenu()
-						end,
+						onSelect = checkDoor,
 					},
 				},
 			})
@@ -120,23 +115,21 @@ Property = {
 
 	RegisterPropertyEntrance = function(self)
 		local door_data = self.propertyData.door_data
-		local targetname = string.gsub(self.propertyData.label, "%s+", "") .. tostring(self.property_id)
+		local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
 		local label = nil
 
-		if self.has_access or self.owner then
-			label = "Enter Property"
-		else
-			label = "Ring Doorbell"
+		local function enter()
+			TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
 		end
 
 		if Config.Target == "qb" then
 			exports["qb-target"]:AddBoxZone(
-				targetname,
+				targetName,
 				vector3(door_data.x, door_data.y, door_data.z),
 				door_data.length,
 				door_data.width,
 				{
-					name = targetname,
+					name = targetName,
 					heading = door_data.h,
 					debugPoly = Config.DebugZones,
 					minZ = door_data.z - 1.0,
@@ -145,20 +138,15 @@ Property = {
 				{
 					options = {
 						{
-							label = label,
-							action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-								if IsPedAPlayer(entity) then
-									return false
-								end -- This will return false if the entity interacted with is a player and otherwise returns true
-								TriggerServerEvent("ps-housing:server:enterProperty", self.property_id) -- Dont know how to pass args with target (sorry im dumb)
-							end,
+							label = (self.has_access or self.owner) and "Enter Property" or "Ring Doorbell",
+							action = enter,
 						},
 					},
 				}
 			)
 		elseif Config.Target == "ox" then
 			exports.ox_target:addBoxZone({
-				id = targetname,
+				id = targetName,
 				coords = vector3(door_data.x, door_data.y, door_data.z),
 				size = vector3(door_data.length, door_data.width, 3.0),
 				rotation = door_data.h,
@@ -167,9 +155,7 @@ Property = {
 					{
 						name = "enter",
 						label = label,
-						onSelect = function()
-							TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
-						end,
+						onSelect = enter,
 					},
 				},
 			})
@@ -183,37 +169,27 @@ Property = {
 		end
 
 		local garageData = self.propertyData.garage_data
-		local garageName = "property-" .. self.property_id .. "-garage"
+		local garageName = string.format("property-%s-garage")
 
-		self.garageZone =
-			BoxZone:Create(vector3(garageData.x, garageData.y, garageData.z), garageData.length, garageData.width, {
+		self.garageZone = BoxZone:Create(vector3(garageData.x, garageData.y, garageData.z), garageData.length, garageData.width, {
 				name = garageName,
 				debugPoly = Config.DebugPoly,
 			})
+
+		local function handleGarage()
+			TriggerEvent("ps-housing:client:handleGarage", garageName)
+		end
 
 		self.garageZone:onPlayerInOut(function(isPointInside, point)
 			if isPointInside then
 				exports["qb-core"]:DrawText(self.propertyData.label .. " Garage", "left")
 				lib.showTextUI(self.propertyData.label .. " Garage")
-				if cache.vehicle then
-					lib.addRadialItem({
-						id = garageName,
-						icon = "warehouse",
-						label = "Store Vehicle",
-						onSelect = function()
-							TriggerServerEvent("ps-housing:client:handleGarage", garageName)
-						end,
-					})
-				else
-					lib.addRadialItem({
-						id = garageName,
-						icon = "warehouse",
-						label = "Open Property Garage",
-						onSelect = function()
-							TriggerEvent("ps-housing:client:handleGarage", garageName)
-						end,
-					})
-				end
+				lib.addRadialItem({
+					id = garageName,
+					icon = "warehouse",
+					label = cache.vehicle and "Store Vehicle" or "Open Property Garage",
+					onSelect = handleGarage,
+				})
 			else
 				lib.hideTextUI()
 				lib.removeRadialItem(garageName)
@@ -252,9 +228,8 @@ Property = {
 			return
 		end
 
-		local ped = cache.ped
 		local coords = self:GetDoorCoords()
-		SetEntityCoordsNoOffset(ped, coords.x, coords.y, coords.z, false, false, true)
+		SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)
 
 		if Config.Target == "qb" then
 			exports["qb-target"]:RemoveZone("shellExit")
@@ -263,6 +238,7 @@ Property = {
 		end
 
 		lib.removeRadialItem("furniture_menu")
+
 		SendNUIMessage({
 			action = "setOwnedItems",
 			data = {},
@@ -315,7 +291,7 @@ Property = {
 			return
 		end
 
-		local id = "property-" .. self.property_id .. "-doorbell"
+		local id = string.format("property-%s-doorbell", self.property_id)
 		local menu = {
 			id = id,
 			title = "People at the door",
@@ -343,6 +319,7 @@ Property = {
 			local v = self.propertyData.furnitures[i]
 			local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
 			local hash = v.object
+
 			while not HasModelLoaded(hash) do
 				Wait(0)
 			end
@@ -352,19 +329,23 @@ Property = {
 			SetEntityRotation(object, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
 			FreezeEntityPosition(object, true)
 
+
 			-- For the prerequisites
 			if v.type == "storage" then
 				self.storageTarget = object
+				local stash = string.format("%s-property", self.property_id) -- if you ever change this you will fuck shit up from previous stash db
+
+				local function openStash()
+					TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
+					TriggerEvent("inventory:client:SetCurrentStash", stash)
+				end
+
 				if Config.Target == "qb" then
 					exports["qb-target"]:AddTargetEntity(object, {
 						options = {
 							label = "Storage",
 							type = "client",
-							action = function()
-								local stash = self.propertyId .. "-property" -- if you ever change this you will fuck shit up from previous stash db
-								TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
-								TriggerEvent("inventory:client:SetCurrentStash", stash)
-							end,
+							action = openStash,
 						},
 					})
 				elseif Config.Target == "ox" then
@@ -372,16 +353,13 @@ Property = {
 						{
 							name = "storage",
 							label = "Storage",
-							onSelect = function()
-								local stash = self.propertyId .. "-property" -- if you ever change this you will fuck shit up from previous stash db
-								TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
-								TriggerEvent("inventory:client:SetCurrentStash", stash)
-							end,
+							onSelect = openStash,
 						},
 					})
 				end
 			elseif v.type == "clothing" then
 				self.clothingTarget = object
+
 				if Config.Target == "qb" then
 					exports["qb-target"]:AddTargetEntity(object, {
 						options = {
@@ -400,6 +378,7 @@ Property = {
 					})
 				end
 			end
+
 			self.furnitureObjs[#self.furnitureObjs + 1] = object
 		end
 	end,
@@ -424,15 +403,16 @@ Property = {
 
 			DeleteObject(object)
 		end
+
 		self.furnitureObjs = {}
 	end,
 
 	DeleteProperty = function(self)
-		local targetname = string.gsub(self.propertyData.label, "%s+", "") .. tostring(self.property_id)
+		local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
 		if Config.Target == "qb" then
-			exports["qb-target"]:RemoveZone(targetname)
+			exports["qb-target"]:RemoveZone(targetName)
 		elseif Config.Target == "ox" then
-			exports.ox_target:removeZone(targetname)
+			exports.ox_target:removeZone(targetName)
 		end
 
 		if self.inShell then
