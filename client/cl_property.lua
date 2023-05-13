@@ -460,13 +460,14 @@ function Property:new(propertyData)
 	self.__index = self
 
 	if propertyData.apartment ~= nil then
-		local apartment = ApartmentsTable[propertyData.apartment]
+		local apartmentName = propertyData.apartment
+		local apartment = ApartmentsTable[apartmentName]
 
-		if not apartment and Config.Apartments[propertyData.apartment] then
-			ApartmentsTable[propertyData.apartment] = Apartment:new(Config.Apartments[propertyData.apartment])
+		if not apartment and Config.Apartments[apartmentName] then
+			ApartmentsTable[apartmentName] = Apartment:new(Config.Apartments[apartmentName])
 			return
 		elseif not apartment then
-			print("apartment not found in Config")
+			print(apartmentName .. " not found in Config")
 			return
 		end
 

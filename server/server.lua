@@ -89,7 +89,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         local property = PropertiesTable[id]
         property:PlayerEnter(src)
 
-        print("Player " .. GetPlayerName(src) .. " entered apartment " .. propertyData.apartment)
+        -- print("Player " .. GetPlayerName(src) .. " entered apartment " .. propertyData.apartment)
         
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
     end

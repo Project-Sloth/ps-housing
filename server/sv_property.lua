@@ -6,7 +6,7 @@ Property = {
 
     PlayerEnter = function (self, src)
         self.playersInside[src] = true
-
+        print("Player entered property " .. self.property_id, src)
         TriggerClientEvent('qb-weathersync:client:DisableSync', src)
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
 
