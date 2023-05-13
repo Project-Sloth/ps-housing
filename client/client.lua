@@ -55,8 +55,8 @@ AddEventHandler("onResourceStop", function(resourceName)
 end)
 
 local function createProperty(property)
+
 	PropertiesTable[property.property_id] = Property:new(property)
-    print("Property created " .. property.property_id, property.owner)
 
 	if GetResourceState('bl-realtor') == 'started' then
 		local properties = getProperties()
@@ -81,7 +81,7 @@ RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 	PropertiesTable[property_id] = nil
 end)
 
-local function initialiseProperties()
+function InitialiseProperties()
     for k, v in pairs(Config.Apartments) do
         ApartmentsTable[k] = Apartment:new(v)
     end
@@ -91,11 +91,11 @@ local function initialiseProperties()
         createProperty(v)
     end
 end
-AddEventHandler("QBCore:Client:OnPlayerLoaded", initialiseProperties)
+AddEventHandler("QBCore:Client:OnPlayerLoaded", InitialiseProperties)
 
 AddEventHandler("onResourceStart", function(resourceName) -- used for when the resource is restarted while in game
 	if (GetCurrentResourceName() == resourceName) then
-        initialiseProperties()
+        InitialiseProperties()
 	end
 end)
 

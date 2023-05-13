@@ -82,15 +82,17 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
+
     if propertyData.apartment then
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
 
+        Wait(500)
+        
         local property = PropertiesTable[id]
         property:PlayerEnter(src)
-
-        -- print("Player " .. GetPlayerName(src) .. " entered apartment " .. propertyData.apartment)
         
+        Wait(500)
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
     end
 end)

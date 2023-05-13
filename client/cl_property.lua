@@ -434,7 +434,6 @@ Property = {
 
 function Property:new(propertyData)
 	local obj = {}
-
 	obj.property_id = propertyData.property_id
 	obj.propertyData = propertyData
 
@@ -465,7 +464,7 @@ function Property:new(propertyData)
 
 		if not apartment and Config.Apartments[apartmentName] then
 			ApartmentsTable[apartmentName] = Apartment:new(Config.Apartments[apartmentName])
-			return
+			apartment = ApartmentsTable[apartmentName]
 		elseif not apartment then
 			print(apartmentName .. " not found in Config")
 			return
