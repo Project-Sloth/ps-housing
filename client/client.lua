@@ -82,6 +82,7 @@ RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 end)
 
 function InitialiseProperties()
+    print("Initialising properties")
     for k, v in pairs(Config.Apartments) do
         ApartmentsTable[k] = Apartment:new(v)
     end
@@ -90,8 +91,10 @@ function InitialiseProperties()
     for k, v in pairs(properties) do
         createProperty(v)
     end
+    print("Initialised properties")
 end
 AddEventHandler("QBCore:Client:OnPlayerLoaded", InitialiseProperties)
+RegisterNetEvent('ps-housing:client:initialiseProperties', InitialiseProperties)
 
 AddEventHandler("onResourceStart", function(resourceName) -- used for when the resource is restarted while in game
 	if (GetCurrentResourceName() == resourceName) then

@@ -34,9 +34,9 @@ export const IS_MENU_MINIMIZED = writable<boolean>(false);
 
 export const IS_CART_OPEN = writable<boolean>(false);
 
-export const IS_OWNEDLIST_OPEN = writable<boolean>(false);
+export const IS_OWNEDITEMS_OPEN = writable<boolean>(false);
 
-export const OWNEDLIST = writable<IFurniture[]>([]);
+export const OWNEDITEMS = writable<IFurniture[]>([]);
 
 interface ICartItem extends IFurniture {
     entity: number;

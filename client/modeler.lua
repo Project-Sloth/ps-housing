@@ -97,7 +97,8 @@ Modeler = {
 
         SetNuiFocus(false, false)
 
-        self:CancelPlacement()
+        self:StopPlacement()
+        self:HoverOut()
         self:FreecamActive(false)
 
         self.CurrentCameraPosition = nil
@@ -147,20 +148,26 @@ Modeler = {
         local objectRot
         local objectPos
 
-        if data.entity then
+        print(json.encode(data, {indent = true}))
+        Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
+        Modeler.CurrentCameraPosition = Freecam:GetPosition()
+
+        if data.entity then --if the object is already spawned
             curObject = data.entity
-            objectPos = data.position
-            objectRot = data.rotation
+            objectPos = GetEntityCoords(curObject)
+            objectRot = GetEntityRotation(curObject)
         else 
-            self:CancelPlacement()
+            self:StopPlacement()
             RequestSpawnObject(object)
+
             curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
-            Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
-            Modeler.CurrentCameraPosition = Freecam:GetPosition()
             SetEntityCoords(curObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
+
             objectRot = GetEntityRotation(curObject)
             objectPos = self.CurrentCameraLookAt
         end
+
+
 
         FreezeEntityPosition(curObject, true)
         SetEntityCollision(curObject, false, false)
@@ -181,7 +188,7 @@ Modeler = {
                 objectRotation = objectRot,
                 cameraPosition = self.CurrentCameraPosition,
                 cameraLookAt = self.CurrentCameraLookAt,
-                cartIndex = data.entity or nil,
+                entity = data.entity,
             }
         })
 
@@ -191,24 +198,35 @@ Modeler = {
 
     MoveObject = function (self, data)
         SetEntityCoords(self.CurrentObject, data.x + 0.0, data.y + 0.0, data.z + 0.0)
+        -- get the current offset of this object in relation to the 
     end,
 
     RotateObject = function (self, data)
         SetEntityRotation(self.CurrentObject, data.x + 0.0, data.y + 0.0, data.z + 0.0)
     end,
 
-    CancelPlacement = function (self)
+    StopPlacement = function (self)
         if self.CurrentObject == nil then return end
-        local inCart = false
 
+        local canDelete = true
         for k, v in pairs(self.Cart) do
             if k == self.CurrentObject then
-                inCart = true
+                canDelete = false
+                break
+            end
+        end
+        -- furnitureObjs
+        -- see if its an owned object
+        local property = PropertiesTable[self.property_id]
+        local ownedfurnitures = property.furnitureObjs
+        for i = 1, #ownedfurnitures do
+            if ownedfurnitures[i].entity == self.CurrentObject then
+                canDelete = false
                 break
             end
         end
 
-        if not inCart then
+        if canDelete then
             DeleteEntity(self.CurrentObject)
         end
 
@@ -231,7 +249,7 @@ Modeler = {
     end,
 
     SelectCartItem = function (self, data)
-        self:CancelPlacement()
+        self:StopPlacement()
 
         if data ~= nil then
             self:StartPlacement(data)
@@ -255,7 +273,7 @@ Modeler = {
             data = item
         })
 
-        self:CancelPlacement()
+        self:StopPlacement()
         self.CurrentObject = nil
     end,
 
@@ -294,7 +312,8 @@ Modeler = {
     end,
 
     BuyCart = function (self)
-        local shellPos = GetEntityCoords(Property.shellObj)
+        local property = PropertiesTable[self.property_id]
+        local shellPos = GetEntityCoords(property.shellObj)
         local items = {}
         local totalPrice = 0
 
@@ -315,21 +334,27 @@ Modeler = {
                 y = math.floor((v.position.y - shellPos.y) * 100) / 100,
                 z = math.floor((v.position.z - shellPos.z) * 100) / 100,
             }
+            print("v.position")
+            print(v.position.x, v.position.y, v.position.z)
+            print("offsetPos")
+            print(offsetPos.x, offsetPos.y, offsetPos.z)
 
-            local id = tostring(math.random(100000, 999999)..self.property)
+            local id = tostring(math.random(100000, 999999)..self.property_id)
 
             items[#items + 1] = {
                 id = id,
-                object = v.object, 
+                object = v.object,
+                label = v.label,
                 position = offsetPos,
                 rotation = v.rotation,
             }
         end
 
-        if totalPrice > 0 then
-            local currentproperty_id = Property.property_id
-            TriggerServerEvent("ps-housing:server:buyFurniture", currentproperty_id, items, totalPrice)
-        end
+        TriggerServerEvent("ps-housing:server:buyFurniture", self.property_id, items, totalPrice)
+        print("bought")
+        print(self.property_id)
+        print(json.encode(items, {indent = true}))
+        print(totalPrice)
 
         self:ClearCart()
     end,
@@ -371,7 +396,7 @@ Modeler = {
     end,
 
     SelectOwnedItem = function (self, data)
-        self:CancelPlacement()
+        self:StopPlacement()
         if data ~= nil then
             self:StartPlacement(data)
         end
@@ -409,7 +434,7 @@ RegisterNUICallback("rotateObject", function(data, cb)
 end)
 
 RegisterNUICallback("cancelPlacement", function(data, cb)
-    Modeler:CancelPlacement()
+    Modeler:StopPlacement()
     cb("ok")
 end)
 

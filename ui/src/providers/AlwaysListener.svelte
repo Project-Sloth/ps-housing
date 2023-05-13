@@ -74,7 +74,7 @@
 		// The product is identified by the entity ID
 		// The code is used in the removeFromCart function
 
-		$CART = $CART.filter((entry: any) => entry.entity !== data.entity)
+		$CART = $CART.filter((entry: any) => entry.entity != data.entity)
 		$CART = [...$CART]
 	})
 
@@ -87,7 +87,7 @@
 	})
 
 	ReceiveNUI("removeOwnedItem", (data: any) => {
-		$OWNEDITEMS = $OWNEDITEMS.filter((entry: any) => entry.entity !== data.entity)
+		$OWNEDITEMS = $OWNEDITEMS.filter((entry: any) => entry.entity != data.entity)
 		$OWNEDITEMS = [...$OWNEDITEMS]
 	})
 

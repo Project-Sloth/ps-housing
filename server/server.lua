@@ -87,10 +87,15 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
 
-        Wait(500)
         
+        --because QBCore does not emit the OnPlayerLoaded event when creating a new character
+        TriggerClientEvent("ps-housing:client:initialiseProperties", src) 
+
+        Wait(500)
+
         local property = PropertiesTable[id]
         property:PlayerEnter(src)
+
         
         Wait(500)
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)

@@ -6,7 +6,7 @@ Property = {
 
     PlayerEnter = function (self, src)
         self.playersInside[src] = true
-        
+
         TriggerClientEvent('qb-weathersync:client:DisableSync', src)
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
 
@@ -45,8 +45,10 @@ Property = {
     end,
 
     CheckForAccess = function (self, citizenid)
-        for i = 1, #self.propertyData.has_access do
-            if self.propertyData.has_access[i] == citizenid then
+        local data = self.propertyData
+        if data.owner == citizenid then return true end
+        for i = 1, #data.has_access do
+            if data.has_access[i] == citizenid then
                 return true
             end
         end
@@ -342,6 +344,8 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
     local src = source
     local citizenid, PlayerData, Player = GetCitizenid(src)
 
+    print(property_id, items, price)
+
     local property = PropertiesTable[property_id]
     if not property then return end
 
@@ -358,6 +362,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
 
     property:UpdateFurnitures(items)
     TriggerClientEvent("ox_lib:notify", src, {title= "You bought furniture for $" .. price, type="success"})
+    print("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
 end)
 
 RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item)
@@ -381,6 +386,8 @@ RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item
 
     property:UpdateFurnitures(currentFurniture)
 end)
+
+
 
 RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local src = source

@@ -17,6 +17,10 @@ Property = {
 	garageZone = nil,
 	doorbellPool = {},
 
+	entranceTarget = nil, -- needed for ox target
+	exitTarget = nil, -- needed for ox target
+
+
 	GetDoorCoords = function(self)
 		local coords = nil
 
@@ -93,8 +97,7 @@ Property = {
 				}
 			)
 		elseif Config.Target == "ox" then
-			exports.ox_target:addBoxZone({
-				id = "shellExit",
+			self.exitTarget = exports.ox_target:addBoxZone({
 				coords = vector3(offset.x, offset.y, offset.z),
 				size = vector3(1.0, self.shellData.doorOffset.width, 3.0),
 				rotation = self.shellData.doorOffset.heading,
@@ -147,7 +150,7 @@ Property = {
 				}
 			)
 		elseif Config.Target == "ox" then
-			exports.ox_target:addBoxZone({
+			self.entranceTarget =  exports.ox_target:addBoxZone({
 				id = targetName,
 				coords = vector3(door_data.x, door_data.y, door_data.z),
 				size = vector3(door_data.length, door_data.width, 3.0),
@@ -211,17 +214,15 @@ Property = {
 			return
 		end
 
-		SendNUIMessage({
-			action = "setOwnedItems",
-			data = self.propertyData.furnitures,
-		})
+		if not self.owner and not self.has_access then return end
+        if self.has_access and not Config.AccessCanEditFurniture  then return end 
 
 		lib.addRadialItem({
 			id = "furniture_menu",
 			icon = "house",
 			label = "Furniture Menu",
 			onSelect = function()
-				Modeler:OpenMenu()
+				Modeler:OpenMenu(self.property_id)
 			end,
 		})
 	end,
@@ -239,7 +240,8 @@ Property = {
 		if Config.Target == "qb" then
 			exports["qb-target"]:RemoveZone("shellExit")
 		elseif Config.Target == "ox" then
-			exports.ox_target:removeZone("shellExit")
+			exports.ox_target:removeZone(self.exitTarget)
+			self.exitTarget = nil
 		end
 
 		lib.removeRadialItem("furniture_menu")
@@ -322,6 +324,8 @@ Property = {
 	end,
 
 	LoadFurnitures = function(self)
+		print("Loading furnitures")
+		local shellCoords = GetEntityCoords(self.shellObj)
 		for i = 1, #self.propertyData.furnitures do
 			local v = self.propertyData.furnitures[i]
 			local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
@@ -331,15 +335,15 @@ Property = {
 				Wait(0)
 			end
 
-			local object = CreateObject(hash, coords.x, coords.y, coords.z, false, true, false)
+			local entity = CreateObject(hash, coords.x, coords.y, coords.z, false, true, false)
 			SetModelAsNoLongerNeeded(hash)
-			SetEntityRotation(object, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
-			FreezeEntityPosition(object, true)
+			SetEntityRotation(entity, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
+			FreezeEntityPosition(entity, true)
 
 
 			-- For the prerequisites
 			if v.type == "storage" then
-				self.storageTarget = object
+				self.storageTarget = entity
 				local stash = string.format("%s-property", self.property_id) -- if you ever change this you will fuck shit up from previous stash db
 
 				local function openStash()
@@ -348,7 +352,7 @@ Property = {
 				end
 
 				if Config.Target == "qb" then
-					exports["qb-target"]:AddTargetEntity(object, {
+					exports["qb-target"]:AddTargetEntity(entity, {
 						options = {
 							label = "Storage",
 							type = "client",
@@ -356,7 +360,7 @@ Property = {
 						},
 					})
 				elseif Config.Target == "ox" then
-					exports.ox_target:addLocalEntity(object, {
+					exports.ox_target:addLocalEntity(entity, {
 						{
 							name = "storage",
 							label = "Storage",
@@ -365,10 +369,10 @@ Property = {
 					})
 				end
 			elseif v.type == "clothing" then
-				self.clothingTarget = object
+				self.clothingTarget = entity
 
 				if Config.Target == "qb" then
-					exports["qb-target"]:AddTargetEntity(object, {
+					exports["qb-target"]:AddTargetEntity(entity, {
 						options = {
 							label = "Clothing",
 							type = "client",
@@ -376,7 +380,7 @@ Property = {
 						},
 					})
 				elseif Config.Target == "ox" then
-					exports.ox_target:addLocalEntity(object, {
+					exports.ox_target:addLocalEntity(entity, {
 						{
 							name = "clothing",
 							label = "Clothing",
@@ -386,29 +390,51 @@ Property = {
 				end
 			end
 
-			self.furnitureObjs[#self.furnitureObjs + 1] = object
+			self.furnitureObjs[#self.furnitureObjs + 1] = {
+				entity = entity,
+				id = v.id,
+				object = v.object,
+				position = {
+					x = coords.x,
+					y = coords.y,
+					z = coords.z,
+				},
+				rotation = {
+					x = v.rotation.x,
+					y = v.rotation.y,
+					z = v.rotation.z,
+				},
+			}
 		end
+
+		SendNUIMessage({
+			action = "setOwnedItems",
+			data = self.furnitureObjs,
+		})
+		print("Loaded furnitures")
+		print(json.encode(self.furnitureObjs, { indent = true }))
 	end,
 
 	UnloadFurnitures = function(self)
 		for i = 1, #self.furnitureObjs do
-			local object = self.furnitureObjs[i]
+			local v = self.furnitureObjs[i]
+			local entity = v.entity
 
-			if clothingTarget == object or storageTarget == object then
+			if clothingTarget == entity or storageTarget == entity then
 				if Config.Target == "qb" then
-					exports["qb-target"]:RemoveTargetEntity(object)
+					exports["qb-target"]:RemoveTargetEntity(entity)
 				elseif Config.Target == "ox" then
-					exports.ox_target:removeLocalEntity(object)
+					exports.ox_target:removeLocalEntity(entity)
 				end
 
-				if clothingTarget == object then
+				if clothingTarget == entity then
 					clothingTarget = nil
-				elseif storageTarget == object then
+				elseif storageTarget == entity then
 					storageTarget = nil
 				end
 			end
 
-			DeleteObject(object)
+			DeleteObject(entity)
 		end
 
 		self.furnitureObjs = {}
@@ -419,7 +445,8 @@ Property = {
 		if Config.Target == "qb" then
 			exports["qb-target"]:RemoveZone(targetName)
 		elseif Config.Target == "ox" then
-			exports.ox_target:removeZone(targetName)
+			exports.ox_target:removeZone(self.entranceTarget)
+			self.entranceTarget = nil
 		end
 
 		if self.inShell then
@@ -465,11 +492,13 @@ function Property:new(propertyData)
 		if not apartment and Config.Apartments[apartmentName] then
 			ApartmentsTable[apartmentName] = Apartment:new(Config.Apartments[apartmentName])
 			apartment = ApartmentsTable[apartmentName]
+
+			print("had to make the apartment")
 		elseif not apartment then
 			print(apartmentName .. " not found in Config")
 			return
 		end
-
+		print("was an apartment")
 		apartment:AddProperty(propertyData.property_id)
 	else
 		obj:RegisterPropertyEntrance()

@@ -4,6 +4,8 @@ Apartment = {
     apartmentData = {},
     apartments = {},
 
+    entranceTarget = nil,
+
     RegisterPropertyEntrance = function (self)
         local door = self.apartmentData.door
         local targetName = string.format("%s_apartment",self.apartmentData.label)
@@ -11,6 +13,7 @@ Apartment = {
         -- not sure why but referencing self directy runs it when registering the zones
         local function enterApartment() 
             self:EnterApartment()
+            print("entering apartment")
         end
 
         local function seeAll()
@@ -37,8 +40,7 @@ Apartment = {
                 }
             })
         elseif Config.Target == "ox" then
-            exports.ox_target:addBoxZone({
-                id = targetName,
+            self.entranceTarget = exports.ox_target:addBoxZone({
                 coords = vector3(door.x, door.y, door.z),
                 size = vector3(door.length, door.width, 3.0),
                 rotation = door.h,
@@ -60,20 +62,14 @@ Apartment = {
     end,
 
     EnterApartment = function(self)
-        if next(self.apartments) == nil then 
-            lib.notify({title="You dont have an apartment here.", type="error"})
-            return
-        end
-
         for propertyId, _  in pairs(self.apartments) do
             local property = PropertiesTable[propertyId]
-
-            if property.propertyData.owner then
+            if property.owner then
                 TriggerServerEvent('ps-housing:server:enterProperty', property.property_id)
-            else
-                lib.notify({title="You dont have an apartment here.", type="error"})
+                return
             end
         end
+        lib.notify({title="You dont have an apartment here.", type="error"})
     end,
 
     GetMenuForAll = function(self)
