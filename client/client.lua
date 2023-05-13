@@ -1,4 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
+
 PropertiesTable = {}
 ApartmentsTable = {}
 
@@ -54,17 +55,17 @@ AddEventHandler("onResourceStop", function(resourceName)
 end)
 
 local function createProperty(property)
-	PropertiesTable[tostring(property.property_id)] = Property:new(property)
+	PropertiesTable[property.property_id] = Property:new(property)
+    print("Property created " .. property.property_id, property.owner)
 
 	if GetResourceState('bl-realtor') == 'started' then
 		local properties = getProperties()
+
 		TriggerEvent("bl-realtor:client:updateProperties", properties)
 
         if property.apartment then
-            if #property.apartment > 1 then
-                local apartments = getApartments()
-                TriggerEvent("bl-realtor:client:updateApartments", apartments)
-            end
+            local apartments = getApartments()
+            TriggerEvent("bl-realtor:client:updateApartments", apartments)
         end
 	end
 end
@@ -80,29 +81,26 @@ RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 	PropertiesTable[property_id] = nil
 end)
 
+local function initialiseProperties()
+    for k, v in pairs(Config.Apartments) do
+        ApartmentsTable[k] = Apartment:new(v)
+    end
 
-AddEventHandler("QBCore:Client:OnPlayerLoaded", function()
     local properties = lib.callback.await('ps-housing:server:requestProperties')
-
     for k, v in pairs(properties) do
         createProperty(v)
     end
-end)
+end
+AddEventHandler("QBCore:Client:OnPlayerLoaded", initialiseProperties)
 
-AddEventHandler("onResourceStart", function(resourceName)
+AddEventHandler("onResourceStart", function(resourceName) -- used for when the resource is restarted while in game
 	if (GetCurrentResourceName() == resourceName) then
-        for k, v in pairs(Config.Apartments) do
-            ApartmentsTable[k] = Apartment:new(v)
-        end
-
-        local properties = lib.callback.await('ps-housing:server:requestProperties')
-
-        for k, v in pairs(properties) do
-            createProperty(v)
-        end
+        initialiseProperties()
 	end
 end)
 
+
+-- ##############################################################################
 -- Garage Stuff because the way qb did it with houses is the most retarded shit ever.
 AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_id)
     local garageName = gargeName

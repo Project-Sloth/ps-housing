@@ -69,7 +69,7 @@ Apartment = {
             local property = PropertiesTable[propertyId]
 
             if property.propertyData.owner then
-                TriggerServerEvent('ps-housing:server:enterProperty', property.property_id) 
+                TriggerServerEvent('ps-housing:server:enterProperty', property.property_id)
             else
                 lib.notify({title="You dont have an apartment here.", type="error"})
             end
@@ -126,8 +126,3 @@ function Apartment:new(apartmentData)
 
     return obj
 end
-
-RegisterNetEvent('ps-housing:client:startInApartment', function (apartmentName)
-    local apartment = ApartmentsTable[apartmentName]
-    apartment:EnterApartment()
-end)

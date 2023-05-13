@@ -41,7 +41,6 @@ Property = {
 
     PlayerLeave = function (self, src)
         self.playersInside[src] = nil
-
         TriggerEvent('qb-weathersync:client:EnableSync', src)
     end,
 
@@ -308,8 +307,9 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
         property:PlayerEnter(src)
         return
     end
-
-    print("Player does not have access to property")
+    print(GetPlayerName(src), property_id)
+    print("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
+    
 
     property:AddToDoorbellPoolTemp(src)    
 end)

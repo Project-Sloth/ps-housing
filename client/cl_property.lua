@@ -52,6 +52,8 @@ Property = {
 
 		SetEntityCoordsNoOffset(ped, offset.x, offset.y, offset.z, false, false, true)
 		SetEntityHeading(ped, self.shellData.doorOffset.heading)
+
+		DoScreenFadeIn(250)
 	end,
 
 	RegisterDoorZone = function(self, offset)
@@ -198,6 +200,7 @@ Property = {
 	end,
 
 	EnterShell = function(self)
+		DoScreenFadeOut(250)
 		self.inShell = true
 		self.shellData = Config.Shells[self.propertyData.shell]
 
@@ -228,6 +231,8 @@ Property = {
 			return
 		end
 
+		DoScreenFadeOut(250)
+
 		local coords = self:GetDoorCoords()
 		SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)
 
@@ -249,7 +254,7 @@ Property = {
 			self.garageZone = nil
 		end
 
-		TriggerServerEvent("ps-housing:server:leaveShell", self.property_id)
+		TriggerServerEvent("ps-housing:server:leaveProperty", self.property_id)
 
 		self:UnloadFurnitures()
 		DeleteObject(self.shellObj)
@@ -258,6 +263,8 @@ Property = {
 		self.shellObj = nil
 		self.shellData = nil
 		self.doorbellPool = {}
+
+		DoScreenFadeIn(250)
 	end,
 
 	ManageAccesMenu = function(self)
@@ -454,6 +461,15 @@ function Property:new(propertyData)
 
 	if propertyData.apartment ~= nil then
 		local apartment = ApartmentsTable[propertyData.apartment]
+
+		if not apartment and Config.Apartments[propertyData.apartment] then
+			ApartmentsTable[propertyData.apartment] = Apartment:new(Config.Apartments[propertyData.apartment])
+			return
+		elseif not apartment then
+			print("apartment not found in Config")
+			return
+		end
+
 		apartment:AddProperty(propertyData.property_id)
 	else
 		obj:RegisterPropertyEntrance()

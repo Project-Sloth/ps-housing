@@ -59,7 +59,10 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
 
-    local id = MySQL.insert.await("INSERT INTO properties owner_citizenid = @owner_citizenid, label = @label, description = @description, has_access = @has_access, extra_imgs = @extra_imgs, furnitures = @furnitures, for_sale = @for_sale, price = @price, shell = @shell, apartment = @apartment door_data = @door_data, garage_data = @garage_data)", {
+    local cols = "(owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
+    local vals = "(@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
+
+    local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
         ["@owner_citizenid"] = propertyData.owner or nil,
         ["@label"] = propertyData.label,
         ["@description"] = propertyData.description,
@@ -80,8 +83,15 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
     if propertyData.apartment then
-        local src = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
-        TriggerClientEvent("ps-housing:client:startInApartment", src, propertyData.apartment)
+        local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
+        local src = player.PlayerData.source
+
+        local property = PropertiesTable[id]
+        property:PlayerEnter(src)
+
+        print("Player " .. GetPlayerName(src) .. " entered apartment " .. propertyData.apartment)
+        
+        TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
     end
 end)
 
@@ -108,19 +118,18 @@ AddEventHandler("ps-housing:server:createNewApartment", function(source)
         owner = citizenid,
         label = string.format("%s's Apartment", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname),
         description = string.format("This is %s's apartment in %s", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, Config.StartingApartment),
-        has_access = {},
-        extra_imgs = {},
-        furnitures = {},
         for_sale = 0,
-        price = 0,
         shell = Config.DefaultApartmentShell,
         apartment = Config.StartingApartment,
-        door_data = {},
-        garage_data = {},
     }
 
     print("Creating new apartment for " .. GetPlayerName(src) .. " in " .. Config.StartingApartment)
     TriggerEvent("ps-housing:server:registerProperty", propertyData)
+end)
+
+RegisterNetEvent('qb-apartments:returnBucket', function()
+    local src = source
+    SetPlayerRoutingBucket(src, 0)
 end)
 
 AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
