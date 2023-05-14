@@ -376,7 +376,7 @@ RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item
 
     for k, v in pairs(currentFurnitures) do
         if v.id == item.id then
-            table.remove(currentFurnitures, k)
+            currentFurnitures[k] = nil
             break
         end
     end

@@ -55,7 +55,6 @@ const store = () => {
 
   const methods = {
     setupModel(data: setupModelMessage) {
-      console.log("Setup Model in store:", data);
       ModelStore.cameraPosition.set(convertToThreeCordSystem(data.cameraPosition));
       ModelStore.cameraLookAt.set(convertToThreeCordSystem(data.cameraLookAt));
       ModelStore.objectPosition.set(convertToThreeCordSystem(data.objectPosition));

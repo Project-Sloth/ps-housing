@@ -240,6 +240,7 @@ Modeler = {
     -- maybe should do it all at once when the user leaves the menu????
     UpdateFurniture = function (self, item)
         local property = PropertiesTable[self.property_id]
+
         local shellPos = GetEntityCoords(property.shellObj)
         local newPos = GetEntityCoords(item.entity)
 
@@ -255,9 +256,14 @@ Modeler = {
             object = item.object,
             position = offsetPos,
             rotation = item.rotation,
+            type = item.type,
         }
 
         TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, newFurniture)
+    end,
+
+    RemoveFurniture = function (self, data)
+        TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, data)
     end,
 
     SetObjectAlpha = function (self, data)
@@ -289,6 +295,7 @@ Modeler = {
             entity = self.CurrentObject,
             position = GetEntityCoords(self.CurrentObject),
             rotation = GetEntityRotation(self.CurrentObject),
+            type = data.type,
         }
 
         self.Cart[self.CurrentObject] = item
@@ -368,6 +375,7 @@ Modeler = {
                 label = v.label,
                 position = offsetPos,
                 rotation = v.rotation,
+                type = v.type,
             }
         end
 
@@ -517,5 +525,10 @@ end)
 
 RegisterNUICallback("selectOwnedItem", function(data, cb)
     Modeler:SelectOwnedItem(data)
+    cb("ok")
+end)
+
+RegisterNUICallback("removeOwnedItem", function(data, cb)
+    Modeler:RemoveFurniture(data)
     cb("ok")
 end)

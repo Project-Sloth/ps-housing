@@ -347,7 +347,7 @@ Property = {
 
 				local function openStash()
 					TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
-					TriggerEvent("inventory:client:SetCurrentStash", stash)
+					-- TriggerEvent("inventory:client:SetCurrentStash", stash)
 				end
 
 				if Config.Target == "qb" then
@@ -392,6 +392,7 @@ Property = {
 			self.furnitureObjs[#self.furnitureObjs + 1] = {
 				entity = entity,
 				id = v.id,
+				label = v.label,
 				object = v.object,
 				position = {
 					x = coords.x,
@@ -403,6 +404,7 @@ Property = {
 					y = v.rotation.y,
 					z = v.rotation.z,
 				},
+				type = v.type,
 			}
 		end
 
@@ -417,17 +419,17 @@ Property = {
 			local v = self.furnitureObjs[i]
 			local entity = v.entity
 
-			if clothingTarget == entity or storageTarget == entity then
+			if self.clothingTarget == entity or self.storageTarget == entity then
 				if Config.Target == "qb" then
 					exports["qb-target"]:RemoveTargetEntity(entity)
 				elseif Config.Target == "ox" then
 					exports.ox_target:removeLocalEntity(entity)
 				end
 
-				if clothingTarget == entity then
-					clothingTarget = nil
-				elseif storageTarget == entity then
-					storageTarget = nil
+				if self.clothingTarget == entity then
+					self.clothingTarget = nil
+				elseif self.storageTarget == entity then
+					self.storageTarget = nil
 				end
 			end
 
