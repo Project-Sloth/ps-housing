@@ -18,4 +18,3 @@ CREATE TABLE IF NOT EXISTS `properties` (
     CONSTRAINT `FK_owner_citizenid` FOREIGN KEY (`owner_citizenid`) REFERENCES `players` (`citizenid`) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT `UQ_owner_apartment` UNIQUE (`owner_citizenid`, `apartment`) -- A character can only own one apartment
 ) ENGINE=InnoDB AUTO_INCREMENT=1;
-

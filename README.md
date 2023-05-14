@@ -1,9 +1,12 @@
 # ps-housing
 
-Test Commit
+ps-housing is a resource that opens up a world of creative possibilities for housing. Its user-friendly interface lets you decorate any location to your heart's content. The best part? Not only is it completely free, but it's also reliable and functional, unlike many other housing systems available. Dive in and start transforming spaces with ps-housing today!
 
+ps-housing owes its existence to the exceptional coding expertise of [Xirvin#0985](https://github.com/ImXirvin). His application of top-tier coding practices has been instrumental in creating this script. We at Project Sloth are thrilled that he has joined our team and utilized our platform to deliver this incredible, much-anticipated resource. Our sincere appreciation goes out to Xirvin#0985 for his outstanding contribution!
 
-Need to add this at the end of client/main.lua in qb-multicharacter
+# Installation 
+1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
+
 ```lua
 RegisterNetEvent("qb-multicharacter:client:destroyCam", function ()
     SetCamActive(cam, false)
@@ -12,7 +15,8 @@ RegisterNetEvent("qb-multicharacter:client:destroyCam", function ()
 end)
 ```
 
-Need to also change `qb-multicharacter:server:createCharacter` in server/main.lua event to: 
+2. Find the following event and change `qb-multicharacter:server:createCharacter` in server/main.lua event to: 
+
 ```lua
 RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     local src = source
@@ -36,3 +40,8 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     end
 end)
 ```
+3. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
+
+# Preview
+
+# Credits
