@@ -96,15 +96,14 @@ end
 AddEventHandler("QBCore:Client:OnPlayerLoaded", InitialiseProperties)
 RegisterNetEvent('ps-housing:client:initialiseProperties', InitialiseProperties)
 
-AddEventHandler("onResourceStart", function(resourceName) -- used for when the resource is restarted while in game
+AddEventHandler("onResourceStart", function(resourceName) -- Used for when the resource is restarted while in game
 	if (GetCurrentResourceName() == resourceName) then
         InitialiseProperties()
 	end
 end)
 
 
--- ##############################################################################
--- Garage Stuff because the way qb did it with houses is the most retarded shit ever.
+-- The garage-related functionality is being handled below.
 AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_id)
     local garageName = gargeName
     local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", gargeName, property_id)

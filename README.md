@@ -42,6 +42,12 @@ end)
 ```
 3. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 
+4. Install the dependencies below.
+
+# Dependancy
+[five-freecam](https://github.com/Deltanic/fivem-freecam)
+[ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
+
 # Preview
 
 # Credits
