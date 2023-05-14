@@ -45,8 +45,8 @@ end)
 4. Install the dependencies below.
 
 # Dependancy
-[five-freecam](https://github.com/Deltanic/fivem-freecam)
-[ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
+* [five-freecam](https://github.com/Deltanic/fivem-freecam)
+* [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
 
 # Preview
 
