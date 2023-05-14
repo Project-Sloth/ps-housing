@@ -148,7 +148,6 @@ Modeler = {
         local objectRot
         local objectPos
 
-        print(json.encode(data, {indent = true}))
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
         Modeler.CurrentCameraPosition = Freecam:GetPosition()
 
@@ -221,6 +220,7 @@ Modeler = {
         local ownedfurnitures = property.furnitureObjs
         for i = 1, #ownedfurnitures do
             if ownedfurnitures[i].entity == self.CurrentObject then
+                self:UpdateFurniture(ownedfurnitures[i])
                 canDelete = false
                 break
             end
@@ -233,6 +233,31 @@ Modeler = {
         SetEntityDrawOutline(self.CurrentObject, false)
         SetEntityAlpha(self.CurrentObject, 255, false)
         self.CurrentObject = nil
+    end,
+
+    -- can be better
+    -- everytime "Stop Placement" is pressed on an owned object, it will update the furniture 
+    -- maybe should do it all at once when the user leaves the menu????
+    UpdateFurniture = function (self, item)
+        local property = PropertiesTable[self.property_id]
+        local shellPos = GetEntityCoords(property.shellObj)
+        local newPos = GetEntityCoords(item.entity)
+
+        local offsetPos = {
+                x = math.floor((newPos.x - shellPos.x) * 100) / 100,
+                y = math.floor((newPos.y - shellPos.y) * 100) / 100,
+                z = math.floor((newPos.z - shellPos.z) * 100) / 100,
+        }
+
+        local newFurniture = {
+            id = item.id,
+            label = item.label,
+            object = item.object,
+            position = offsetPos,
+            rotation = item.rotation,
+        }
+
+        TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, newFurniture)
     end,
 
     SetObjectAlpha = function (self, data)
@@ -334,10 +359,6 @@ Modeler = {
                 y = math.floor((v.position.y - shellPos.y) * 100) / 100,
                 z = math.floor((v.position.z - shellPos.z) * 100) / 100,
             }
-            print("v.position")
-            print(v.position.x, v.position.y, v.position.z)
-            print("offsetPos")
-            print(offsetPos.x, offsetPos.y, offsetPos.z)
 
             local id = tostring(math.random(100000, 999999)..self.property_id)
 
@@ -351,10 +372,6 @@ Modeler = {
         end
 
         TriggerServerEvent("ps-housing:server:buyFurniture", self.property_id, items, totalPrice)
-        print("bought")
-        print(self.property_id)
-        print(json.encode(items, {indent = true}))
-        print(totalPrice)
 
         self:ClearCart()
     end,
@@ -433,7 +450,7 @@ RegisterNUICallback("rotateObject", function(data, cb)
     cb("ok")
 end)
 
-RegisterNUICallback("cancelPlacement", function(data, cb)
+RegisterNUICallback("stopPlacement", function(data, cb)
     Modeler:StopPlacement()
     cb("ok")
 end)

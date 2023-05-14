@@ -324,11 +324,10 @@ Property = {
 	end,
 
 	LoadFurnitures = function(self)
-		print("Loading furnitures")
-		local shellCoords = GetEntityCoords(self.shellObj)
 		for i = 1, #self.propertyData.furnitures do
 			local v = self.propertyData.furnitures[i]
 			local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
+
 			local hash = v.object
 
 			while not HasModelLoaded(hash) do
@@ -411,8 +410,6 @@ Property = {
 			action = "setOwnedItems",
 			data = self.furnitureObjs,
 		})
-		print("Loaded furnitures")
-		print(json.encode(self.furnitureObjs, { indent = true }))
 	end,
 
 	UnloadFurnitures = function(self)
@@ -492,13 +489,10 @@ function Property:new(propertyData)
 		if not apartment and Config.Apartments[apartmentName] then
 			ApartmentsTable[apartmentName] = Apartment:new(Config.Apartments[apartmentName])
 			apartment = ApartmentsTable[apartmentName]
-
-			print("had to make the apartment")
 		elseif not apartment then
 			print(apartmentName .. " not found in Config")
 			return
 		end
-		print("was an apartment")
 		apartment:AddProperty(propertyData.property_id)
 	else
 		obj:RegisterPropertyEntrance()

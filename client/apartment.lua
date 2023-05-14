@@ -13,13 +13,15 @@ Apartment = {
         -- not sure why but referencing self directy runs it when registering the zones
         local function enterApartment() 
             self:EnterApartment()
-            print("entering apartment")
         end
 
         local function seeAll()
             self:GetMenuForAll()
         end
 
+        -- can be better 
+        --same for below, could make it so it doesnt show Enter Apartment if you dont have one.
+        -- but I cant think of a way to do that right now
         if Config.Target == "qb" then
             exports['qb-target']:AddBoxZone(targetName, vector3(door.x, door.y, door.z), door.length, door.width, {
                 name = targetName,
@@ -62,6 +64,8 @@ Apartment = {
     end,
 
     EnterApartment = function(self)
+        -- can be better
+        -- can definitely be better, 
         for propertyId, _  in pairs(self.apartments) do
             local property = PropertiesTable[propertyId]
             if property.owner then

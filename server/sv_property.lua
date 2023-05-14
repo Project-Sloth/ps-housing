@@ -63,7 +63,7 @@ Property = {
             ["@furnitures"] = json.encode(furnitures),
             ["@property_id"] = self.property_id
         })
-
+        print("Updated furnitures for property with id: " .. self.property_id)
         TriggerClientEvent('ps-housing:client:updateFurniture', -1, self.propertyData)
     end,
 
@@ -344,8 +344,6 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
     local src = source
     local citizenid, PlayerData, Player = GetCitizenid(src)
 
-    print(property_id, items, price)
-
     local property = PropertiesTable[property_id]
     if not property then return end
 
@@ -367,27 +365,46 @@ end)
 
 RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item)
     local src = source
-    local item = item
     
     local property = PropertiesTable[property_id]
     if not property then return end
     
-    local citizenid, PlayerData, Player = GetCitizenid(src)
+    local citizenid = GetCitizenid(src)
     if not property:CheckForAccess(citizenid) then return end
 
-    local currentFurniture = property.propertyData.furniture
+    local currentFurnitures = property.propertyData.furnitures
 
-    for k, v in pairs(currentFurniture) do
+    for k, v in pairs(currentFurnitures) do
         if v.id == item.id then
-            table.remove(currentFurniture, k)
+            table.remove(currentFurnitures, k)
             break
         end
     end
 
-    property:UpdateFurnitures(currentFurniture)
+    property:UpdateFurnitures(currentFurnitures)
 end)
 
+RegisterNetEvent("ps-housing:server:updateFurniture", function(property_id, item)
+    local src = source
 
+    local property = PropertiesTable[property_id]
+    if not property then return end
+
+    local citizenid = GetCitizenid(src)
+    if not property:CheckForAccess(citizenid) then return end
+
+    local currentFurnitures = property.propertyData.furnitures
+
+    for k, v in pairs(currentFurnitures) do
+        if v.id == item.id then
+            currentFurnitures[k] = item
+            print("Updated furniture", json.encode(item))
+            break
+        end
+    end
+    
+    property:UpdateFurnitures(currentFurnitures)
+end)
 
 RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local src = source
