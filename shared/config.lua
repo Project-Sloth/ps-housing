@@ -5,7 +5,7 @@ Config.AccessCanEditFurniture = true
 
 --The following code is exclusively for targeting, and does not pertain to menus or any other elements. 
 -- If you're not utilizing ox_lib, it's time to question your approach.
-Config.Target = "qb" -- "ox" or "qb"
+Config.Target = "ox" -- "ox" or "qb"
 
 -- Draw the poly for the property
 Config.DebugZones = true 

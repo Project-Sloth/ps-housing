@@ -5,21 +5,22 @@ Property = {
     playersDoorbell = {}, -- src
 
     PlayerEnter = function (self, src)
-        self.playersInside[src] = true
+        local _src = tostring(src)
+        self.playersInside[_src] = true
 
         TriggerClientEvent('qb-weathersync:client:DisableSync', src)
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
-
         if self.playersDoorbell[1] then
             TriggerClientEvent("ps-housing:client:updateDoorbellPool", src, self.property_id, self.playersDoorbell)
-            if self.playersDoorbell[src] then
-                self.playersDoorbell[src] = nil
+            if self.playersDoorbell[_src] then
+                self.playersDoorbell[_src] = nil
             end
         end
     end,
 
     AddToDoorbellPoolTemp = function (self, src)
-        self.playersDoorbell[src] = true
+        local _src = tostring(src)
+        self.playersDoorbell[_src] = true
 
         for k, v in pairs(self.playersInside) do
             TriggerClientEvent('ox_lib:notify', k, {title="Someone is at the door.", type="inform"})
@@ -29,8 +30,8 @@ Property = {
         TriggerClientEvent("ox_lib:notify", src, {title="Ringing Doorbell.", type="success"})
 
         SetTimeout(30000, function ()
-            if self.playersDoorbell[src] then
-                self.playersDoorbell[src] = nil
+            if self.playersDoorbell[_src] then
+                self.playersDoorbell[_src] = nil
                 TriggerClientEvent("ox_lib:notify", src, {title="No one answered the door.", type="error"})
             end
             for k, v in pairs(self.playersInside) do
@@ -40,7 +41,8 @@ Property = {
     end,
 
     PlayerLeave = function (self, src)
-        self.playersInside[src] = nil
+        local _src = tostring(src)
+        self.playersInside[_src] = nil
         TriggerEvent('qb-weathersync:client:EnableSync', src)
     end,
 
@@ -63,7 +65,6 @@ Property = {
             ["@furnitures"] = json.encode(furnitures),
             ["@property_id"] = self.property_id
         })
-        print("Updated furnitures for property with id: " .. self.property_id)
         TriggerClientEvent('ps-housing:client:updateFurniture', -1, self.propertyData)
     end,
 
@@ -309,11 +310,11 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
         property:PlayerEnter(src)
         return
     end
-    print(GetPlayerName(src), property_id)
     print("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
     
 
-    property:AddToDoorbellPoolTemp(src)    
+    property:AddToDoorbellPoolTemp(src)
+    print("Ringing doorbell") 
 end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)

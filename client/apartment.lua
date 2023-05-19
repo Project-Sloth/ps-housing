@@ -69,7 +69,7 @@ Apartment = {
         for propertyId, _  in pairs(self.apartments) do
             local property = PropertiesTable[propertyId]
             if property.owner then
-                TriggerServerEvent('ps-housing:server:enterProperty', property.property_id)
+                TriggerServerEvent('ps-housing:server:enterProperty', propertyId)
                 return
             end
         end

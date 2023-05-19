@@ -295,7 +295,7 @@ Property = {
 	end,
 
 	OpenDoorbellMenu = function(self)
-		if not self.doorbellPool then
+		if not self.doorbellPool[1] then
 			lib.notify({ title = "No one is at the door", type = "error" })
 			return
 		end

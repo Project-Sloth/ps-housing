@@ -86,7 +86,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     if propertyData.apartment then
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
-
+        TriggerClientEvent('QBCore:Client:OnPlayerLoaded', src)
         
         --because QBCore does not emit the OnPlayerLoaded event when creating a new character
         TriggerClientEvent("ps-housing:client:initialiseProperties", src) 
