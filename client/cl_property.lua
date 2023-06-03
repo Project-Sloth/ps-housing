@@ -101,7 +101,7 @@ Property = {
 				coords = vector3(offset.x, offset.y, offset.z),
 				size = vector3(1.0, self.shellData.doorOffset.width, 3.0),
 				rotation = self.shellData.doorOffset.heading,
-				debug = Config.DebugZones,
+				debug = Config.DebugMode,
 				options = {
 					{
 						name = "leave",
@@ -136,7 +136,7 @@ Property = {
 				{
 					name = targetName,
 					heading = door_data.h,
-					debugPoly = Config.DebugZones,
+					debugPoly = Config.DebugMode,
 					minZ = door_data.z - 1.0,
 					maxZ = door_data.z + 2.0,
 				},
@@ -155,7 +155,7 @@ Property = {
 				coords = vector3(door_data.x, door_data.y, door_data.z),
 				size = vector3(door_data.length, door_data.width, 3.0),
 				rotation = door_data.h,
-				debug = Config.DebugZones,
+				debug = Config.DebugMode,
 				options = {
 					{
 						name = "enter",
@@ -484,7 +484,7 @@ function Property:new(propertyData)
 	setmetatable(obj, self)
 	self.__index = self
 
-	if propertyData.apartment ~= nil then
+	if propertyData.apartment then
 		local apartmentName = propertyData.apartment
 		local apartment = ApartmentsTable[apartmentName]
 
@@ -492,7 +492,7 @@ function Property:new(propertyData)
 			ApartmentsTable[apartmentName] = Apartment:new(Config.Apartments[apartmentName])
 			apartment = ApartmentsTable[apartmentName]
 		elseif not apartment then
-			print(apartmentName .. " not found in Config")
+			Debug(apartmentName .. " not found in Config")
 			return
 		end
 		apartment:AddProperty(propertyData.property_id)

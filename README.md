@@ -15,8 +15,11 @@ RegisterNetEvent("qb-multicharacter:client:destroyCam", function ()
 end)
 ```
 
-2. Find the following event and change `qb-multicharacter:server:createCharacter` in server/main.lua event to: 
+2. Find the following event and change in server/main.lua event to: 
 
+
+
+` qb-multicharacter > server > main.lua > line 104`
 ```lua
 RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     local src = source
@@ -27,19 +30,21 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
         repeat
             Wait(10)
         until hasDonePreloading[src]
-            local randbucket = (GetPlayerPed(src) .. math.random(1,999))
-            SetPlayerRoutingBucket(src, randbucket)
-            print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
-            QBCore.Commands.Refresh(src)
-            loadHouseData(src)
-            TriggerClientEvent("qb-multicharacter:client:closeNUI", src)
-            TriggerClientEvent('apartments:client:setupSpawnUI', src, newData)
-            TriggerEvent("ps-housing:server:createNewApartment", src)
-            TriggerClientEvent("qb-multicharacter:client:destroyCam", src)
-            GiveStarterItems(src)
+        print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
+        QBCore.Commands.Refresh(src)
+        TriggerClientEvent("qb-multicharacter:client:closeNUI", src)
+        newData.citizenid = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+        TriggerClientEvent('ps-housing:client:setupSpawnUI', src, newData)
+        GiveStarterItems(src)
     end
 end)
 ```
+
+
+
+
+
+
 3. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 
 4. Install the dependencies below.

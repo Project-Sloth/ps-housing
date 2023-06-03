@@ -82,7 +82,7 @@ RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
 end)
 
 function InitialiseProperties()
-    print("Initialising properties")
+    Debug("Initialising properties")
     for k, v in pairs(Config.Apartments) do
         ApartmentsTable[k] = Apartment:new(v)
     end
@@ -91,7 +91,7 @@ function InitialiseProperties()
     for k, v in pairs(properties) do
         createProperty(v)
     end
-    print("Initialised properties")
+    Debug("Initialised properties")
 end
 AddEventHandler("QBCore:Client:OnPlayerLoaded", InitialiseProperties)
 RegisterNetEvent('ps-housing:client:initialiseProperties', InitialiseProperties)
@@ -104,12 +104,11 @@ end)
 
 
 -- The garage-related functionality is being handled below.
-AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_id)
-    local garageName = gargeName
-    local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", gargeName, property_id)
+AddEventHandler("ps-housing:client:handleGarage", function (garageName, property_id)
+    local propertyVehicles = lib.callback.await("ps-housing:cb:getVehicles", garageName, property_id)
 
     local menu = {
-        id = gargeName,
+        id = garageName,
         title = "People at the door",
         options = {}
     }
@@ -146,6 +145,24 @@ AddEventHandler("ps-housing:client:handleGarage", function (gargeName, property_
     end
 
     lib.menu.showMenu(menu)
+end)
+
+RegisterNetEvent('ps-housing:client:setupSpawnUI', function(cData)
+    DoScreenFadeOut(1000)
+    local result = lib.callback.await('ps-housing:cb:GetOwnedApartment', source, cData.citizenid)
+    if result then
+        TriggerEvent('qb-spawn:client:setupSpawns', cData, false, nil)
+        TriggerEvent('qb-spawn:client:openUI', true)
+        -- TriggerEvent("apartments:client:SetHomeBlip", result.type)
+    else
+        if Config.StartingApartment then
+            TriggerEvent('qb-spawn:client:setupSpawns', cData, true, Config.Apartments)
+            TriggerEvent('qb-spawn:client:openUI', true)
+        else
+            TriggerEvent('qb-spawn:client:setupSpawns', cData, false, nil)
+            TriggerEvent('qb-spawn:client:openUI', true)
+        end
+    end
 end)
 
 local function doCarDamage(currentVehicle, veh)
@@ -272,7 +289,7 @@ local function offsetThread()
 end
 
 local function markerThread()
-    print("The marker showing is the door_data boxzone that will be created. Make sure the door_data is inside for the target to work. \n"
+    Debug("The marker showing is the door_data boxzone that will be created. Make sure the door_data is inside for the target to work. \n"
     .. "This box has a length of 2.0, width of 1.0 \n")
     local length = 2.0
     local width = 1.0

@@ -81,7 +81,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Label of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Label of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateDescription = function (self, data)
@@ -97,7 +97,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Description of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Description of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdatePrice = function (self, data)
@@ -113,7 +113,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Price of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Price of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateForSale = function (self, data)
@@ -127,7 +127,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed For Sale of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed For Sale of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateShell = function (self, data)
@@ -143,7 +143,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Shell of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Shell of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateOwner = function (self, data)
@@ -184,7 +184,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Imgs of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Imgs of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateDoor = function (self, data)
@@ -208,7 +208,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Door of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Door of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateHas_access = function (self, data)
@@ -222,7 +222,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Has Access of property with id: " .. self.property_id, "by: " .. GetPlayerName(src))
+        Debug("Changed Has Access of property with id: " .. self.property_id, "by: " .. GetPlayerName(src))
     end,
 
     UpdateGarage = function (self, data)
@@ -249,7 +249,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Garage of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Garage of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     UpdateApartment = function (self, data)
@@ -263,7 +263,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        print("Changed Apartment of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Changed Apartment of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 
     DeleteProperty = function (self, data)
@@ -273,13 +273,13 @@ Property = {
             ["@property_id"] = self.property_id
         }, function (rowsChanged)
             if rowsChanged > 0 then
-                print("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(data.realtorSrc))
+                Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(data.realtorSrc))
             end
         end)
 
         TriggerClientEvent("ps-housing:client:deleteProperty", -1, self.property_id)
 
-        print("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+        Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,
 }
 
@@ -299,22 +299,26 @@ end
 
 RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
-
+    Debug("Player is trying to enter property", property_id)
     local property = PropertiesTable[property_id]
-    if not property then return end
+    Debug("Property", json.encode(property, {indent = true}))
+    if not property then 
+        Debug("Properties", json.encode(PropertiesTable, {indent = true}))
+        return end
 
     local citizenid = GetCitizenid(src)
 
     if property.propertyData.owner == citizenid or property:CheckForAccess(citizenid) then
-        print("Player has access to property")
+        Debug("Player has access to property")
         property:PlayerEnter(src)
+        Debug("Player entered property")
         return
     end
-    print("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
+    Debug("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
     
 
     property:AddToDoorbellPoolTemp(src)
-    print("Ringing doorbell") 
+    Debug("Ringing doorbell") 
 end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
@@ -361,7 +365,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
 
     property:UpdateFurnitures(items)
     TriggerClientEvent("ox_lib:notify", src, {title= "You bought furniture for $" .. price, type="success"})
-    print("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
+    Debug("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
 end)
 
 RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item)
@@ -399,7 +403,7 @@ RegisterNetEvent("ps-housing:server:updateFurniture", function(property_id, item
     for k, v in pairs(currentFurnitures) do
         if v.id == item.id then
             currentFurnitures[k] = item
-            print("Updated furniture", json.encode(item))
+            Debug("Updated furniture", json.encode(item))
             break
         end
     end

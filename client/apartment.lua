@@ -26,7 +26,7 @@ Apartment = {
             exports['qb-target']:AddBoxZone(targetName, vector3(door.x, door.y, door.z), door.length, door.width, {
                 name = targetName,
                 heading = door.h,
-                debugPoly = Config.DebugZones,
+                debugPoly = Config.DebugMode,
                 minZ = door.z - 1.0,
                 maxZ = door.z + 2.0,
             }, {
@@ -46,7 +46,7 @@ Apartment = {
                 coords = vector3(door.x, door.y, door.z),
                 size = vector3(door.length, door.width, 3.0),
                 rotation = door.h,
-                debug = Config.DebugZones,
+                debug = Config.DebugMode,
                 options = {
                     {
                         name = "enter",
@@ -103,6 +103,7 @@ Apartment = {
     end,
 
     AddProperty = function(self, propertyId)
+        
         self.apartments[propertyId] = true
     end,
 

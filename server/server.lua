@@ -14,7 +14,7 @@ MySQL.ready(function()
         for _, v in pairs(result) do
             local id = tostring(v.property_id)
             local propertyData = {
-                property_id = id,
+                property_id = tostring(id),
                 owner = v.owner_citizenid,
                 label = v.label,
                 description = v.description,
@@ -76,29 +76,43 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         ["@door_data"] = json.encode(propertyData.door_data),
         ["@garage_data"] = json.encode(propertyData.garage_data),
     })
-
-    propertyData.property_id = tostring(id)
+    id = tostring(id)
+    propertyData.property_id = id
     PropertiesTable[id] = Property:new(propertyData)
 
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
-
     if propertyData.apartment then
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
-        TriggerClientEvent('QBCore:Client:OnPlayerLoaded', src)
-        
-        --because QBCore does not emit the OnPlayerLoaded event when creating a new character
-        TriggerClientEvent("ps-housing:client:initialiseProperties", src) 
 
-        Wait(500)
+        Wait(1000)
 
         local property = PropertiesTable[id]
         property:PlayerEnter(src)
 
-        
         Wait(500)
+
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+    end
+end)
+
+lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
+    Debug("ps-housing:cb:GetOwnedApartment", source, cid)
+    if cid ~= nil then
+        local result = MySQL.query.await('SELECT * FROM properties WHERE citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { cid })
+        if result[1] ~= nil then
+            return result[1]
+        end
+        return nil
+    else
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+        local result = MySQL.query.await('SELECT * FROM apartments WHERE citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { Player.PlayerData.citizenid })
+        if result[1] ~= nil then
+            return result[1]
+        end
+        return nil
     end
 end)
 
@@ -115,22 +129,25 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     end
 end)
 
-AddEventHandler("ps-housing:server:createNewApartment", function(source)
+RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
 
     if not Config.StartingApartment then return end
     local citizenid, PlayerData = GetCitizenid(src)
 
+    local apartment = Config.Apartments[aptLabel]
+    if not apartment then return end
+
     local propertyData = {
         owner = citizenid,
         label = string.format("%s's Apartment", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname),
-        description = string.format("This is %s's apartment in %s", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, Config.StartingApartment),
+        description = string.format("This is %s's apartment in %s", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, apartment.label),
         for_sale = 0,
-        shell = Config.DefaultApartmentShell,
-        apartment = Config.StartingApartment,
+        shell = apartment.shell,
+        apartment = apartment.label,
     }
 
-    print("Creating new apartment for " .. GetPlayerName(src) .. " in " .. Config.StartingApartment)
+    Debug("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
     TriggerEvent("ps-housing:server:registerProperty", propertyData)
 end)
 

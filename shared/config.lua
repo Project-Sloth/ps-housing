@@ -8,7 +8,13 @@ Config.AccessCanEditFurniture = true
 Config.Target = "ox" -- "ox" or "qb"
 
 -- Draw the poly for the property
-Config.DebugZones = true 
+Config.DebugMode = true
+
+function Debug(msg)
+    if Config.DebugMode then
+        print(msg)
+    end
+end
 
 -- Only used for export SetFuel | ps-fuel or LegacyFuel
 Config.Fuel = "LegacyFuel" 
@@ -18,9 +24,7 @@ Config.Fuel = "LegacyFuel"
 Config.CanGarageAnyVehicle = false 
 
 -- Set this value to false if you don't want to assign a starting apartment.
-Config.StartingApartment = "Integrity Way"
-
-Config.DefaultApartmentShell = "Apartment Furnished"
+Config.StartingApartment = true
 
 Config.Apartments = {
     ["Integrity Way"] = {
@@ -31,7 +35,8 @@ Config.Apartments = {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106153553283784704/integrity.webp",
                 label = "Outside",
             },
-        }
+        },
+        shell = "Apartment Furnished",
     },
     
     ["South Rockford Drive"] = {
@@ -42,7 +47,8 @@ Config.Apartments = {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
                 label = "Outside",
             },
-        }
+        },
+        shell = "Apartment Furnished",
     }
 }
 
