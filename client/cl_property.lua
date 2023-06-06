@@ -56,8 +56,6 @@ Property = {
 
 		SetEntityCoordsNoOffset(ped, offset.x, offset.y, offset.z, false, false, true)
 		SetEntityHeading(ped, self.shellData.doorOffset.heading)
-
-		DoScreenFadeIn(250)
 	end,
 
 	RegisterDoorZone = function(self, offset)
@@ -203,7 +201,7 @@ Property = {
 	end,
 
 	EnterShell = function(self)
-		DoScreenFadeOut(250)
+		DoScreenFadeOut(500)
 		self.inShell = true
 		self.shellData = Config.Shells[self.propertyData.shell]
 
@@ -225,6 +223,9 @@ Property = {
 				Modeler:OpenMenu(self.property_id)
 			end,
 		})
+
+		Wait(500)
+		DoScreenFadeIn(500)
 	end,
 
 	LeaveShell = function(self)
@@ -232,7 +233,7 @@ Property = {
 			return
 		end
 
-		DoScreenFadeOut(250)
+		DoScreenFadeOut(500)
 
 		local coords = self:GetDoorCoords()
 		SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)
@@ -266,7 +267,8 @@ Property = {
 		self.shellData = nil
 		self.doorbellPool = {}
 
-		DoScreenFadeIn(250)
+		Wait(500)
+		DoScreenFadeIn(500)
 	end,
 
 	ManageAccesMenu = function(self)
