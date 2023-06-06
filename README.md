@@ -125,6 +125,10 @@ end)
 * [five-freecam](https://github.com/Deltanic/fivem-freecam)
 * [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
 
+# To Do
+- Optimise RAM Usage
+    - Callback the stuff needed only when entering the property. (like furniture).
+
 # Preview
 
 # Credits
