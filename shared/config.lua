@@ -350,7 +350,7 @@ Config.Shells = {
         label = "House 3",
         hash = `shell_lester`,
         doorOffset = { x = -1.61, y = -6.02, z = -0.37, heading = 357.7, width = 2.0  },
-        imgss = {
+        imgs = {
             {
                 url = "https://i.postimgs.cc/HLbdwtRd/angle1.webp",
                 label = "Angle 1",
@@ -370,7 +370,7 @@ Config.Shells = {
         label = "House 4",
         hash = `shell_trevor`,
         doorOffset = { x = 0.2, y = -3.82, z = -0.41, heading = 358.4, width = 2.0  },
-        imgss = {
+        imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714761596543107/bathroom.webp",
                 label = "Bathroom",

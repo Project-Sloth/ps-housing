@@ -121,7 +121,7 @@ Property = {
 	RegisterPropertyEntrance = function(self)
 		local door_data = self.propertyData.door_data
 		local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
-		local label = nil
+		local label = (self.has_access or self.owner) and "Enter Property" or "Ring Doorbell"
 
 		local function enter()
 			TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
@@ -143,7 +143,7 @@ Property = {
 				{
 					options = {
 						{
-							label = (self.has_access or self.owner) and "Enter Property" or "Ring Doorbell",
+							label = label,
 							action = enter,
 						},
 					},
@@ -167,37 +167,37 @@ Property = {
 		end
 	end,
 
-	-- QBCORE Did house garages the shittiest way possible so I did my own version of it. Might not be a very framework friendly decision but fuck qb
 	RegisterGarageZone = function(self)
 		if not self.propertyData.garage_data.x then
 			return
 		end
 
 		local garageData = self.propertyData.garage_data
-		local garageName = string.format("property-%s-garage")
+		local garageName = string.format("property-%s-garage", self.property_id)
+
+		local data = {
+			takeVehicle = {
+				x = garageData.x,
+				y = garageData.y,
+				z = garageData.z,
+				w = garageData.h
+			},
+			type = "house",
+			label = self.propertyData.label
+		}
+
+		TriggerEvent("qb-garages:client:addHouseGarage", self.property_id, data)
 
 		self.garageZone = BoxZone:Create(vector3(garageData.x, garageData.y, garageData.z), garageData.length, garageData.width, {
-				name = garageName,
-				debugPoly = Config.DebugPoly,
-			})
-
-		local function handleGarage()
-			TriggerEvent("ps-housing:client:handleGarage", garageName)
-		end
+			name = garageName,
+			debugPoly = Config.DebugMode,
+			minZ= garageData.z - 1.0,
+			maxZ=garageData.z + 3.0
+		})
 
 		self.garageZone:onPlayerInOut(function(isPointInside, point)
 			if isPointInside then
-				exports["qb-core"]:DrawText(self.propertyData.label .. " Garage", "left")
-				lib.showTextUI(self.propertyData.label .. " Garage")
-				lib.addRadialItem({
-					id = garageName,
-					icon = "warehouse",
-					label = cache.vehicle and "Store Vehicle" or "Open Property Garage",
-					onSelect = handleGarage,
-				})
-			else
-				lib.hideTextUI()
-				lib.removeRadialItem(garageName)
+				TriggerEvent('qb-garages:client:setHouseGarage', self.property_id, true)
 			end
 		end)
 	end,
