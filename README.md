@@ -17,9 +17,24 @@ end)
 
 2. Find the following event and change in server/main.lua event to: 
 
+`qb-multicharacter > server > main.lua > line 90`
+```lua
+RegisterNetEvent('qb-multicharacter:server:loadUserData', function(cData)
+    local src = source
+    if QBCore.Player.Login(src, cData.citizenid) then
+        repeat
+            Wait(10)
+        until hasDonePreloading[src]
+        print('^2[qb-core]^7 '..GetPlayerName(src)..' (Citizen ID: '..cData.citizenid..') has succesfully loaded!')
+        QBCore.Commands.Refresh(src)
+        TriggerClientEvent('ps-housing:client:setupSpawnUI', src, cData)
+        TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(src) .. "** (<@"..(QBCore.Functions.GetIdentifier(src, 'discord'):gsub("discord:", "") or "unknown").."> |  ||"  ..(QBCore.Functions.GetIdentifier(src, 'ip') or 'undefined') ..  "|| | " ..(QBCore.Functions.GetIdentifier(src, 'license') or 'undefined') .." | " ..cData.citizenid.." | "..src..") loaded..")
+    end
+end)
+```
 
 
-` qb-multicharacter > server > main.lua > line 104`
+`qb-multicharacter > server > main.lua > line 104`
 ```lua
 RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     local src = source
@@ -40,9 +55,66 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
 end)
 ```
 
+`qb-multicharacter > client > client.lua > line 51`
+```lua
+RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
+    if not new then
+        QBCore.Functions.TriggerCallback('qb-spawn:server:getOwnedHouses', function(houses)
+            local myHouses = {}
+            print(json.encode(houses, {indent = true}))
+            if houses ~= nil then
+                for i = 1, (#houses), 1 do
+                    print(json.encode(houses[i], {indent = true}))
+                    local house = houses[i]
+                    myHouses[#myHouses+1] = {
+                        house = house,
+                        label = house.label,
+                    }
+                end
+            end
 
+            Wait(500)
+            SendNUIMessage({
+                action = "setupLocations",
+                locations = QB.Spawns,
+                houses = myHouses,
+                isNew = new
+            })
+        end, cData.citizenid)
+    elseif new then
+        SendNUIMessage({
+            action = "setupAppartements",
+            locations = apps,
+            isNew = new
+        })
+    end
+end)
+```
 
-
+`qb-multicharacter > client > client.lua > line 134`
+```lua
+RegisterNUICallback('chooseAppa', function(data, cb)
+    print("chooseAppa")
+    local ped = PlayerPedId()
+    local appaYeet = data.appType
+    SetDisplay(false)
+    DoScreenFadeOut(500)
+    Wait(5000)
+    print(appaYeet, json.encode(data))
+    -- TriggerServerEvent("apartments:server:CreateApartment", appaYeet, Apartments.Locations[appaYeet].label)
+    TriggerServerEvent("ps-housing:server:createNewApartment", appaYeet)
+    TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+    TriggerEvent('QBCore:Client:OnPlayerLoaded')
+    FreezeEntityPosition(ped, false)
+    RenderScriptCams(false, true, 500, true, true)
+    SetCamActive(cam, false)
+    DestroyCam(cam, true)
+    SetCamActive(cam2, false)
+    DestroyCam(cam2, true)
+    SetEntityVisible(ped, true)
+    cb('ok')
+end)
+```
 
 
 3. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
