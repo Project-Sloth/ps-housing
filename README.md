@@ -118,10 +118,10 @@ RegisterNUICallback('chooseAppa', function(data, cb)
 end)
 ```
 
-
 3. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
-
-4. Install the dependencies below.
+4. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
+5. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
+6. Install the dependencies below.
 
 # Dependancy
 * [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
