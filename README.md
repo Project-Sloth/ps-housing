@@ -4,6 +4,8 @@ ps-housing is a resource that opens up a world of creative possibilities for hou
 
 ps-housing owes its existence to the exceptional coding expertise of [Xirvin#0985](https://github.com/ImXirvin). His application of top-tier coding practices has been instrumental in creating this script. We at Project Sloth are thrilled that he has joined our team and utilized our platform to deliver this incredible, much-anticipated resource. Our sincere appreciation goes out to Xirvin#0985 for his outstanding contribution!
 
+# Preview
+
 # Installation 
 1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
 
@@ -122,6 +124,7 @@ end)
 4. Install the dependencies below.
 
 # Dependancy
+* [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 * [five-freecam](https://github.com/Deltanic/fivem-freecam)
 * [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
 
@@ -129,6 +132,7 @@ end)
 - Optimise RAM Usage
     - Callback the stuff needed only when entering the property. (like furniture).
 
-# Preview
-
 # Credits
+* [Xirvin](https://github.com/ImXirvin)
+* [Byte Labs Project](https://github.com/Byte-Labs-Project)
+* [Project Sloth Team](https://discord.gg/projectsloth)
