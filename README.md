@@ -127,6 +127,7 @@ end)
 8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
+11. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in Config.lua, default is qb-target.
 
 # To Do
 - Optimise RAM Usage
