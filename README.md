@@ -17,7 +17,7 @@ RegisterNetEvent("qb-multicharacter:client:destroyCam", function ()
 end)
 ```
 
-2. Find the following event and change in server/main.lua event to: 
+2. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
 
 `qb-multicharacter > server > main.lua > line 90`
 ```lua
@@ -34,7 +34,6 @@ RegisterNetEvent('qb-multicharacter:server:loadUserData', function(cData)
     end
 end)
 ```
-
 
 `qb-multicharacter > server > main.lua > line 104`
 ```lua
@@ -56,8 +55,9 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     end
 end)
 ```
+3. Find the following events in `qb-spawn` and change in server/main.lua event to: 
 
-`qb-multicharacter > client > client.lua > line 51`
+`qb-spawn > client > client.lua > line 51`
 ```lua
 RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
     if not new then
@@ -93,7 +93,7 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
 end)
 ```
 
-`qb-multicharacter > client > client.lua > line 134`
+`qb-spawn > client > client.lua > line 134`
 ```lua
 RegisterNUICallback('chooseAppa', function(data, cb)
     print("chooseAppa")
@@ -118,15 +118,15 @@ RegisterNUICallback('chooseAppa', function(data, cb)
 end)
 ```
 
-3. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
-4. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
-5. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
-6. Install the dependencies below.
+4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
+5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
+6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
+7. Install the dependencies below.
 
 # Dependancy
-* [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
-* [five-freecam](https://github.com/Deltanic/fivem-freecam)
-* [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
+8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
+9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
+10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
 
 # To Do
 - Optimise RAM Usage
@@ -136,3 +136,4 @@ end)
 * [Xirvin](https://github.com/ImXirvin)
 * [Byte Labs Project](https://github.com/Byte-Labs-Project)
 * [Project Sloth Team](https://discord.gg/projectsloth)
+* [K4MB1](https://www.k4mb1maps.com/)
