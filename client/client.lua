@@ -42,17 +42,7 @@ exports('GetShells', function()
 	return Config.Shells
 end)
 
-AddEventHandler("onResourceStop", function(resourceName)
-	if (GetCurrentResourceName() == resourceName) then
-		if Modeler.IsMenuActive then
-			Modeler:CloseMenu()
-		end
 
-		for k, v in pairs(PropertiesTable) do
-			v:DeleteProperty()
-		end
-	end
-end)
 
 local function createProperty(property)
 
@@ -175,4 +165,21 @@ RegisterCommand('findoffset', function()
 
     CreateThread(offsetThread)
     CreateThread(markerThread)
+end)
+
+
+AddEventHandler("onResourceStop", function(resourceName)
+	if (GetCurrentResourceName() == resourceName) then
+		if Modeler.IsMenuActive then
+			Modeler:CloseMenu()
+		end
+
+		for k, v in pairs(PropertiesTable) do
+			v:DeleteProperty()
+		end
+
+        for k, v in pairs(ApartmentsTable) do
+            v:DeleteApartment()
+        end
+	end
 end)

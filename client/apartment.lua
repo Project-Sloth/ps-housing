@@ -5,6 +5,7 @@ Apartment = {
     apartments = {},
 
     entranceTarget = nil,
+    blip = nil,
 
     RegisterPropertyEntrance = function (self)
         local door = self.apartmentData.door
@@ -102,6 +103,24 @@ Apartment = {
         lib.showContext(id)
     end,
 
+    CreateBlip = function(self)
+        local door = self.apartmentData.door
+		local blip = AddBlipForCoord(door.x, door.y, door.z)
+		SetBlipSprite(blip, 475)
+		SetBlipScale(blip, 0.8)
+		SetBlipColour(blip, 4)
+		SetBlipAsShortRange(blip, true)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(self.apartmentData.label)
+		EndTextCommandSetBlipName(blip)
+		self.blip = blip
+	end,
+
+	DeleteBlip = function(self)
+		RemoveBlip(self.blip)
+		self.blip = nil
+	end,
+
     AddProperty = function(self, propertyId)
         
         self.apartments[propertyId] = true
@@ -112,6 +131,22 @@ Apartment = {
 
         self.apartments[propertyId] = nil
     end,
+
+    DeleteApartment = function(self)
+        local targetName = string.format("%s_apartment", self.apartmentData.label)
+		if Config.Target == "qb" then
+			exports["qb-target"]:RemoveZone(targetName)
+		elseif Config.Target == "ox" then
+			exports.ox_target:removeZone(self.entranceTarget)
+		end
+
+		if self.propertyData.apartment then
+			ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
+		end
+
+		self:DeleteBlip()
+		self = nil
+    end
 }
 
 function Apartment:new(apartmentData)
@@ -124,6 +159,8 @@ function Apartment:new(apartmentData)
     self.__index = self
 
     obj:RegisterPropertyEntrance()
+
+    obj:CreateBlip()
 
     return obj
 end

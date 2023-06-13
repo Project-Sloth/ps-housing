@@ -20,6 +20,8 @@ Property = {
 	entranceTarget = nil, -- needed for ox target
 	exitTarget = nil, -- needed for ox target
 
+	blip = nil,
+
 
 	GetDoorCoords = function(self)
 		local coords = nil
@@ -166,7 +168,11 @@ Property = {
 	end,
 
 	RegisterGarageZone = function(self)
-		if not self.propertyData.garage_data.x then
+		if not next(self.propertyData.garage_data) then
+			return
+		end
+
+		if (not self.hash_access and not self.owner) or not self.owner then
 			return
 		end
 
@@ -441,13 +447,30 @@ Property = {
 		self.furnitureObjs = {}
 	end,
 
+	CreateBlip = function(self)
+		local door_data = self.propertyData.door_data
+		local blip = AddBlipForCoord(door_data.x, door_data.y, door_data.z)
+		SetBlipSprite(blip, 40)
+		SetBlipScale(blip, 0.8)
+		SetBlipColour(blip, 2)
+		SetBlipAsShortRange(blip, true)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(self.propertyData.label)
+		EndTextCommandSetBlipName(blip)
+		self.blip = blip
+	end,
+
+	DeleteBlip = function(self)
+		RemoveBlip(self.blip)
+		self.blip = nil
+	end,
+
 	DeleteProperty = function(self)
 		local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
 		if Config.Target == "qb" then
 			exports["qb-target"]:RemoveZone(targetName)
 		elseif Config.Target == "ox" then
 			exports.ox_target:removeZone(self.entranceTarget)
-			self.entranceTarget = nil
 		end
 
 		if self.inShell then
@@ -457,6 +480,10 @@ Property = {
 		if self.propertyData.apartment then
 			ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
 		end
+
+		self:DeleteBlip()
+
+		self = nil
 	end,
 }
 
@@ -497,10 +524,15 @@ function Property:new(propertyData)
 			Debug(apartmentName .. " not found in Config")
 			return
 		end
+
 		apartment:AddProperty(propertyData.property_id)
 	else
 		obj:RegisterPropertyEntrance()
 		obj:RegisterGarageZone()
+
+		if obj.owner or obj.has_access then
+			obj:CreateBlip()
+		end
 	end
 
 	return obj
