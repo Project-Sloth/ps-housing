@@ -63,10 +63,8 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
     if not new then
         QBCore.Functions.TriggerCallback('qb-spawn:server:getOwnedHouses', function(houses)
             local myHouses = {}
-            print(json.encode(houses, {indent = true}))
             if houses ~= nil then
                 for i = 1, (#houses), 1 do
-                    print(json.encode(houses[i], {indent = true}))
                     local house = houses[i]
                     myHouses[#myHouses+1] = {
                         house = house,
@@ -96,14 +94,11 @@ end)
 `qb-spawn > client > client.lua > line 134`
 ```lua
 RegisterNUICallback('chooseAppa', function(data, cb)
-    print("chooseAppa")
     local ped = PlayerPedId()
     local appaYeet = data.appType
     SetDisplay(false)
     DoScreenFadeOut(500)
     Wait(5000)
-    print(appaYeet, json.encode(data))
-    -- TriggerServerEvent("apartments:server:CreateApartment", appaYeet, Apartments.Locations[appaYeet].label)
     TriggerServerEvent("ps-housing:server:createNewApartment", appaYeet)
     TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
     TriggerEvent('QBCore:Client:OnPlayerLoaded')
@@ -121,7 +116,8 @@ end)
 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
-7. Install the dependencies below.
+7. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua.
+8. Install the dependencies below.
 
 # Dependancy
 8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
