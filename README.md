@@ -55,7 +55,7 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     end
 end)
 ```
-3. Find the following events in `qb-spawn` and change in client/main.lua event to: 
+3. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
 `qb-spawn > client > client.lua > line 51`
 ```lua
