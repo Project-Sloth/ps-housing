@@ -8,7 +8,7 @@ Config.AccessCanEditFurniture = true
 Config.Target = "ox" -- "ox" or "qb"
 
 -- Draw the poly for the property
-Config.DebugMode = true
+Config.DebugMode = false
 
 function Debug(msg)
     if Config.DebugMode then
