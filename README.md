@@ -6,6 +6,10 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 
 # Preview
 
+# Note
+
+Players need to place their stash and wardrobe or else they wont have one.
+
 # Installation 
 1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
 
