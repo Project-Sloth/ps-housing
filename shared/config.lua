@@ -424,7 +424,7 @@ Config.Furnitures = {
         category = "Prerequisites",
         items = {
             { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage" },
-            { ["object"] = "v_57_bathmirror", ["price"] = 0, ["label"] = "Outfit Mirror", ["type"] = "clothing"}
+            { ["object"] = "v_24_hangingclothes", ["price"] = 0, ["label"] = "Outfit Mirror", ["type"] = "clothing"}
         }
     },
 
