@@ -6,7 +6,7 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 
 # Preview
 
-# Note
+# Important
 
 Players need to place their stash and wardrobe or else they wont have one.
 
