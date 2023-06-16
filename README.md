@@ -61,7 +61,7 @@ end)
 ```
 3. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
-`qb-spawn > client > client.lua > line 51`
+`qb-spawn > client.lua > line 51`
 ```lua
 RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
     if not new then
@@ -128,6 +128,7 @@ end)
 9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
 11. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in Config.lua, default is qb-target.
+12. [LegacyFuel](https://github.com/qbcore-framework/LegacyFuel) or [ps-fuel](https://github.com/Project-Sloth/ps-fuel)
 
 # To Do
 - Optimise RAM Usage
