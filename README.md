@@ -95,7 +95,7 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
 end)
 ```
 
-`qb-spawn > client > client.lua > line 134`
+`qb-spawn > client.lua > line 134`
 ```lua
 RegisterNUICallback('chooseAppa', function(data, cb)
     local ped = PlayerPedId()
