@@ -127,7 +127,7 @@ end)
 8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
-11. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in Config.lua, default is qb-target.
+11. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 12. [LegacyFuel](https://github.com/qbcore-framework/LegacyFuel) or [ps-fuel](https://github.com/Project-Sloth/ps-fuel)
 
 # To Do
