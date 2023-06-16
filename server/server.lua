@@ -1,5 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
-QBCore = exports['ps-core']:GetCoreObject()
+PSCore = exports['ps-core']:GetCoreObject()
 PropertiesTable = {}
 
 local dbloaded = false
