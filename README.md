@@ -8,7 +8,7 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 
 # Important
 
-Players need to place their stash and wardrobe or else they wont have one.
+Players need to place their [stash](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#LL426C96-L426C96) and [wardrobe](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L427) or else they wont have one. Check [Config](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L422) for more information.
 
 # Installation 
 1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
