@@ -117,6 +117,30 @@ RegisterNUICallback('chooseAppa', function(data, cb)
 end)
 ```
 
+`qb-spawn > client > client.lua > line 189-196`
+```lua
+        if insideMeta.property_id ~= nil then
+            local property_id = insideMeta.property_id
+            TriggerServerEvent('ps-housing:server:enterProperty', property_id)
+        end
+```
+
+`qb-spawn > client > client.lua > line 197-203`
+```lua
+        if insideMeta.property_id ~= nil then
+            local property_id = insideMeta.property_id
+            TriggerServerEvent('ps-housing:server:enterProperty', property_id)
+        end
+```
+
+`qb-spawn > client > client.lua > line 2-203`
+```lua
+        if insideMeta.property_id ~= nil then
+            local property_id = insideMeta.property_id
+            TriggerServerEvent('ps-housing:server:enterProperty', property_id)
+        end
+```
+
 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)

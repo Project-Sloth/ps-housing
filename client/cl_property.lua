@@ -208,6 +208,7 @@ Property = {
 
 	EnterShell = function(self)
 		DoScreenFadeOut(500)
+
 		self.inShell = true
 		self.shellData = Config.Shells[self.propertyData.shell]
 
@@ -235,11 +236,11 @@ Property = {
 	end,
 
 	LeaveShell = function(self)
+		DoScreenFadeOut(500)
+		
 		if not self.inShell then
 			return
 		end
-
-		DoScreenFadeOut(500)
 
 		local coords = self:GetDoorCoords()
 		SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)

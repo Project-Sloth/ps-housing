@@ -16,6 +16,18 @@ Property = {
                 self.playersDoorbell[_src] = nil
             end
         end
+
+        local citizenid = GetCitizenid(src)
+
+        if self:CheckForAccess(citizenid) then
+            local Player = QBCore.Functions.GetPlayer(src)
+            local insideMeta = Player.PlayerData.metadata["inside"]
+
+            insideMeta.property_id = self.property_id
+            Player.Functions.SetMetaData("inside", insideMeta)
+        end
+
+        --bucket here
     end,
 
     AddToDoorbellPoolTemp = function (self, src)
@@ -44,6 +56,15 @@ Property = {
         local _src = tostring(src)
         self.playersInside[_src] = nil
         TriggerEvent('qb-weathersync:client:EnableSync', src)
+
+        local citizenid = GetCitizenid(src)
+        if self:CheckForAccess(citizenid) then
+            local Player = QBCore.Functions.GetPlayer(src)
+            local insideMeta = Player.PlayerData.metadata["inside"]
+
+            insideMeta.property_id = nil
+            Player.Functions.SetMetaData("inside", insideMeta)
+        end
     end,
 
     CheckForAccess = function (self, citizenid)
@@ -507,4 +528,13 @@ lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, pr
     end
 
     return withAccess
+end)
+
+RegisterNetEvent('ps-housing:server:resetMetaData', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local insideMeta = Player.PlayerData.metadata["inside"]
+
+    insideMeta.property_id = nil
+    Player.Functions.SetMetaData("inside", insideMeta)
 end)

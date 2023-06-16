@@ -140,9 +140,9 @@ Apartment = {
 			exports.ox_target:removeZone(self.entranceTarget)
 		end
 
-		if self.propertyData.apartment then
-			ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
-		end
+        for propertyId, _ in pairs(self.apartments) do
+            PropertiesTable[propertyId]:DeleteProperty()
+        end
 
 		self:DeleteBlip()
 		self = nil

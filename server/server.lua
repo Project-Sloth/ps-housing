@@ -1,7 +1,6 @@
 QBCore = exports['qb-core']:GetCoreObject()
 PropertiesTable = {}
 
-
 local dbloaded = false
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)

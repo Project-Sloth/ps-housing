@@ -16,13 +16,6 @@ function Debug(msg)
     end
 end
 
--- Only used for export SetFuel | ps-fuel or LegacyFuel
-Config.Fuel = "LegacyFuel" 
-
--- If set to true, anyone with keys can remove any vehicle from the garage. 
--- Furthermore, this setting also allows them to store vehicles that do not belong to them, provided they have the keys.
-Config.CanGarageAnyVehicle = false 
-
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
 
@@ -42,6 +35,42 @@ Config.Apartments = {
     ["South Rockford Drive"] = {
         label = "South Rockford Drive",
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 1 },
+        imgs = {
+            {
+                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                label = "Outside",
+            },
+        },
+        shell = "Apartment Furnished",
+    },
+
+    ['Morningwood Blvd'] = {
+        label = 'Morningwood Blvd',
+        door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 1 },
+        imgs = {
+            {
+                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                label = "Outside",
+            },
+        },
+        shell = "Apartment Furnished",
+    },
+
+    ['Tinsel Towers'] = {
+        label = 'Tinsel Towers',
+        door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 1 },
+        imgs = {
+            {
+                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                label = "Outside",
+            },
+        },
+        shell = "Apartment Furnished",
+    },
+
+    ['Fantastic Plaza'] = {
+        label = 'Tinsel Towers',
+        door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
