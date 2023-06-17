@@ -10,7 +10,7 @@ Property = {
 
         TriggerClientEvent('qb-weathersync:client:DisableSync', src)
         TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
-        if self.playersDoorbell[1] then
+        if next(self.playersDoorbell) then
             TriggerClientEvent("ps-housing:client:updateDoorbellPool", src, self.property_id, self.playersDoorbell)
             if self.playersDoorbell[_src] then
                 self.playersDoorbell[_src] = nil
@@ -33,7 +33,13 @@ Property = {
 
     AddToDoorbellPoolTemp = function (self, src)
         local _src = tostring(src)
-        self.playersDoorbell[_src] = true
+
+        local Player = QBCore.Functions.GetPlayer(src)
+        local name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+        self.playersDoorbell[_src] = {
+            src = src,
+            name = name,
+        }
 
         for k, v in pairs(self.playersInside) do
             TriggerClientEvent('ox_lib:notify', k, {title="Someone is at the door.", type="inform"})
@@ -347,26 +353,17 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
 end)
 
 lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_id)
-    local src = source
-
     local property = PropertiesTable[property_id]
     if not property then return end
-
-    local citizenid = GetCitizenid(src)
-    if property.propertyData.owner ~= citizenid then return end
 
     return property.propertyData.furnitures or {}
 end)
 
 
 lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, property_id)
-    local src = source
 
     local property = PropertiesTable[property_id]
     if not property then return end
-
-    local citizenid = GetCitizenid(src)
-    if property.propertyData.owner ~= citizenid then return end
 
     local players = {}
 
@@ -400,10 +397,8 @@ RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data)
 
     local property = PropertiesTable[data.property_id]
     if not property then return end
-
-    local ownerCitizenid = GetCitizenid(src)
-
-    if property.propertyData.owner ~= ownerCitizenid then return end
+    
+    if not property.playersInside[tostring(src)] then return end
 
     property:PlayerEnter(targetSrc)
 end)

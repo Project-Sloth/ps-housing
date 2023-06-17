@@ -43,8 +43,7 @@ Property = {
 
 		local modelHash = self.shellData.hash
 		lib.requestModel(modelHash)
-		local one, two = GetModelDimensions(modelHash)
-		print(json.encode({one, two}, {indent = true}))
+		
 		self.shellObj = CreateObject(modelHash, coords.x, coords.y, coords.z - 50.0, false, false, false)
 
 		SetModelAsNoLongerNeeded(modelHash)
@@ -214,32 +213,28 @@ Property = {
 
 		self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', source, self.property_id)
 		self:LoadFurnitures()
-
-		if not self.owner and not Config.AccessCanEditFurniture then
-			return
+		
+		local accessAndConfig = self.has_access and Config.AccessCanEditFurniture
+		if self.owner or accessAndConfig then
+			lib.addRadialItem({
+				id = "furniture_menu",
+				icon = "house",
+				label = "Furniture Menu",
+				onSelect = function()
+					Modeler:OpenMenu(self.property_id)
+				end,
+			})
+	
+			lib.addRadialItem({
+				id = "access_menu",
+				icon = "key",
+				label = "Manage Property Access",
+				onSelect = function()
+					self:ManageAccesMenu()
+				end,
+	
+			})
 		end
-
-		if not self.owner and not self.has_access then return end
-        if self.has_access and not Config.AccessCanEditFurniture  then return end 
-
-		lib.addRadialItem({
-			id = "furniture_menu",
-			icon = "house",
-			label = "Furniture Menu",
-			onSelect = function()
-				Modeler:OpenMenu(self.property_id)
-			end,
-		})
-
-		lib.addRadialItem({
-			id = "access_menu",
-			icon = "key",
-			label = "Manage Property Access",
-			onSelect = function()
-				self:ManageAccesMenu()
-			end,
-
-		})
 
 		DoScreenFadeIn(500)
 	end,
@@ -372,7 +367,7 @@ Property = {
 	end,
 
 	OpenDoorbellMenu = function(self)
-		if not self.doorbellPool[1] then
+		if not next(self.doorbellPool) then
 			lib.notify({ title = "No one is at the door", type = "error" })
 			return
 		end
@@ -386,11 +381,11 @@ Property = {
 
 		for k, v in pairs(self.doorbellPool) do
 			table.insert(menu.options, {
-				title = GetPlayerName(k),
+				title = v.name,
 				onSelect = function()
 					TriggerServerEvent(
 						"ps-housing:server:doorbellAnswer",
-						{ targetSrc = k, property_id = self.property_id }
+						{ targetSrc = v.src, property_id = self.property_id }
 					)
 				end,
 			})
