@@ -1,4 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
+PSCore = exports['ps-core']:GetCoreObject()
 PropertiesTable = {}
 
 local dbloaded = false
@@ -223,4 +224,9 @@ function GetCitizenid(src)
     local PlayerData = Player.PlayerData
     local citizenid = PlayerData.citizenid
     return citizenid, PlayerData, Player
+end
+
+if PSCore then
+    PSCore.Functions.CheckForUpdates()
+    PSCore.Functions.CheckResourceName()
 end

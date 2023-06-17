@@ -5,6 +5,8 @@ game "gta5"
 author "Xirvin#0985 and Project Sloth"
 version '1.0.0'
 
+repository 'Project-Sloth/ps-housing'
+
 lua54 'yes'
 
 ui_page 'html/index.html'
