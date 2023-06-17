@@ -214,7 +214,7 @@ Property = {
 
 		self:CreateShell()
 
-		self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', self.property_id)
+		self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', self.property_id) or {}
 		self:LoadFurnitures()
 
 		if not self.owner and not Config.AccessCanEditFurniture then
