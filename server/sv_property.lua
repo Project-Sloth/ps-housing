@@ -322,10 +322,12 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
     Debug("Player is trying to enter property", property_id)
     local property = PropertiesTable[property_id]
+    print("All properties", json.encode(PropertiesTable, {indent = true}))
     Debug("Property", json.encode(property, {indent = true}))
     if not property then 
-        Debug("Properties", json.encode(PropertiesTable, {indent = true}))
-        return end
+        Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
+        return 
+    end
 
     local citizenid = GetCitizenid(src)
 

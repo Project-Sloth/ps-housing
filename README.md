@@ -61,12 +61,13 @@ end)
 ```
 3. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
-`qb-spawn > client.lua > line 51`
+`qb-spawn > client.lua > line 51 > 'qb-spawn:client:setupSpawns' event`
 ```lua
 RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
     if not new then
         QBCore.Functions.TriggerCallback('qb-spawn:server:getOwnedHouses', function(houses)
             local myHouses = {}
+            print(json.encode(houses, {indent = true}))
             if houses ~= nil then
                 for i = 1, (#houses), 1 do
                     local house = houses[i]
@@ -95,7 +96,23 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
 end)
 ```
 
-`qb-spawn > client.lua > line 134`
+`qb-spawn > server.lua > line 3`
+```lua
+QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb, cid)
+    if cid ~= nil then
+        local houses = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ?', {cid})
+        if houses[1] ~= nil then
+            cb(houses)
+        else
+            cb({})
+        end
+    else
+        cb({})
+    end
+end)
+```
+
+`qb-spawn > client.lua > line 134 > 'chooseAppa' NUI Callback`
 ```lua
 RegisterNUICallback('chooseAppa', function(data, cb)
     local ped = PlayerPedId()
@@ -103,9 +120,9 @@ RegisterNUICallback('chooseAppa', function(data, cb)
     SetDisplay(false)
     DoScreenFadeOut(500)
     Wait(5000)
-    TriggerServerEvent("ps-housing:server:createNewApartment", appaYeet)
     TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
     TriggerEvent('QBCore:Client:OnPlayerLoaded')
+    TriggerServerEvent("ps-housing:server:createNewApartment", appaYeet)
     FreezeEntityPosition(ped, false)
     RenderScriptCams(false, true, 500, true, true)
     SetCamActive(cam, false)
@@ -117,28 +134,56 @@ RegisterNUICallback('chooseAppa', function(data, cb)
 end)
 ```
 
-`qb-spawn > client > client.lua > line 189-196`
+`qb-spawn > client > client.lua > line 169 'spawnplayer' NUI Callback`
 ```lua
-        if insideMeta.property_id ~= nil then
-            local property_id = insideMeta.property_id
-            TriggerServerEvent('ps-housing:server:enterProperty', property_id)
-        end
-```
+RegisterNUICallback('spawnplayer', function(data, cb)
+    local location = tostring(data.spawnloc)
+    local type = tostring(data.typeLoc)
+    local ped = PlayerPedId()
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    local insideMeta = PlayerData.metadata["inside"]
+    if type == "current" then
+        PreSpawnPlayer()
+        QBCore.Functions.GetPlayerData(function(pd)
+            ped = PlayerPedId()
+            SetEntityCoords(ped, pd.position.x, pd.position.y, pd.position.z)
+            SetEntityHeading(ped, pd.position.a)
+            FreezeEntityPosition(ped, false)
+        end)
 
-`qb-spawn > client > client.lua > line 197-203`
-```lua
+        TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+        TriggerEvent('QBCore:Client:OnPlayerLoaded')
+        Wait(2000)
         if insideMeta.property_id ~= nil then
             local property_id = insideMeta.property_id
-            TriggerServerEvent('ps-housing:server:enterProperty', property_id)
+            TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
         end
-```
+        PostSpawnPlayer()
+    elseif type == "house" then
+        PreSpawnPlayer()
 
-`qb-spawn > client > client.lua > line 2-203`
-```lua
-        if insideMeta.property_id ~= nil then
-            local property_id = insideMeta.property_id
-            TriggerServerEvent('ps-housing:server:enterProperty', property_id)
-        end
+        TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+        TriggerEvent('QBCore:Client:OnPlayerLoaded')
+
+        Wait(2000)
+
+        local property_id = data.spawnloc.property_id
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
+        PostSpawnPlayer()
+    elseif type == "normal" then
+        local pos = QB.Spawns[location].coords
+        PreSpawnPlayer()
+        SetEntityCoords(ped, pos.x, pos.y, pos.z)
+        TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+        TriggerEvent('QBCore:Client:OnPlayerLoaded')
+        TriggerServerEvent('ps-housing:server:resetMetaData')
+        Wait(500)
+        SetEntityCoords(ped, pos.x, pos.y, pos.z)
+        SetEntityHeading(ped, pos.w)
+        PostSpawnPlayer()
+    end
+    cb('ok')
+end)
 ```
 
 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
