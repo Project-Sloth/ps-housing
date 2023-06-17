@@ -402,7 +402,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     end
 
-x    local numFurnitures = #property.propertyData.furnitures
+    local numFurnitures = #property.propertyData.furnitures
 
     for i = 1, #items do
         numFurnitures = numFurnitures + 1

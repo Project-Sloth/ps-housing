@@ -100,6 +100,7 @@ Modeler = {
         self:StopPlacement()
         self:HoverOut()
         self:FreecamActive(false)
+        Wait(1000)
 
         self.CurrentCameraPosition = nil
         self.CurrentCameraLookAt = nil

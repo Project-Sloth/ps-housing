@@ -97,7 +97,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         Wait(500)
 
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
-        lib.Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
+        lib.notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
     end
 end)
 
@@ -173,8 +173,8 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
         local propertyData = v.propertyData
         if propertyData.owner == targetCitizenid then
             if propertyData.apartment == apartment then
-                lib.Notify(targetSrc, "You are already in this apartment", "error")
-                lib.Notify(realtorSrc, "This person is already in this apartment", "error")
+                lib.notify(targetSrc, "You are already in this apartment", "error")
+                lib.notify(realtorSrc, "This person is already in this apartment", "error")
                 return
             elseif #propertyData.apartment > 1 then
                 property_id = propertyData.property_id
@@ -192,8 +192,8 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
     local targetPlayer = targetToAdd.PlayerData
 
-    lib.Notify(targetSrc, "Your apartment is now at "..apartment, "success")
-    lib.Notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
+    lib.notify(targetSrc, "Your apartment is now at "..apartment, "success")
+    lib.notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
 
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
