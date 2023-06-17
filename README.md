@@ -2,9 +2,33 @@
 
 ps-housing is a resource that opens up a world of creative possibilities for housing. Its user-friendly interface lets you decorate any location to your heart's content. The best part? Not only is it completely free, but it's also reliable and functional, unlike many other housing systems available. Dive in and start transforming spaces with ps-housing today!
 
+- Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
+- Provides support for housing and apartments and is a replacement for qb-apartments and qb-housing
+- Allows players to purchase and list houses for sale through `bl-realtor`
+- Houses come with personal garages
+- Houses and apartments come with personal wardrobes and stashes
+- Players can share keys to their houses and apartments with other players
+
+
 ps-housing owes its existence to the exceptional coding expertise of [Xirvin#0985](https://github.com/ImXirvin). His application of top-tier coding practices has been instrumental in creating this script. We at Project Sloth are thrilled that he has joined our team and utilized our platform to deliver this incredible, much-anticipated resource. Our sincere appreciation goes out to [Xirvin#0985](https://github.com/ImXirvin) for his outstanding contribution!
 
+# ISSUES?
+
+- SPawning in on existing character, stuck at spinning black screen
+- ensure ox_lib is at the top of the server cfg
+- once player spawns they need to be told what to do to customize apartment
+- qb-radialmenu remove qb-housing related options / replace with ps-housing options??
+- need to add a help menu that explains
+- double notification when purchase stuff (gives ox lib notification and qb - should only use which framework is selected)
+- furntiure purchaser should check cash or bank
+- exiting freecam back to player via esc does some derpy camera flying in thingy
+- boguht furniture, then confirmed purchase,reopened adn bought more furntiure and it delted my existing furniture (left apt and came back no furniture)
+- add manage access menu for who has access to your house and can put things down etc
+- double blips on each apartment
+
 # Preview
+
+TODO: 
 
 # Important
 
@@ -23,7 +47,7 @@ end)
 
 2. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
 
-`qb-multicharacter > server > main.lua > line 90`
+`qb-multicharacter > server > main.lua`
 ```lua
 RegisterNetEvent('qb-multicharacter:server:loadUserData', function(cData)
     local src = source
@@ -39,7 +63,7 @@ RegisterNetEvent('qb-multicharacter:server:loadUserData', function(cData)
 end)
 ```
 
-`qb-multicharacter > server > main.lua > line 104`
+`qb-multicharacter > server > main.lua`
 ```lua
 RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     local src = source
@@ -95,22 +119,6 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
 end)
 ```
 
-`qb-spawn > server.lua > line 3`
-```lua
-QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb, cid)
-    if cid ~= nil then
-        local houses = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ?', {cid})
-        if houses[1] ~= nil then
-            cb(houses)
-        else
-            cb({})
-        end
-    else
-        cb({})
-    end
-end)
-```
-
 `qb-spawn > client.lua > line 134 > 'chooseAppa' NUI Callback`
 ```lua
 RegisterNUICallback('chooseAppa', function(data, cb)
@@ -119,9 +127,6 @@ RegisterNUICallback('chooseAppa', function(data, cb)
     SetDisplay(false)
     DoScreenFadeOut(500)
     Wait(5000)
-    TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
-    TriggerEvent('QBCore:Client:OnPlayerLoaded')
-    TriggerServerEvent("ps-housing:server:createNewApartment", appaYeet)
     FreezeEntityPosition(ped, false)
     RenderScriptCams(false, true, 500, true, true)
     SetCamActive(cam, false)
@@ -129,6 +134,9 @@ RegisterNUICallback('chooseAppa', function(data, cb)
     SetCamActive(cam2, false)
     DestroyCam(cam2, true)
     SetEntityVisible(ped, true)
+    TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+    TriggerEvent('QBCore:Client:OnPlayerLoaded')
+    TriggerServerEvent("ps-housing:server:createNewApartment", appaYeet)
     cb('ok')
 end)
 ```
@@ -185,10 +193,26 @@ RegisterNUICallback('spawnplayer', function(data, cb)
 end)
 ```
 
+`qb-spawn > server.lua > line 3`
+```lua
+QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb, cid)
+    if cid ~= nil then
+        local houses = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ?', {cid})
+        if houses[1] ~= nil then
+            cb(houses)
+        else
+            cb({})
+        end
+    else
+        cb({})
+    end
+end)
+```
+
 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
-7. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua.
+7. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua (and any other scripts that may reference it).
 8. Install the dependencies below.
 
 # Dependancy
@@ -196,6 +220,7 @@ end)
 9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
 11. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
+12. [ps-core]()
 
 # To Do
 - Optimise RAM Usage
