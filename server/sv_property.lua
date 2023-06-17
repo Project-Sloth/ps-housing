@@ -356,6 +356,32 @@ lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_i
     return property.propertyData.furnitures or {}
 end)
 
+
+lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, property_id)
+    local src = source
+
+    local property = PropertiesTable[property_id]
+    if not property then return end
+
+    local citizenid = GetCitizenid(src)
+    if property.propertyData.owner ~= citizenid then return end
+
+    local players = {}
+
+    for i = 1, #property.playersInside do
+        local plySrc = property.playersInside[i]
+        local player = QBCore.Functions.GetPlayer(plySrc)
+        local name = player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+
+        players[#players + 1] = {
+            src = plySrc,
+            name = name
+        }
+    end
+
+    return players or {}
+end)
+
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
     local src = source
     local property = PropertiesTable[property_id]
