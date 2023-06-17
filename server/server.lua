@@ -94,6 +94,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         Wait(500)
 
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+        lib.Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
     end
 end)
 
