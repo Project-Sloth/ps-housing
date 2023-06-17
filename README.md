@@ -215,6 +215,7 @@ end)
 7. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua (and any other scripts that may reference it).
 8. Install the dependencies below.
 9. In your server.cfg, add `ensure ox_lib` above all other resources
+10. Ensure ps-housing above bl-realtor.
 
 # Dependancy
 8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
