@@ -1,5 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
-PSCore = exports['ps-core']:GetCoreObject()
+-- PSCore = exports['ps-core']:GetCoreObject()
 PropertiesTable = {}
 
 local dbloaded = false
@@ -59,12 +59,15 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
 
+    local Player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
+    local name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+
     local cols = "(owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
     local vals = "(@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
 
     local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
         ["@owner_citizenid"] = propertyData.owner or nil,
-        ["@label"] = propertyData.label,
+        ["@label"] = propertyData.label .. " " .. name,
         ["@description"] = propertyData.description,
         ["@has_access"] = json.encode(propertyData.has_access),
         ["@extra_imgs"] = json.encode(propertyData.extra_imgs),
@@ -227,7 +230,7 @@ function GetCitizenid(src)
     return citizenid, PlayerData, Player
 end
 
-if PSCore then
-    PSCore.Functions.CheckForUpdates()
-    PSCore.Functions.CheckResourceName()
-end
+-- if PSCore then
+--     PSCore.Functions.CheckForUpdates()
+--     PSCore.Functions.CheckResourceName()
+-- end

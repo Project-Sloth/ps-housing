@@ -214,7 +214,7 @@ Property = {
 
 		self:CreateShell()
 
-		self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', self.property_id) or {}
+		self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', source, self.property_id)
 		self:LoadFurnitures()
 
 		if not self.owner and not Config.AccessCanEditFurniture then
@@ -233,7 +233,6 @@ Property = {
 			end,
 		})
 
-		Wait(500)
 		DoScreenFadeIn(500)
 	end,
 
@@ -278,7 +277,6 @@ Property = {
 		self.shellData = nil
 		self.doorbellPool = {}
 
-		Wait(500)
 		DoScreenFadeIn(500)
 	end,
 
@@ -340,7 +338,6 @@ Property = {
 		for i = 1, #self.propertyData.furnitures do
 			local v = self.propertyData.furnitures[i]
 			local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
-
 			local hash = v.object
 
 			while not HasModelLoaded(hash) do
@@ -419,6 +416,7 @@ Property = {
 				},
 				type = v.type,
 			}
+
 		end
 
 		SendNUIMessage({
@@ -494,11 +492,11 @@ Property = {
 
 function Property:new(propertyData)
 	local obj = {}
-	obj.property_id = propertyData.property_id
+	obj.property_id = tostring(propertyData.property_id)
 	obj.propertyData = propertyData
 
 	--prolly should be done server side just to save the event calls some trouble but someone else can do that
-	obj.propertyData.furnitures = nil -- remove furnitures from property data for ram purposes just incase someone decides to create a fucking maze made out of sticks
+	obj.propertyData.furnitures = {} -- remove furnitures from property data for ram purposes just incase someone decides to create a fucking maze made out of sticks
 
 	local Player = QBCore.Functions.GetPlayerData()
 	local citizenid = Player.citizenid

@@ -309,7 +309,7 @@ function Property:new(propertyData)
     local obj = {}
 
     obj.propertyData = propertyData
-    obj.property_id = propertyData.property_id
+    obj.property_id = tostring(propertyData.property_id)
     obj.playersInside = {}
 
     setmetatable(obj, self)
@@ -344,17 +344,16 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     Debug("Ringing doorbell") 
 end)
 
-lib.callback.register('ps-housing:cb:getFurnitures', function(property_id)
+lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_id)
     local src = source
-    local property = PropertiesTable[property_id]
 
+    local property = PropertiesTable[property_id]
     if not property then return end
 
     local citizenid = GetCitizenid(src)
-
     if property.propertyData.owner ~= citizenid then return end
 
-    return property.propertyData.furnitures
+    return property.propertyData.furnitures or {}
 end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
@@ -392,15 +391,28 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
 
     local price = tonumber(price)
 
-    if price > PlayerData.money.bank then
+    if price > PlayerData.money.bank and price > PlayerData.money.cash then
         TriggerClientEvent("ox_lib:notify", src, {title= "You do not have enough money!", type="error"})
         return
     end
 
-    Player.Functions.RemoveMoney('bank', price, "Bought furniture")
+    if price > PlayerData.money.bank then
+        Player.Functions.RemoveMoney('cash', price, "Bought furniture")
+    else
+        Player.Functions.RemoveMoney('bank', price, "Bought furniture")
+    end
 
-    property:UpdateFurnitures(items)
+x    local numFurnitures = #property.propertyData.furnitures
+
+    for i = 1, #items do
+        numFurnitures = numFurnitures + 1
+        property.propertyData.furnitures[numFurnitures] = items[i]
+    end
+
+    property:UpdateFurnitures(property.propertyData.furnitures)
+
     TriggerClientEvent("ox_lib:notify", src, {title= "You bought furniture for $" .. price, type="success"})
+
     Debug("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
 end)
 
@@ -443,7 +455,7 @@ RegisterNetEvent("ps-housing:server:updateFurniture", function(property_id, item
             break
         end
     end
-    
+
     property:UpdateFurnitures(currentFurnitures)
 end)
 
