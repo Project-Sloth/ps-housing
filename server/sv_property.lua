@@ -28,7 +28,8 @@ Property = {
         end
 
         --bucket here
-        SetPlayerRoutingBucket(src, self.property_id)
+        local bucket = tonumber(self.property_id)
+        SetPlayerRoutingBucket(src, bucket)
     end,
 
     AddToDoorbellPoolTemp = function (self, src)
