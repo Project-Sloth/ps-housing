@@ -371,9 +371,6 @@ Property = {
 		else
 			lib.notify({ title = "No one is in the property", type = "error" })
 		end
-
-
-
 	end,
 
 	OpenDoorbellMenu = function(self)
@@ -419,7 +416,6 @@ Property = {
 			SetModelAsNoLongerNeeded(hash)
 			SetEntityRotation(entity, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
 			FreezeEntityPosition(entity, true)
-
 
 			-- For the prerequisites
 			if v.type == "storage" then

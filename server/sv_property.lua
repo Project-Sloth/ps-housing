@@ -27,8 +27,8 @@ Property = {
             Player.Functions.SetMetaData("inside", insideMeta)
         end
 
-
         --bucket here
+        SetPlayerRoutingBucket(src, self.property_id)
     end,
 
     AddToDoorbellPoolTemp = function (self, src)
@@ -66,6 +66,8 @@ Property = {
             insideMeta.property_id = nil
             Player.Functions.SetMetaData("inside", insideMeta)
         end
+
+        SetPlayerRoutingBucket(src, 0)
     end,
 
     CheckForAccess = function (self, citizenid)
