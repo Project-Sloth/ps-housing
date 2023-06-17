@@ -27,6 +27,7 @@ Property = {
             Player.Functions.SetMetaData("inside", insideMeta)
         end
 
+
         --bucket here
     end,
 
@@ -317,13 +318,12 @@ function Property:new(propertyData)
     return obj
 end
 
-
 RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
     Debug("Player is trying to enter property", property_id)
+
     local property = PropertiesTable[property_id]
-    print("All properties", json.encode(PropertiesTable, {indent = true}))
-    Debug("Property", json.encode(property, {indent = true}))
+
     if not property then 
         Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
         return 
@@ -342,6 +342,19 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
 
     property:AddToDoorbellPoolTemp(src)
     Debug("Ringing doorbell") 
+end)
+
+lib.callback.register('ps-housing:cb:getFurnitures', function(property_id)
+    local src = source
+    local property = PropertiesTable[property_id]
+
+    if not property then return end
+
+    local citizenid = GetCitizenid(src)
+
+    if property.propertyData.owner ~= citizenid then return end
+
+    return property.propertyData.furnitures
 end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)

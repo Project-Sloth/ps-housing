@@ -45,7 +45,6 @@ end)
 
 
 local function createProperty(property)
-
 	PropertiesTable[property.property_id] = Property:new(property)
 
 	if GetResourceState('bl-realtor') == 'started' then

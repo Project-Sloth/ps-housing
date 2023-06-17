@@ -79,7 +79,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     id = tostring(id)
     propertyData.property_id = id
     PropertiesTable[id] = Property:new(propertyData)
-
+    
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
     if propertyData.apartment then

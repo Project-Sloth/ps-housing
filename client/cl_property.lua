@@ -208,11 +208,13 @@ Property = {
 
 	EnterShell = function(self)
 		DoScreenFadeOut(500)
-
+		Wait(500)
 		self.inShell = true
 		self.shellData = Config.Shells[self.propertyData.shell]
 
 		self:CreateShell()
+
+		self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', self.property_id)
 		self:LoadFurnitures()
 
 		if not self.owner and not Config.AccessCanEditFurniture then
@@ -237,13 +239,15 @@ Property = {
 
 	LeaveShell = function(self)
 		DoScreenFadeOut(500)
-		
+		Wait(500)
 		if not self.inShell then
 			return
 		end
 
 		local coords = self:GetDoorCoords()
 		SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)
+
+		self.propertyData.furnitures = nil
 
 		if Config.Target == "qb" then
 			exports["qb-target"]:RemoveZone("shellExit")
@@ -493,6 +497,9 @@ function Property:new(propertyData)
 	obj.property_id = propertyData.property_id
 	obj.propertyData = propertyData
 
+	--prolly should be done server side just to save the event calls some trouble but someone else can do that
+	obj.propertyData.furnitures = nil -- remove furnitures from property data for ram purposes just incase someone decides to create a fucking maze made out of sticks
+
 	local Player = QBCore.Functions.GetPlayerData()
 	local citizenid = Player.citizenid
 
@@ -542,6 +549,11 @@ end
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
 	local property = PropertiesTable[property_id]
 	property:EnterShell()
+end)
+
+RegisterNetEvent('ps-housing:client:setFurnitureData', function(property_id, furnitures)
+	local property = PropertiesTable[property_id]
+	property.propertyData.furnitures = furnitures
 end)
 
 RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, data)
