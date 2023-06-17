@@ -67,7 +67,6 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
     if not new then
         QBCore.Functions.TriggerCallback('qb-spawn:server:getOwnedHouses', function(houses)
             local myHouses = {}
-            print(json.encode(houses, {indent = true}))
             if houses ~= nil then
                 for i = 1, (#houses), 1 do
                     local house = houses[i]
