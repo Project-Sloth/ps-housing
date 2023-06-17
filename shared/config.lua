@@ -69,7 +69,7 @@ Config.Apartments = {
     },
 
     ['Fantastic Plaza'] = {
-        label = 'Tinsel Towers',
+        label = 'Fantastic Plaza',
         door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 1 },
         imgs = {
             {
