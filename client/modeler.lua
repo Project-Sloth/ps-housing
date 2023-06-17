@@ -1,13 +1,5 @@
 local Freecam = exports['fivem-freecam']
 
-
-local function RequestSpawnObject(object)
-    RequestModel(object)
-    while not HasModelLoaded(object) do 
-        Wait(0)
-    end
-end
-
 local function CamThread()
     CreateThread(function()
         local IsDisabledControlJustPressed = IsDisabledControlJustPressed
@@ -25,11 +17,60 @@ local function CamThread()
     end)
 end
 
+local function isInside(coords)
+    local extent = Modeler.shellMinMax
+
+    local isX = coords.x >= extent.min.x and coords.x <= extent.max.x
+    local isY = coords.y >= extent.min.y and coords.y <= extent.max.y
+    local isZ = coords.z >= extent.min.z and coords.z <= extent.max.z
+    if isX and isY and isZ then
+        return true
+    end
+
+    return false
+
+end
+
+local function getMinMax(shellPos, shellMin, shellMax)
+    local min = vector3(shellPos.x + shellMin.x, shellPos.y + shellMin.y, shellPos.z + shellMin.z)
+    local max = vector3(shellPos.x + shellMax.x, shellPos.y + shellMax.y, shellPos.z + shellMax.z)
+    
+    return {min = min, max = max}
+end
+
 
 AddEventHandler('freecam:onTick', function()
     if not Modeler.IsFreecamMode then return end
-    Modeler.CurrentCameraLookAt =  Freecam:GetTarget(5.0)
-    Modeler.CurrentCameraPosition = Freecam:GetPosition()
+
+    local update = true
+    local lookAt =  Freecam:GetTarget(5.0)
+    local camPos = Freecam:GetPosition()
+
+    -- see if camPos is the same as the last one
+    if Modeler.CurrentCameraPosition and Modeler.CurrentCameraLookAt then
+        local posX = Modeler.CurrentCameraPosition.x == camPos.x
+        local posY = Modeler.CurrentCameraPosition.y == camPos.y
+        local posZ = Modeler.CurrentCameraPosition.z == camPos.z
+
+        local lookAtX = Modeler.CurrentCameraLookAt.x == lookAt.x
+        local lookAtY = Modeler.CurrentCameraLookAt.y == lookAt.y
+        local lookAtZ = Modeler.CurrentCameraLookAt.z == lookAt.z
+
+        if posX and posY and posZ and lookAtX and lookAtY and lookAtZ then
+            return
+        end
+    end
+
+    if not isInside(camPos) then
+        Freecam:SetPosition(Modeler.CurrentCameraPosition.x, Modeler.CurrentCameraPosition.y, Modeler.CurrentCameraPosition.z)
+        update = false
+    end
+
+    if update then
+        Modeler.CurrentCameraLookAt =  lookAt
+        Modeler.CurrentCameraPosition = camPos
+    end
+
     SendNUIMessage({
         action = "updateCamera",
         data = {
@@ -37,7 +78,9 @@ AddEventHandler('freecam:onTick', function()
             cameraLookAt = Modeler.CurrentCameraLookAt,
         }
     })
-  end)
+end)
+
+
 
 
 -- WHERE THE ACTUAL CLASS STARTS
@@ -47,6 +90,9 @@ Modeler = {
     IsFreecamMode = false,
 
     property_id = nil,
+
+    shellPos = nil,
+    shellMinMax = nil,
 
     CurrentObject = nil,
     CurrentCameraPosition = nil,
@@ -61,12 +107,20 @@ Modeler = {
     HoverDistance = 5.0,
 
     OpenMenu = function(self, property_id)
+
+
+
         local property = PropertiesTable[property_id]
 
         if not property then return end
         if not property.owner and not property.has_access then return end
         if property.has_access and not Config.AccessCanEditFurniture  then return end 
 
+        self.shellPos = GetEntityCoords(property.shellObj)
+        local min, max = GetModelDimensions(property.shellData.hash)
+
+        self.shellMinMax = getMinMax(self.shellPos, min, max)
+        
         self.property_id = property_id
         self.IsMenuActive = true
 
@@ -158,7 +212,7 @@ Modeler = {
             objectRot = GetEntityRotation(curObject)
         else 
             self:StopPlacement()
-            RequestSpawnObject(object)
+            lib.requestModel(object)
 
             curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
             SetEntityCoords(curObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
@@ -197,7 +251,13 @@ Modeler = {
     end,
 
     MoveObject = function (self, data)
-        SetEntityCoords(self.CurrentObject, data.x + 0.0, data.y + 0.0, data.z + 0.0)
+        local coords = vec3(data.x + 0.0, data.y + 0.0, data.z + 0.0)
+        if not isInside(coords) then
+            return
+        end
+
+
+        SetEntityCoords(self.CurrentObject, coords)
         -- get the current offset of this object in relation to the 
     end,
 
@@ -242,7 +302,6 @@ Modeler = {
     UpdateFurniture = function (self, item)
         local property = PropertiesTable[self.property_id]
 
-        local shellPos = GetEntityCoords(property.shellObj)
         local newPos = GetEntityCoords(item.entity)
 
         local offsetPos = {
@@ -385,8 +444,6 @@ Modeler = {
         self:ClearCart()
     end,
 
-
-
     SetHoverDistance = function (self, data)
         self.HoverDistance = data + 0.0
     end,
@@ -396,7 +453,7 @@ Modeler = {
         local object = data.object
         if object == nil then return end
 
-        RequestSpawnObject(object)
+        lib.requestModel(object)
         self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
         local camRot = Freecam:GetRotation()

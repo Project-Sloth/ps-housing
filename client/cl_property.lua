@@ -42,11 +42,9 @@ Property = {
 		local coords = self:GetDoorCoords()
 
 		local modelHash = self.shellData.hash
-		RequestModel(modelHash)
-		while not HasModelLoaded(modelHash) do
-			Wait(0)
-		end
-
+		lib.requestModel(modelHash)
+		local one, two = GetModelDimensions(modelHash)
+		print(json.encode({one, two}, {indent = true}))
 		self.shellObj = CreateObject(modelHash, coords.x, coords.y, coords.z - 50.0, false, false, false)
 
 		SetModelAsNoLongerNeeded(modelHash)
@@ -408,10 +406,7 @@ Property = {
 			local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
 			local hash = v.object
 
-			while not HasModelLoaded(hash) do
-				Wait(0)
-			end
-
+			lib.requestModel(hash)
 			local entity = CreateObject(hash, coords.x, coords.y, coords.z, false, true, false)
 			SetModelAsNoLongerNeeded(hash)
 			SetEntityRotation(entity, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
@@ -545,6 +540,7 @@ Property = {
 
 		if self.inShell then
 			self:LeaveShell()
+			Wait(1000)
 		end
 
 		if self.propertyData.apartment then
