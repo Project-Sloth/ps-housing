@@ -209,6 +209,11 @@ QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb
 end)
 ```
 
+`qb-garages > main.lua > line 100`
+```lua
+local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
+```
+
 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
