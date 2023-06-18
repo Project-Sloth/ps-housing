@@ -46,10 +46,9 @@ end)
 
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
-
+    
 	if GetResourceState('bl-realtor') == 'started' then
 		local properties = getProperties()
-
 		TriggerEvent("bl-realtor:client:updateProperties", properties)
 
         if property.apartment then

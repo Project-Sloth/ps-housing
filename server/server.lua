@@ -59,8 +59,13 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
 
-    local Player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
-    local name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+    local Player = propertyData.owner and QBCore.Functions.GetPlayerByCitizenId(propertyData.owner) or nil
+    local name
+    if Player then
+        name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+    else
+        name = "Unowned"
+    end
 
     local cols = "(owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
     local vals = "(@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
@@ -222,6 +227,13 @@ lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, p
     end
 end)
 
+exports('IsOwner', function(src, property_id)
+    local property = PropertiesTable[property_id]
+    if not property then return false end
+
+    local citizenid = GetCitizenid(src)
+    return property:CheckForAccess(citizenid)
+end)
 
 function GetCitizenid(src)
     local Player = QBCore.Functions.GetPlayer(src)
