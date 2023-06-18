@@ -3,8 +3,8 @@
 ps-housing is a resource that opens up a world of creative possibilities for housing. Its user-friendly interface lets you decorate any location to your heart's content. The best part? Not only is it completely free, but it's also reliable and functional, unlike many other housing systems available. Dive in and start transforming spaces with ps-housing today!
 
 - Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
-- Provides support for housing and apartments and is a replacement for qb-apartments and qb-housing
-- Allows players to purchase and list houses for sale through `bl-realtor`
+- Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
+- Allows players to purchase and list houses for sale through `bl-realtor` and the realtor job
 - Houses come with personal garages
 - Houses and apartments come with personal wardrobes and stashes
 - Players can share keys to their houses and apartments with other players
@@ -12,23 +12,34 @@ ps-housing is a resource that opens up a world of creative possibilities for hou
 
 ps-housing owes its existence to the exceptional coding expertise of [Xirvin#0985](https://github.com/ImXirvin). His application of top-tier coding practices has been instrumental in creating this script. We at Project Sloth are thrilled that he has joined our team and utilized our platform to deliver this incredible, much-anticipated resource. Our sincere appreciation goes out to [Xirvin#0985](https://github.com/ImXirvin) for his outstanding contribution!
 
-# ISSUES?
-
-- SPawning in on existing character, stuck at spinning black screen
-- ensure ox_lib is at the top of the server cfg
-- once player spawns they need to be told what to do to customize apartment
-- qb-radialmenu remove qb-housing related options / replace with ps-housing options??
-- need to add a help menu that explains
-- double notification when purchase stuff (gives ox lib notification and qb - should only use which framework is selected)
-- furntiure purchaser should check cash or bank
-- exiting freecam back to player via esc does some derpy camera flying in thingy
-- boguht furniture, then confirmed purchase,reopened adn bought more furntiure and it delted my existing furniture (left apt and came back no furniture)
-- add manage access menu for who has access to your house and can put things down etc
-- double blips on each apartment
 
 # Preview
 
 TODO: 
+
+# Usage
+
+## Creating a new property for sale
+Players must have the realtor job to create new properties. Additionally if the realtor has a high enough grade level, they can also help players move to new apartments.
+All properties must be manually configured for sale by the realtor job, giving you full control over all aspects of properties, and bringing another avenue of roleplay to your server.
+
+- Pick the location where you want to create a new property
+- Use `/housing`` to open the housing menu
+- Click on create new property
+- Fill out the details of the property (name, price, description, which shell to use, etc)
+- Choose the door location (this is where the person will enter the house)
+    - Ensure that you place it up against a wall, since players will use target to enter the house
+- Choose the garage location 
+    - This point is used both for storing vehicles, as well as the location where the vehicle will spawn when taken out of the garage
+- Realtors can edit the details of the property by clicking on the property in the housing menu
+- Players can see the properties for sale through the /housing menu as well
+
+## Furnish and decorate a property
+Once inside the property, the player can furnish and decorate the property to their liking. They can also invite other players to their property, and give them access to the property. Open the furnite store by pressing `Z`. 
+
+This will open a furniture store complete with all of the props. Select an item from the catalog and place it into the property. You can use the placement gizmo to position the item to your liking as well as use the UI tools for fine tune control over the placement. Once you are happy with the positioning, make sure you press `Add to Cart` before moving on. Continue to add as many items as you want to your cart. Once you are done, go to the `Checkout` and purchase the items. 
+
+> Note: The place on ground button sometimes does not work properly depending on where the native detects the ground to be.
 
 # Important
 
@@ -222,7 +233,7 @@ local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 9. In your server.cfg, add `ensure ox_lib` above all other resources
 10. Ensure ps-housing above bl-realtor.
 
-# Dependancy
+# Dependency
 8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
