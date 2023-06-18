@@ -2,9 +2,10 @@
   import { ReceiveNUI } from '../utils/ReceiveNUI';
   import { SendNUI } from '../utils/SendNUI';
   import { onMount } from 'svelte';
-  import { IS_MENU_MINIMIZED, visibility } from '../store/stores';
+  import { IS_MENU_MINIMIZED, visibility, CART } from '../store/stores';
   import BackdropFix from './BackdropFix.svelte';
 	import ModelStore from '@store/ModelStore'
+  import Portal from '@components/Portal.svelte';
 
 
 let isVisible: boolean;
@@ -20,12 +21,19 @@ ReceiveNUI<boolean>('setVisible', (visible: boolean) => {
   }
 });
 
+let showModal = false;
+
 onMount(() => {
   const keyHandler = (e: KeyboardEvent) => {
     if (isVisible && ['Escape'].includes(e.code)) {
-      SendNUI('hideUI');
-      visibility.set(false);
-      ModelStore.show.set(false)
+      if ($CART.length > 0) {
+        showModal = true
+      } else {
+        SendNUI('hideUI');
+        showModal = false;
+        visibility.set(false);
+        ModelStore.show.set(false)
+      }
     }
   };
 
@@ -40,6 +48,42 @@ onMount(() => {
     <slot />
 </main>
 <!-- <BackdropFix /> -->
+{/if}
+
+{#if showModal && isVisible}
+<Portal>
+	<div class="z-[100] bg-black bg-opacity-50 w-screen h-screen absolute top-0 left-0 grid place-items-center">
+		<div class="bg-[color:var(--color-secondary)] absolute w-[50rem] h-[fit] p-[1vw] flex flex-col gap-[1vw] justify-center items-center">
+			<p class="text-[color:var(--color-text)] text-[2rem] font-bold text-start">
+				Are you sure you want to exit? You have items in your cart.
+			</p>
+			<div class="flex flex-row justify-between w-full gap-[2vw]">
+				<button
+					class="bg-[color:var(--color-tertiary)] text-[color:var(--color-text)] text-[2rem] px-[1rem] py-[0.5rem] w-full hover:cursor-pointer"
+					on:click={() => {
+						showModal = false
+            $CART = []
+					}}
+				>
+					No
+				</button>
+				<button
+				class="bg-[color:var(--color-tertiary)] text-[color:var(--color-text)] text-[2rem] px-[1rem] py-[0.5rem] w-full hover:cursor-pointer"
+				on:click={() => {
+          SendNUI('hideUI');
+          showModal = false;
+          visibility.set(false);
+          ModelStore.show.set(false)
+				}}
+			>
+				Yes
+			</button>
+			</div>
+		</div>
+	</div>
+
+</Portal>
+
 {/if}
 
 <style>
