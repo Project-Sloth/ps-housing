@@ -2,29 +2,26 @@
 
 ps-housing is a resource that opens up a world of creative possibilities for housing. Its user-friendly interface lets you decorate any location to your heart's content. The best part? Not only is it completely free, but it's also reliable and functional, unlike many other housing systems available. Dive in and start transforming spaces with ps-housing today!
 
-- Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
-- Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
-- Allows players to purchase and list houses for sale through `bl-realtor` and the realtor job
-- Houses come with personal garages
-- Houses and apartments come with personal wardrobes and stashes
-- Players can share keys to their houses and apartments with other players
-
-
 ps-housing owes its existence to the exceptional coding expertise of [Xirvin#0985](https://github.com/ImXirvin). His application of top-tier coding practices has been instrumental in creating this script. We at Project Sloth are thrilled that he has joined our team and utilized our platform to deliver this incredible, much-anticipated resource. Our sincere appreciation goes out to [Xirvin#0985](https://github.com/ImXirvin) for his outstanding contribution!
-
 
 # Preview
 
 TODO: 
 
 # Usage
-
+- Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
+- Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
+- Allows players to purchase and list houses for sale through `bl-realtor` and the realtor job
+- Houses come with personal garages
+- Houses and apartments come with personal wardrobes and stashes
+- Players can share keys to their houses and apartments with other players
+  
 ## Creating a new property for sale
 Players must have the realtor job to create new properties. Additionally if the realtor has a high enough grade level, they can also help players move to new apartments.
 All properties must be manually configured for sale by the realtor job, giving you full control over all aspects of properties, and bringing another avenue of roleplay to your server.
 
 - Pick the location where you want to create a new property
-- Use `/housing`` to open the housing menu
+- Use `/housing` to open the housing menu
 - Click on create new property
 - Fill out the details of the property (name, price, description, which shell to use, etc)
 - Choose the door location (this is where the person will enter the house)
