@@ -26,7 +26,7 @@
 			<button
 				class="h-full w-[30rem] bg-[color:var(--color-secondary)] flex flex-row items-center px-[1.5rem] py-[0.5rem] hover:cursor-pointer"
 				on:click={() => {
-					if ($CURRENTFURNITURE) {
+					if ($CURRENTFURNITURE != null) {
 						showModal = true
 						switchToFurniture = furniture
 					} else {

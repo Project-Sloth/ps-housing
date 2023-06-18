@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ReceiveNUI } from '@utils/ReceiveNUI'
 	import { debugData } from '@utils/debugData'
-	import { FURNITURES, SHOWFURNITURES, browserMode, visibility, CART, IS_MENU_MINIMIZED, OWNEDITEMS } from '@store/stores'
+	import { FURNITURES, SHOWFURNITURES, browserMode, visibility, CART, IS_MENU_MINIMIZED, OWNEDITEMS, CURRENTFURNITURE } from '@store/stores'
 	import ModelStore from '@store/ModelStore'
 	import ItemList from '@components/ItemList.svelte'
 
@@ -76,6 +76,8 @@
 
 		$CART = $CART.filter((entry: any) => entry.entity != data.entity)
 		$CART = [...$CART]
+		$CURRENTFURNITURE = null
+		ModelStore.show.set(false)
 	})
 
 	ReceiveNUI('clearCart', () => {
