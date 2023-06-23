@@ -217,25 +217,32 @@ QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb
 end)
 ```
 
-`qb-garages > main.lua > line 100`
+4. Find the following events in `qb-garages` and change: 
+`qb-garages > server > main.lua > line 100` on event `qb-garage:server:checkOwnership`
+
+Replace 
+```lua
+local hasHouseKey = exports['qb-houses']:hasKey(result[1].license, result[1].citizenid, house)
+```
+With
 ```lua
 local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 ```
 
-4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
-5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
-6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
-7. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua (and any other scripts that may reference it).
-8. Install the dependencies below.
-9. In your server.cfg, add `ensure ox_lib` above all other resources
-10. Ensure ps-housing above bl-realtor.
+5. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
+6. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
+7. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
+8. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua (and any other scripts that may reference it).
+9. Install the dependencies below.
+10. In your server.cfg, add `ensure ox_lib` above all other resources
+11. Ensure ps-housing above bl-realtor.
 
 # Dependency
-8. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
-9. [five-freecam](https://github.com/Deltanic/fivem-freecam)
-10. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
-11. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
-12. [ps-core]()
+12. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
+13. [five-freecam](https://github.com/Deltanic/fivem-freecam)
+14. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
+15. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
+16. [ps-core]()
 
 # To Do
 - Optimise RAM Usage
