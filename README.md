@@ -4,7 +4,17 @@ ps-housing is a resource that opens up a world of creative possibilities for hou
 
 ps-housing owes its existence to the exceptional coding expertise of [Xirvin#0985](https://github.com/ImXirvin). His application of top-tier coding practices has been instrumental in creating this script. We at Project Sloth are thrilled that he has joined our team and utilized our platform to deliver this incredible, much-anticipated resource. Our sincere appreciation goes out to [Xirvin#0985](https://github.com/ImXirvin) for his outstanding contribution!
 
-# Preview
+# Preview [ps-housing](https://github.com/Project-Sloth/ps-housing)
+![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/f3fb603b-c59e-429d-ba64-9b4cc024013f)
+![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/36fd9d4c-31d9-49f8-8a80-73cc4941aad8)
+![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/acb0bdfd-3405-4ab5-8a47-26da32d9d4c4)
+![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/ef4f9aaa-31dc-4072-9989-fc6e4dcc7699)
+
+# Preview [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
+![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/0fd5aa8b-7305-4239-b6fd-f82b682b83c7)
+![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/8e702104-92f2-4696-a59e-e3ea89b975b5)
+![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/f1a4ddfd-b091-4062-a994-e8181974ee49)
+![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/fadc1cab-ceea-462a-8b37-f7fec10f415b)
 
 TODO: 
 
