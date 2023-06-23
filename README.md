@@ -16,8 +16,6 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 ![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/f1a4ddfd-b091-4062-a994-e8181974ee49)
 ![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/fadc1cab-ceea-462a-8b37-f7fec10f415b)
 
-TODO: 
-
 # Usage
 - Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
 - Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
