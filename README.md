@@ -250,7 +250,7 @@ local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 # Dependency
 12. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 13. [five-freecam](https://github.com/Deltanic/fivem-freecam)
-14. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance.
+14. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance. Make sure this is ensured before ps-housing and bl-realtor.
 15. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 16. [ps-core]()
 
