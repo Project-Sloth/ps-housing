@@ -414,7 +414,7 @@ Property = {
 
 				local function openStash()
 					TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
-					-- TriggerEvent("inventory:client:SetCurrentStash", stash)
+					TriggerEvent("inventory:client:SetCurrentStash", stash)
 				end
 
 				if Config.Target == "qb" then
