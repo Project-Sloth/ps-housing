@@ -10,9 +10,9 @@ Config.Target = "ox" -- "ox" or "qb"
 -- Draw the poly for the property
 Config.DebugMode = false
 
-function Debug(msg)
+function Debug(...)
     if Config.DebugMode then
-        print(msg)
+        print(...)
     end
 end
 

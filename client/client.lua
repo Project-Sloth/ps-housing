@@ -76,6 +76,7 @@ function InitialiseProperties()
     end
 
     local properties = lib.callback.await('ps-housing:server:requestProperties')
+
     for k, v in pairs(properties) do
         createProperty(v)
     end
@@ -89,7 +90,6 @@ AddEventHandler("onResourceStart", function(resourceName) -- Used for when the r
         InitialiseProperties()
 	end
 end)
-
 
 RegisterNetEvent('ps-housing:client:setupSpawnUI', function(cData)
     DoScreenFadeOut(1000)
@@ -108,8 +108,6 @@ RegisterNetEvent('ps-housing:client:setupSpawnUI', function(cData)
         end
     end
 end)
-
-
 
 local findingOffset = false
 local function offsetThread()

@@ -94,14 +94,13 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
 
-        Wait(1000)
-
         local property = PropertiesTable[id]
         property:PlayerEnter(src)
 
-        Wait(500)
+        Wait(1000)
 
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+
         lib.notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
     end
 end)
@@ -140,7 +139,6 @@ end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
-
     if not Config.StartingApartment then return end
     local citizenid, PlayerData = GetCitizenid(src)
 
