@@ -2,7 +2,7 @@
   import { ReceiveNUI } from '../utils/ReceiveNUI';
   import { SendNUI } from '../utils/SendNUI';
   import { onMount } from 'svelte';
-  import { IS_MENU_MINIMIZED, visibility, CART } from '../store/stores';
+  import { IS_MENU_MINIMIZED, visibility, CART, CURRENTFURNITURE } from '../store/stores';
   import BackdropFix from './BackdropFix.svelte';
 	import ModelStore from '@store/ModelStore'
   import Portal from '@components/Portal.svelte';
@@ -33,6 +33,7 @@ onMount(() => {
         showModal = false;
         visibility.set(false);
         ModelStore.show.set(false)
+        CURRENTFURNITURE.set(null)
       }
     }
   };

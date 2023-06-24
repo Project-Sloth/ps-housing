@@ -14,7 +14,7 @@
 			<h1
 				class="bg-[color:var(--color-secondary)] text-[2rem] py-4 w-full h-fit text-center"
 			>
-				Cart
+				Owned Items
 			</h1>
 			<button
 				class="bg-[color:var(--color-secondary)] text-[2rem] py-4 h-full text-center aspect-square"

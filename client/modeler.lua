@@ -154,7 +154,8 @@ Modeler = {
         self:StopPlacement()
         self:HoverOut()
         self:FreecamActive(false)
-        Wait(1000)
+
+        Wait(500)
 
         self.CurrentCameraPosition = nil
         self.CurrentCameraLookAt = nil
@@ -169,6 +170,7 @@ Modeler = {
             Freecam:SetKeyboardSetting('FAST_MOVE_MULTIPLIER', 2)
             Freecam:SetKeyboardSetting('SLOW_MOVE_MULTIPLIER', 2)
             Freecam:SetFov(45.0)
+            self.IsFreecamMode = true
         else
             Freecam:SetActive(false)
             --reset to default
@@ -221,8 +223,6 @@ Modeler = {
             objectPos = self.CurrentCameraLookAt
         end
 
-
-
         FreezeEntityPosition(curObject, true)
         SetEntityCollision(curObject, false, false)
         SetEntityAlpha(curObject, self.CurrentObjectAlpha, false)
@@ -255,7 +255,6 @@ Modeler = {
         if not isInside(coords) then
             return
         end
-
 
         SetEntityCoords(self.CurrentObject, coords)
         -- get the current offset of this object in relation to the 
