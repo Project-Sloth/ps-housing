@@ -173,10 +173,8 @@ RegisterNUICallback('spawnplayer', function(data, cb)
             SetEntityHeading(ped, pd.position.a)
             FreezeEntityPosition(ped, false)
         end)
-
         TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
         TriggerEvent('QBCore:Client:OnPlayerLoaded')
-        Wait(2000)
         if insideMeta.property_id ~= nil then
             local property_id = insideMeta.property_id
             TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
@@ -184,15 +182,12 @@ RegisterNUICallback('spawnplayer', function(data, cb)
         PostSpawnPlayer()
     elseif type == "house" then
         PreSpawnPlayer()
-
         TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
         TriggerEvent('QBCore:Client:OnPlayerLoaded')
-
-        Wait(2000)
-
         local property_id = data.spawnloc.property_id
         TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
         PostSpawnPlayer()
+        print("house")
     elseif type == "normal" then
         local pos = QB.Spawns[location].coords
         PreSpawnPlayer()
@@ -200,10 +195,10 @@ RegisterNUICallback('spawnplayer', function(data, cb)
         TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
         TriggerEvent('QBCore:Client:OnPlayerLoaded')
         TriggerServerEvent('ps-housing:server:resetMetaData')
-        Wait(500)
         SetEntityCoords(ped, pos.x, pos.y, pos.z)
         SetEntityHeading(ped, pos.w)
         PostSpawnPlayer()
+        print("normal")
     end
     cb('ok')
 end)
