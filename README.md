@@ -189,7 +189,6 @@ RegisterNUICallback('spawnplayer', function(data, cb)
         local property_id = data.spawnloc.property_id
         TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
         PostSpawnPlayer()
-        print("house")
     elseif type == "normal" then
         local pos = QB.Spawns[location].coords
         PreSpawnPlayer()
@@ -200,7 +199,6 @@ RegisterNUICallback('spawnplayer', function(data, cb)
         SetEntityCoords(ped, pos.x, pos.y, pos.z)
         SetEntityHeading(ped, pos.w)
         PostSpawnPlayer()
-        print("normal")
     end
     cb('ok')
 end)

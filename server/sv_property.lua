@@ -90,7 +90,6 @@ Property = {
     end,
 
     UpdateFurnitures = function (self, furnitures)
-        print("update furniture", json.encode(furnitures, {indent = true}))
         self.propertyData.furnitures = furnitures
 
         MySQL.update("UPDATE properties SET furnitures = @furnitures WHERE property_id = @property_id", {
@@ -99,7 +98,6 @@ Property = {
         })
 
         for k, v in pairs(self.playersInside) do
-            print("update furniture", k)
             TriggerClientEvent('ps-housing:client:updateFurniture', k, self.propertyData)
         end
     end,
@@ -202,7 +200,7 @@ Property = {
         --add callback 
         local targetAllow = lib.callback.await("ps-housing:cb:confirmPurchase", targetSrc, self.propertyData.price, self.propertyData.label)
 
-        if not targetAllow then
+        if targetAllow ~= "confirm" then
             TriggerClientEvent("ox_lib:notify", targetSrc, {title="You did not confirm the purchase", type="error"})
             TriggerClientEvent("ox_lib:notify", realtorSrc, {title="Client did not confirm the purchase", type="error"})
             return
@@ -498,7 +496,6 @@ RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item
     for k, v in pairs(currentFurnitures) do
         if v.id == itemid then
             currentFurnitures[k] = nil
-            print("Removed furniture", json.encode(itemid, {indent = true}))
             break
         end
     end

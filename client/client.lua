@@ -182,7 +182,7 @@ end)
 
 
 
-lib.callback.register('ps-housing:cb:GetOwnedApartment', function(amount, label)
+lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label)
     return lib.alertDialog({
         header = 'Purchase Confirmation',
         content = 'Are you sure you want to purchase '..label..' for $' .. amount .. '?',

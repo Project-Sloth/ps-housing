@@ -619,7 +619,6 @@ end)
 
 -- seperate event so the player doesnt have to leave the shell to update the furniture
 RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
-	print(json.encode(propertyData.furnitures, {indent = true}))
 	local property_id = propertyData.property_id
 	local property = PropertiesTable[property_id]
 	property.propertyData.furnitures = propertyData.furnitures

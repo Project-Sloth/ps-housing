@@ -257,8 +257,6 @@ Modeler = {
         end
 
         SetEntityCoords(self.CurrentObject, coords)
-
-        print(GetEntityCoords(self.CurrentObject))
         -- get the current offset of this object in relation to the 
     end,
 
