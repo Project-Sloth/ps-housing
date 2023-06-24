@@ -1,11 +1,17 @@
 QBCore = exports['qb-core']:GetCoreObject()
--- PSCore = exports['ps-core']:GetCoreObject()
+PSCore = exports['ps-core']:GetCoreObject()
+
 PropertiesTable = {}
+
+PSCore.Resource.CheckForUpdates()
+PSCore.Resource.CheckResourceName()
 
 local dbloaded = false
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)
-        if not result then return end
+        if not result then
+            return
+        end
 
         if result.id then -- If only one result
             result = {result}
@@ -26,7 +32,7 @@ MySQL.ready(function()
                 shell = v.shell,
                 apartment = v.apartment,
                 door_data = json.decode(v.door_data),
-                garage_data = json.decode(v.garage_data),
+                garage_data = json.decode(v.garage_data)
             }
             PropertiesTable[id] = Property:new(propertyData)
         end
@@ -49,7 +55,7 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
     return propertiesData
 end)
 
-AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
+AddEventHandler("ps-housing:server:registerProperty", function(propertyData) -- triggered by realtor job
     local propertyData = propertyData
 
     propertyData.owner = propertyData.owner or nil
@@ -67,10 +73,12 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         name = "Unowned"
     end
 
-    local cols = "(owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
-    local vals = "(@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
+    local cols =
+        "(owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
+    local vals =
+        "(@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
 
-    local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
+    local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals, {
         ["@owner_citizenid"] = propertyData.owner or nil,
         ["@label"] = propertyData.label .. " " .. name,
         ["@description"] = propertyData.description,
@@ -82,12 +90,12 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         ["@shell"] = propertyData.shell,
         ["@apartment"] = propertyData.apartment,
         ["@door_data"] = json.encode(propertyData.door_data),
-        ["@garage_data"] = json.encode(propertyData.garage_data),
+        ["@garage_data"] = json.encode(propertyData.garage_data)
     })
     id = tostring(id)
     propertyData.property_id = id
     PropertiesTable[id] = Property:new(propertyData)
-    
+
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
     if propertyData.apartment then
@@ -108,7 +116,8 @@ end)
 lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
     Debug("ps-housing:cb:GetOwnedApartment", source, cid)
     if cid ~= nil then
-        local result = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { cid })
+        local result = MySQL.query.await(
+            'SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', {cid})
         if result[1] ~= nil then
             return result[1]
         end
@@ -116,7 +125,9 @@ lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
     else
         local src = source
         local Player = QBCore.Functions.GetPlayer(src)
-        local result = MySQL.query.await('SELECT * FROM apartments WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { Player.PlayerData.citizenid })
+        local result = MySQL.query.await(
+            'SELECT * FROM apartments WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""',
+            {Player.PlayerData.citizenid})
         if result[1] ~= nil then
             return result[1]
         end
@@ -126,32 +137,39 @@ end)
 
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
     local property = PropertiesTable[property_id]
-    if not property then return end
+    if not property then
+        return
+    end
 
     property[type](property, data)
 
     if type == "DeleteProperty" then
         PropertiesTable[property_id] = nil
-    else 
+    else
         TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
     end
 end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
-    if not Config.StartingApartment then return end
+    if not Config.StartingApartment then
+        return
+    end
     local citizenid, PlayerData = GetCitizenid(src)
 
     local apartment = Config.Apartments[aptLabel]
-    if not apartment then return end
+    if not apartment then
+        return
+    end
 
     local propertyData = {
         owner = citizenid,
         label = string.format("%s Apartment", apartment.label),
-        description = string.format("This is %s's apartment in %s", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, apartment.label),
+        description = string.format("This is %s's apartment in %s",
+            PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, apartment.label),
         for_sale = 0,
         shell = apartment.shell,
-        apartment = apartment.label,
+        apartment = apartment.label
     }
 
     Debug("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
@@ -163,7 +181,7 @@ RegisterNetEvent('qb-apartments:returnBucket', function()
     SetPlayerRoutingBucket(src, 0)
 end)
 
-AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
+AddEventHandler("ps-housing:server:addTenantToApartment", function(data)
     local apartment = data.apartment
     local targetSrc = data.targetSrc
     local realtorSrc = data.realtorSrc
@@ -187,7 +205,9 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     end
 
     local property = PropertiesTable[property_id]
-    if not property then return end
+    if not property then
+        return
+    end
 
     property:UpdateApartment(data)
 
@@ -195,29 +215,36 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
     local targetPlayer = targetToAdd.PlayerData
 
-    lib.notify(targetSrc, "Your apartment is now at "..apartment, "success")
-    lib.notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
+    lib.notify(targetSrc, "Your apartment is now at " .. apartment, "success")
+    lib.notify(realtorSrc,
+        "You have added " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname ..
+            " to apartment " .. apartment, "success")
 
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
 
-lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, property_id)
+lib.callback.register("ps-housing:cb:allowedToStore", function(source, plate, property_id)
     local src = source
     local plate = plate
 
     local property = PropertiesTable[property_id]
-    if not property then return false end
+    if not property then
+        return false
+    end
 
     local citizenid = GetCitizenid(src)
-    if not property:CheckForAccess(citizenid) then return false end
+    if not property:CheckForAccess(citizenid) then
+        return false
+    end
 
-    local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {['@plate'] = plate})
-    
+    local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {
+        ['@plate'] = plate
+    })
+
     if result[1] then
-        MySQL.update('UPDATE player_vehicles SET state = @state WHERE plate = @plate', 
-        {
+        MySQL.update('UPDATE player_vehicles SET state = @state WHERE plate = @plate', {
             ['@state'] = 1,
-            ['@plate'] = plate,
+            ['@plate'] = plate
         })
         return true
     else
@@ -227,7 +254,9 @@ end)
 
 exports('IsOwner', function(src, property_id)
     local property = PropertiesTable[property_id]
-    if not property then return false end
+    if not property then
+        return false
+    end
 
     local citizenid = GetCitizenid(src)
     return property:CheckForAccess(citizenid)
@@ -239,8 +268,3 @@ function GetCitizenid(src)
     local citizenid = PlayerData.citizenid
     return citizenid, PlayerData, Player
 end
-
--- if PSCore then
---     PSCore.Functions.CheckForUpdates()
---     PSCore.Functions.CheckResourceName()
--- end
