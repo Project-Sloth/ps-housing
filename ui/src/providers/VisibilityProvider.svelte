@@ -29,6 +29,7 @@ onMount(() => {
       if ($CART.length > 0) {
         showModal = true
       } else {
+        SendNUI("hoverOut")
         SendNUI('hideUI');
         showModal = false;
         visibility.set(false);
