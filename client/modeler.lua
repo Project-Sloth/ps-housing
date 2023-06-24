@@ -151,8 +151,8 @@ Modeler = {
 
         SetNuiFocus(false, false)
 
-        self:StopPlacement()
         self:HoverOut()
+        self:StopPlacement()
         self:FreecamActive(false)
 
         Wait(500)
@@ -257,6 +257,8 @@ Modeler = {
         end
 
         SetEntityCoords(self.CurrentObject, coords)
+
+        print(GetEntityCoords(self.CurrentObject))
         -- get the current offset of this object in relation to the 
     end,
 
@@ -299,14 +301,12 @@ Modeler = {
     -- everytime "Stop Placement" is pressed on an owned object, it will update the furniture 
     -- maybe should do it all at once when the user leaves the menu????
     UpdateFurniture = function (self, item)
-        local property = PropertiesTable[self.property_id]
-
         local newPos = GetEntityCoords(item.entity)
 
         local offsetPos = {
-                x = math.floor((newPos.x - shellPos.x) * 100) / 100,
-                y = math.floor((newPos.y - shellPos.y) * 100) / 100,
-                z = math.floor((newPos.z - shellPos.z) * 100) / 100,
+                x = math.floor((newPos.x - self.shellPos.x) * 10000) / 10000,
+                y = math.floor((newPos.y - self.shellPos.y) * 10000) / 10000,
+                z = math.floor((newPos.z - self.shellPos.z) * 10000) / 10000,
         }
 
         local newFurniture = {
@@ -319,10 +319,6 @@ Modeler = {
         }
 
         TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, newFurniture)
-    end,
-
-    RemoveFurniture = function (self, data)
-        TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, data)
     end,
 
     SetObjectAlpha = function (self, data)
@@ -403,8 +399,6 @@ Modeler = {
     end,
 
     BuyCart = function (self)
-        local property = PropertiesTable[self.property_id]
-        local shellPos = GetEntityCoords(property.shellObj)
         local items = {}
         local totalPrice = 0
 
@@ -420,12 +414,13 @@ Modeler = {
         end
 
         for k, v in pairs(self.Cart) do
-            local offsetPos = {
-                x = math.floor((v.position.x - shellPos.x) * 100) / 100,
-                y = math.floor((v.position.y - shellPos.y) * 100) / 100,
-                z = math.floor((v.position.z - shellPos.z) * 100) / 100,
-            }
 
+            local offsetPos = {
+                x = math.floor((v.position.x - self.shellPos.x) * 10000) / 10000,
+                y = math.floor((v.position.y - self.shellPos.y) * 10000) / 10000,
+                z = math.floor((v.position.z - self.shellPos.z) * 10000) / 10000,
+            }
+            
             local id = tostring(math.random(100000, 999999)..self.property_id)
 
             items[#items + 1] = {
@@ -586,6 +581,6 @@ RegisterNUICallback("selectOwnedItem", function(data, cb)
 end)
 
 RegisterNUICallback("removeOwnedItem", function(data, cb)
-    Modeler:RemoveFurniture(data)
+    Modeler:RemoveOwnedItem(data)
     cb("ok")
 end)

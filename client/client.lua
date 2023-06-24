@@ -125,10 +125,10 @@ local function offsetThread()
     while findingOffset do
         local ped = cache.ped
         local coords = GetEntityCoords(ped)
-        local x = math.floor((coords.x - shellCoords.x) * 100) / 100
-        local y = math.floor((coords.y - shellCoords.y) * 100) / 100
-        local z = math.floor((coords.z - shellCoords.z) * 100) / 100
-        local heading = math.floor(GetEntityHeading(ped) * 100) / 100
+        local x = math.floor((coords.x - shellCoords.x) * 10000) / 10000
+        local y = math.floor((coords.y - shellCoords.y) * 10000) / 10000
+        local z = math.floor((coords.z - shellCoords.z) * 10000) / 10000
+        local heading = math.floor(GetEntityHeading(ped) * 10000) / 10000
 
         BeginTextCommandDisplayText('STRING')
         AddTextComponentSubstringPlayerName('x: ' .. x .. ' y: ' .. y .. ' z: ' .. z .. ' heading: ' .. heading)
@@ -178,4 +178,19 @@ AddEventHandler("onResourceStop", function(resourceName)
             v:DeleteApartment()
         end
 	end
+end)
+
+
+
+lib.callback.register('ps-housing:cb:GetOwnedApartment', function(amount, label)
+    return lib.alertDialog({
+        header = 'Purchase Confirmation',
+        content = 'Are you sure you want to purchase '..label..' for $' .. amount .. '?',
+        centered = true,
+        cancel = true,
+        labels = {
+            confirm = "Purchase",
+            cancel = "Cancel"
+        }
+    })
 end)

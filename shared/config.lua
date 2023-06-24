@@ -8,13 +8,22 @@ Config.AccessCanEditFurniture = true
 Config.Target = "ox" -- "ox" or "qb"
 
 -- Draw the poly for the property
-Config.DebugMode = false
+Config.DebugMode = true
+
 
 function Debug(...)
     if Config.DebugMode then
         print(...)
     end
 end
+
+-- Realtor Commisions, the rest got to the owner, if any.
+Config.Commisions = {
+    ['0'] = 0.05, -- 5% commision for each sale
+    ['1'] = 0.10,
+    ['2'] = 0.15,
+    ['3'] = 0.20,
+}
 
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
@@ -453,7 +462,7 @@ Config.Furnitures = {
         category = "Prerequisites",
         items = {
             { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage" },
-            { ["object"] = "v_26_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
+            { ["object"] = "ba_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
         }
     },
 

@@ -619,6 +619,7 @@ end)
 
 -- seperate event so the player doesnt have to leave the shell to update the furniture
 RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
+	print(json.encode(propertyData.furnitures, {indent = true}))
 	local property_id = propertyData.property_id
 	local property = PropertiesTable[property_id]
 	property.propertyData.furnitures = propertyData.furnitures
@@ -629,6 +630,7 @@ end)
 RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
 	local property_id = propertyData.property_id
 	local property = PropertiesTable[property_id]
+	propertyData.furnitures = {} -- will be fetched on enter, just to save some ram
 	property.propertyData = propertyData
 
 	if property.inShell then

@@ -90,13 +90,18 @@ Property = {
     end,
 
     UpdateFurnitures = function (self, furnitures)
+        print("update furniture", json.encode(furnitures, {indent = true}))
         self.propertyData.furnitures = furnitures
 
         MySQL.update("UPDATE properties SET furnitures = @furnitures WHERE property_id = @property_id", {
             ["@furnitures"] = json.encode(furnitures),
             ["@property_id"] = self.property_id
         })
-        TriggerClientEvent('ps-housing:client:updateFurniture', -1, self.propertyData)
+
+        for k, v in pairs(self.playersInside) do
+            print("update furniture", k)
+            TriggerClientEvent('ps-housing:client:updateFurniture', k, self.propertyData)
+        end
     end,
 
     UpdateLabel = function (self, data)
@@ -181,18 +186,57 @@ Property = {
         local targetSrc = data.targetSrc
         local realtorSrc = data.realtorSrc
 
+        local previousOwner = self.propertyData.owner
+
         local targetPlayer  = QBCore.Functions.GetPlayer(tonumber(targetSrc))
 
         local PlayerData = targetPlayer.PlayerData
         local bank = PlayerData.money.bank
         local citizenid = PlayerData.citizenid
 
-        if bank < self.propertyData.price then
-                TriggerClientEvent("ox_lib:notify", src, {title="You do not have enough money in your bank account", type="error"})
+        if self.propertyData.owner == citizenid then
+            TriggerClientEvent("ox_lib:notify", targetSrc, {title="You already own this property", type="error"})
             return
         end
 
-        self.propertyData.owner = citizenid
+        --add callback 
+        local targetAllow = lib.callback.await("ps-housing:cb:confirmPurchase", targetSrc, self.propertyData.price, self.propertyData.label)
+
+        if not targetAllow then
+            TriggerClientEvent("ox_lib:notify", targetSrc, {title="You did not confirm the purchase", type="error"})
+            TriggerClientEvent("ox_lib:notify", realtorSrc, {title="Client did not confirm the purchase", type="error"})
+            return
+        end
+
+        if bank < self.propertyData.price then
+                TriggerClientEvent("ox_lib:notify", targetSrc, {title="You do not have enough money in your bank account", type="error"})
+            return
+        end
+
+        Player.Functions.RemoveMoney('bank', self.propertyData.price, "Bought Property: " .. self.propertyData.label)
+
+        local prevPlayer = QBCore.Functions.GetPlayerByCitizenId(previousOwner)
+
+        local commision = math.floor(self.propertyData.price * Config.Commission)
+
+        local totalAfterCommission = self.propertyData.price - commision
+        
+        if prevPlayer ~= nil then
+            prevPlayer.Functions.AddMoney('bank', self.propertyData.price, "Sold Property: " .. self.propertyData.label)
+        else
+            MySQL.Async.execute('UPDATE `players` SET `bank` = `bank` + @price WHERE `citizenid` = @citizenid', {
+                ['@citizenid'] = previousOwner,
+                ['@price'] = totalAfterCommission
+            })
+        end
+
+        local realtor = QBCore.Functions.GetPlayer(tonumber(realtorSrc))
+        realtor.Functions.AddMoney('bank', commision, "Commission from Property: " .. self.propertyData.label)
+
+        
+
+
+        -- self.propertyData.owner = citizenid
 
         MySQL.update("UPDATE properties SET owner_citizenid = @owner_citizenid, for_sale = @for_sale WHERE property_id = @property_id", {
             ["@owner_citizenid"] = citizenid,
@@ -223,10 +267,10 @@ Property = {
         local realtorSrc = data.realtorSrc
 
         local newData = {
-            x = math.floor(door.x * 100) / 100,
-            y = math.floor(door.y * 100) / 100,
-            z = math.floor(door.z * 100) / 100,
-            h = math.floor(door.h * 100) / 100,
+            x = math.floor(door.x * 10000) / 10000,
+            y = math.floor(door.y * 10000) / 10000,
+            z = math.floor(door.z * 10000) / 10000,
+            h = math.floor(door.h * 10000) / 10000,
             length = door.length or 1.5,
             width = door.width or 2.2,
             locked = door.locked or false,
@@ -264,10 +308,10 @@ Property = {
 
         if data ~= nil then 
             newData = {
-                x = math.floor(garage.x * 100) / 100,
-                y = math.floor(garage.y * 100) / 100,
-                z = math.floor(garage.z * 100) / 100,
-                h = math.floor(garage.h * 100) / 100,
+                x = math.floor(garage.x * 10000) / 10000,
+                y = math.floor(garage.y * 10000) / 10000,
+                z = math.floor(garage.z * 10000) / 10000,
+                h = math.floor(garage.h * 10000) / 10000,
                 length = garage.length or 3.0,
                 width = garage.width or 5.0,
             }
@@ -440,7 +484,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
     Debug("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
 end)
 
-RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item)
+RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, itemid)
     local src = source
     
     local property = PropertiesTable[property_id]
@@ -452,8 +496,9 @@ RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item
     local currentFurnitures = property.propertyData.furnitures
 
     for k, v in pairs(currentFurnitures) do
-        if v.id == item.id then
+        if v.id == itemid then
             currentFurnitures[k] = nil
+            print("Removed furniture", json.encode(itemid, {indent = true}))
             break
         end
     end

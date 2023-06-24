@@ -101,7 +101,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
 
-        lib.notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
+        TriggerClientEvent("ox_lib:notify", src, {title="Open radial menu for furniture menu and place down your stash and clothing locker.", type="info"})
     end
 end)
 
@@ -176,8 +176,9 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
         local propertyData = v.propertyData
         if propertyData.owner == targetCitizenid then
             if propertyData.apartment == apartment then
-                lib.notify(targetSrc, "You are already in this apartment", "error")
-                lib.notify(realtorSrc, "This person is already in this apartment", "error")
+                TriggerClientEvent("ox_lib:notify", targetSrc, {title="You are already in this apartment", type="error"})
+                TriggerClientEvent("ox_lib:notify", realtorSrc, {title="This person is already in this apartment", type="error"})
+
                 return
             elseif #propertyData.apartment > 1 then
                 property_id = propertyData.property_id
@@ -195,9 +196,9 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
     local targetPlayer = targetToAdd.PlayerData
 
-    lib.notify(targetSrc, "Your apartment is now at "..apartment, "success")
-    lib.notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
-
+    TriggerClientEvent("ox_lib:notify", targetSrc, {title="Your apartment is now at "..apartment, type="success"})
+    TriggerClientEvent("ox_lib:notify", realtorSrc, {title="You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, type="success"})
+    
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
 
