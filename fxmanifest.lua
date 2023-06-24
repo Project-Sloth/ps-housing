@@ -9,8 +9,7 @@ repository 'Project-Sloth/ps-housing'
 
 lua54 'yes'
 
--- ui_page 'html/index.html'
-ui_page 'http://localhost:3001/' --for dev
+ui_page 'html/index.html'
 
 dependency 'fivem-freecam'
 
