@@ -17,6 +17,8 @@ function Debug(...)
     end
 end
 
+Config.RaidTimer = 5-- 5 minutes
+
 -- Realtor Commisions, the rest got to the owner, if any.
 Config.Commisions = {
     ['0'] = 0.05, -- 5% commision for each sale

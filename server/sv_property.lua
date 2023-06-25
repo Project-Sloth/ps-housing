@@ -4,6 +4,8 @@ Property = {
     playersInside = {},  -- src
     playersDoorbell = {}, -- src
 
+    raiding = false,
+
     PlayerEnter = function (self, src)
         local _src = tostring(src)
         self.playersInside[_src] = true
@@ -87,6 +89,19 @@ Property = {
         end
 
         return false
+    end,
+
+    StartRaid = function (self, src)
+        self.raiding = true
+
+        for k, v in pairs(self.playersInside) do
+            TriggerClientEvent('ox_lib:notify', k, {title="This Property is being Raided.", type="inform"})
+        end
+
+        CreateThread(function ()
+            Wait(Config.RaidTime * 60000 )
+            self.raiding = false
+        end)
     end,
 
     UpdateFurnitures = function (self, furnitures)
@@ -388,11 +403,31 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
         Debug("Player entered property")
         return
     end
-    Debug("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
-    
 
-    property:AddToDoorbellPoolTemp(src)
-    Debug("Ringing doorbell") 
+    local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src, property_id)
+
+    -- check player job
+    local player = QBCore.Functions.GetPlayer(src)
+    local job = player.PlayerData.job.name
+    local onDuty = player.PlayerData.job.onduty
+
+    if ringDoorbellConfirmation == "confirm" then
+        property:AddToDoorbellPoolTemp(src)
+        Debug("Ringing doorbell") 
+        return
+    elseif job == "police" and onDuty then
+        if not property.raiding then
+            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property_id)
+            if confirmRaid == "confirm" then
+                property:StartRaid(src)
+                property:PlayerEnter(src)
+            end
+        else
+            property:PlayerEnter(src)
+        end
+    end
+
+    Debug("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
 end)
 
 lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_id)
