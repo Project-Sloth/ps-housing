@@ -180,10 +180,10 @@ AddEventHandler("onResourceStop", function(resourceName)
 	end
 end)
 
-lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label)
+lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label, id)
     return lib.alertDialog({
         header = 'Purchase Confirmation',
-        content = 'Are you sure you want to purchase '..label..' for $' .. amount .. '?',
+        content = 'Are you sure you want to purchase '..label..' - ' .. id .. ' for $' .. amount .. '?',
         centered = true,
         cancel = true,
         labels = {
@@ -193,10 +193,10 @@ lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label)
     })
 end)
 
-lib.callback.register('ps-housing:cb:confirmRaid', function(label)
+lib.callback.register('ps-housing:cb:confirmRaid', function(label, id)
     return lib.alertDialog({
         header = 'Raid',
-        content = 'Do you want to raid '..label..'?',
+        content = 'Do you want to raid '..label..' - ' .. id .. '?',
         centered = true,
         cancel = true,
         labels = {
@@ -206,7 +206,7 @@ lib.callback.register('ps-housing:cb:confirmRaid', function(label)
     })
 end)
 
-lib.callback.register('ps-housing:cb:ringDoorbell', function(label)
+lib.callback.register('ps-housing:cb:ringDoorbell', function()
     return lib.alertDialog({
         header = 'Ring Doorbell',
         content = 'You dont have a key for this property, would you like to ring the doorbell?',

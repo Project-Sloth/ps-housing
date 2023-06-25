@@ -213,7 +213,7 @@ Property = {
         end
 
         --add callback 
-        local targetAllow = lib.callback.await("ps-housing:cb:confirmPurchase", targetSrc, self.propertyData.price, self.propertyData.label)
+        local targetAllow = lib.callback.await("ps-housing:cb:confirmPurchase", targetSrc, self.propertyData.price, self.propertyData.label, self.propertyData.property_id)
 
         if targetAllow ~= "confirm" then
             TriggerClientEvent("ox_lib:notify", targetSrc, {title="You did not confirm the purchase", type="error"})
@@ -404,7 +404,7 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
         return
     end
 
-    local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src, property_id)
+    local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
 
     -- check player job
 
@@ -421,7 +421,7 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
 
         if jobName == "police" and onDuty and gradeAllowed then
             if not property.raiding then
-                local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.label)
+                local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.label, property_id)
                 if confirmRaid == "confirm" then
                     property:StartRaid(src)
                     property:PlayerEnter(src)

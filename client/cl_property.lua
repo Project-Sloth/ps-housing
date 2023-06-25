@@ -515,7 +515,7 @@ Property = {
 		SetBlipColour(blip, 2)
 		SetBlipAsShortRange(blip, true)
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString(self.propertyData.label)
+		AddTextComponentString(self.propertyData.label .. " - " .. self.property_id)
 		EndTextCommandSetBlipName(blip)
 		self.blip = blip
 	end,
