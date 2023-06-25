@@ -413,7 +413,8 @@ Property = {
 				local stash = string.format("%s-property", self.property_id) -- if you ever change this you will fuck shit up from previous stash db
 
 				local function openStash()
-					TriggerServerEvent("inventory:server:OpenInventory", "stash", stash)
+					local stashConfig = Config.Shells[self.propertyData.shell].stash
+					TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
 					TriggerEvent("inventory:client:SetCurrentStash", stash)
 				end
 
