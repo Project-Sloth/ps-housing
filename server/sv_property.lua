@@ -407,23 +407,28 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src, property_id)
 
     -- check player job
-    local player = QBCore.Functions.GetPlayer(src)
-    local job = player.PlayerData.job.name
-    local onDuty = player.PlayerData.job.onduty
 
     if ringDoorbellConfirmation == "confirm" then
         property:AddToDoorbellPoolTemp(src)
         Debug("Ringing doorbell") 
         return
-    elseif job == "police" and onDuty then
-        if not property.raiding then
-            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property_id)
-            if confirmRaid == "confirm" then
-                property:StartRaid(src)
+    else
+        local player = QBCore.Functions.GetPlayer(src)
+        local job = player.PlayerData.job
+        local jobName = job.name
+        local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
+        local onDuty = job.onduty
+
+        if jobName == "police" and onDuty and gradeAllowed then
+            if not property.raiding then
+                local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.label)
+                if confirmRaid == "confirm" then
+                    property:StartRaid(src)
+                    property:PlayerEnter(src)
+                end
+            else
                 property:PlayerEnter(src)
             end
-        else
-            property:PlayerEnter(src)
         end
     end
 

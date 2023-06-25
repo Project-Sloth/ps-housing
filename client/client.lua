@@ -193,11 +193,10 @@ lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label)
     })
 end)
 
-
 lib.callback.register('ps-housing:cb:confirmRaid', function(label)
     return lib.alertDialog({
-        header = 'Confirm Raid',
-        content = 'Are you sure you want to raid '..label..'?',
+        header = 'Raid',
+        content = 'Do you want to raid '..label..'?',
         centered = true,
         cancel = true,
         labels = {

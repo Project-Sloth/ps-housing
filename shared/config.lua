@@ -17,6 +17,8 @@ function Debug(...)
     end
 end
 
+Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
+
 Config.RaidTimer = 5-- 5 minutes
 
 -- Realtor Commisions, the rest got to the owner, if any.
