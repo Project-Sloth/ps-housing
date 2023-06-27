@@ -421,9 +421,13 @@ Property = {
 				if Config.Target == "qb" then
 					exports["qb-target"]:AddTargetEntity(entity, {
 						options = {
-							label = "Storage",
-							type = "client",
-							action = openStash,
+							{
+								label = "Storage",
+								type = "client",
+								action = function()
+									openStash()
+								end
+							},
 						},
 					})
 				elseif Config.Target == "ox" then
@@ -441,9 +445,11 @@ Property = {
 				if Config.Target == "qb" then
 					exports["qb-target"]:AddTargetEntity(entity, {
 						options = {
-							label = "Clothing",
-							type = "client",
-							event = "qb-clothing:client:openOutfitMenu",
+							{
+								label = "Clothing",
+								type = "client",
+								event = "qb-clothing:client:openOutfitMenu",
+							},
 						},
 					})
 				elseif Config.Target == "ox" then
