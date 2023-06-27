@@ -226,30 +226,28 @@ Property = {
             return
         end
 
-        Player.Functions.RemoveMoney('bank', self.propertyData.price, "Bought Property: " .. self.propertyData.label)
+        targetPlayer.Functions.RemoveMoney('bank', self.propertyData.price, "Bought Property: " .. self.propertyData.label)
 
         local prevPlayer = QBCore.Functions.GetPlayerByCitizenId(previousOwner)
+        local realtor = QBCore.Functions.GetPlayer(tonumber(realtorSrc))
+        local realtorGradeLevel = realtor.PlayerData.job.grade.level
 
-        local commision = math.floor(self.propertyData.price * Config.Commission)
+        local commission = math.floor(self.propertyData.price * Config.Commissions[realtorGradeLevel])
 
-        local totalAfterCommission = self.propertyData.price - commision
+        local totalAfterCommission = self.propertyData.price - commission
         
         if prevPlayer ~= nil then
             prevPlayer.Functions.AddMoney('bank', self.propertyData.price, "Sold Property: " .. self.propertyData.label)
-        else
+        elseif previousOwner then
             MySQL.Async.execute('UPDATE `players` SET `bank` = `bank` + @price WHERE `citizenid` = @citizenid', {
                 ['@citizenid'] = previousOwner,
                 ['@price'] = totalAfterCommission
             })
         end
-
-        local realtor = QBCore.Functions.GetPlayer(tonumber(realtorSrc))
-        realtor.Functions.AddMoney('bank', commision, "Commission from Property: " .. self.propertyData.label)
-
         
+        realtor.Functions.AddMoney('bank', commission, "Commission from Property: " .. self.propertyData.label)
 
-
-        -- self.propertyData.owner = citizenid
+        self.propertyData.owner = citizenid
 
         MySQL.update("UPDATE properties SET owner_citizenid = @owner_citizenid, for_sale = @for_sale WHERE property_id = @property_id", {
             ["@owner_citizenid"] = citizenid,

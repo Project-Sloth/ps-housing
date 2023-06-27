@@ -22,11 +22,11 @@ Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
 Config.RaidTimer = 5-- 5 minutes
 
 -- Realtor Commisions based on job grade, the rest goes to the owner, if any.
-Config.Commisions = {
-    ['0'] = 0.05, -- 5% commision for each sale
-    ['1'] = 0.10,
-    ['2'] = 0.15,
-    ['3'] = 0.20,
+Config.Commissions = {
+    [0] = 0.05, -- 5% commision for each sale
+    [1] = 0.10,
+    [2] = 0.15,
+    [3] = 0.20,
 }
 
 -- Set this value to false if you don't want to assign a starting apartment.
