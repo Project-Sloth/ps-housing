@@ -140,7 +140,7 @@ end)
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
     if not Config.StartingApartment then return end
-    local citizenid, PlayerData = GetCitizenid(src)
+    local citizenid, PlayerData = GetCitizenid(src, src)
 
     local apartment = Config.Apartments[aptLabel]
     if not apartment then return end
@@ -165,9 +165,9 @@ end)
 
 AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     local apartment = data.apartment
-    local targetSrc = data.targetSrc
+    local targetSrc = tonumber(data.targetSrc)
     local realtorSrc = data.realtorSrc
-    local targetCitizenid = GetCitizenid(targetSrc)
+    local targetCitizenid = GetCitizenid(targetSrc, realtorSrc)
 
     -- id of current apartment so we can change it
     local property_id = nil
@@ -192,7 +192,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
 
     property:UpdateApartment(data)
 
-    local citizenid = GetCitizenid(targetSrc)
+    local citizenid = GetCitizenid(targetSrc, realtorSrc)
     local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
     local targetPlayer = targetToAdd.PlayerData
 
@@ -209,7 +209,7 @@ lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, p
     local property = PropertiesTable[property_id]
     if not property then return false end
 
-    local citizenid = GetCitizenid(src)
+    local citizenid = GetCitizenid(src, src)
     if not property:CheckForAccess(citizenid) then return false end
 
     local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {['@plate'] = plate})
@@ -230,12 +230,16 @@ exports('IsOwner', function(src, property_id)
     local property = PropertiesTable[property_id]
     if not property then return false end
 
-    local citizenid = GetCitizenid(src)
+    local citizenid = GetCitizenid(src, src)
     return property:CheckForAccess(citizenid)
 end)
 
-function GetCitizenid(src)
-    local Player = QBCore.Functions.GetPlayer(src)
+function GetCitizenid(targetSrc, callerSrc)
+    local Player = QBCore.Functions.GetPlayer(tonumber(targetSrc))
+    if not Player then
+        TriggerClientEvent("ox_lib:notify", callerSrc, {title="Player not found.", type="error"})
+        return
+    end
     local PlayerData = Player.PlayerData
     local citizenid = PlayerData.citizenid
     return citizenid, PlayerData, Player
