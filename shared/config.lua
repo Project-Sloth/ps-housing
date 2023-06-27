@@ -530,7 +530,7 @@ Config.Furnitures = {
         category = "Prerequisites",
         items = {
             { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage" },
-            { ["object"] = "ba_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
+            { ["object"] = "v_res_tre_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
         }
     },
 
