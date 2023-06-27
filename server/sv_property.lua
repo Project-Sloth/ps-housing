@@ -298,8 +298,7 @@ Property = {
     end,
 
     UpdateHas_access = function (self, data)
-        local has_access = data.has_access
-        local src = data.src
+        local has_access = data or {}
 
         self.propertyData.has_access = has_access
 
@@ -308,7 +307,7 @@ Property = {
             ["@property_id"] = self.property_id
         })
 
-        Debug("Changed Has Access of property with id: " .. self.property_id, "by: " .. GetPlayerName(src))
+        Debug("Changed Has Access of property with id: " .. self.property_id)
     end,
 
     UpdateGarage = function (self, data)
@@ -439,7 +438,6 @@ lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_i
 
     return property.propertyData.furnitures or {}
 end)
-
 
 lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, property_id)
 
@@ -578,19 +576,14 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     end
 
     local has_access = property.propertyData.has_access
-    local playerToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
-    local targetPlayer = playerToAdd.PlayerData
-    local tarGetCitizenid = targetPlayer.citizenid
+    local targetCitizenid, targetPlayer = GetCitizenid(tonumber(srcToAdd))
 
-    if not property:CheckForAccess(tarGetCitizenid) then
-        has_access[#has_access+1] = tarGetCitizenid
+    if not property:CheckForAccess(targetCitizenid) then
+        has_access[#has_access+1] = targetCitizenid
         property:UpdateHas_access(has_access)
 
         TriggerClientEvent("ox_lib:notify", src, {title="You added access to " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname, type="success"})
-        
-        if targetPlayer.source then
-            TriggerClientEvent("ox_lib:notify", targetPlayer.source, {title="You got access to " .. property.propertyData.label, type="success"})
-        end
+        TriggerClientEvent("ox_lib:notify", srcToAdd, {title="You got access to " .. property.propertyData.label, type="success"})
     else
         TriggerClientEvent("ox_lib:notify", src, {title="This person already has access to this property!", type="error"})
     end
