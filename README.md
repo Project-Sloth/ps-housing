@@ -256,3 +256,8 @@ local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 * [Byte Labs Project](https://github.com/Byte-Labs-Project)
 * [Project Sloth Team](https://discord.gg/projectsloth)
 * [K4MB1](https://www.k4mb1maps.com/)
+
+
+# Notes
+- If a player is in their apartment/house and an admin does a "Bring to me" function, they will not see the player nor will the player see anyone else. This is because the player is still in their own unique routing bucket. **Workaround**: To fix this, the player must go back into their apartment and leave on their own. 
+    - Likewise, if an admin tries to "Go to" or "Spectate" a player that is in their apartment/house, the admin will not be able to see the apartment or player because it is in a different routing bucket.
