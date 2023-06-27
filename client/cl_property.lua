@@ -410,7 +410,8 @@ Property = {
 			-- For the prerequisites
 			if v.type == "storage" then
 				self.storageTarget = entity
-				local stash = string.format("%s-property", self.property_id) -- if you ever change this you will fuck shit up from previous stash db
+				-- WARNING: If you change this naming of the property id's, you will mess up all previous property stashes
+				local stash = string.format("property_%s", self.property_id)
 
 				local function openStash()
 					local stashConfig = Config.Shells[self.propertyData.shell].stash
