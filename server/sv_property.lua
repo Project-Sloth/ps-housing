@@ -448,15 +448,16 @@ lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, pro
 
     local players = {}
 
-    for i = 1, #property.playersInside do
-        local plySrc = property.playersInside[i]
-        local player = QBCore.Functions.GetPlayer(plySrc)
-        local name = player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
+    for plySrc, _ in pairs(property.playersInside) do
+        if tonumber(plySrc) ~= source then
+            local Player = QBCore.Functions.GetPlayer(tonumber(plySrc))
+            local name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
 
-        players[#players + 1] = {
-            src = plySrc,
-            name = name
-        }
+            players[#players + 1] = {
+                src = plySrc,
+                name = name
+            }
+        end
     end
 
     return players or {}
