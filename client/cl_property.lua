@@ -124,6 +124,10 @@ Property = {
 			TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
 		end
 
+		local function raid()
+			TriggerServerEvent("ps-housing:server:raidProperty", self.property_id)
+		end
+
 		if Config.Target == "qb" then
 			exports["qb-target"]:AddBoxZone(
 				targetName,
@@ -143,6 +147,19 @@ Property = {
 							label = label,
 							action = enter,
 						},
+						{
+							label = "Raid Property",
+							action = raid,
+							canInteract = function()
+								local PlayerData = QBCore.Functions.GetPlayerData()
+								local job = PlayerData.job
+								local jobName = job.name
+								local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
+								local onDuty = job.onduty
+
+								return jobName == "police" and onDuty and gradeAllowed
+							end,
+						}
 					},
 				}
 			)

@@ -403,33 +403,43 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
 
     local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
 
-    -- check player job
-
     if ringDoorbellConfirmation == "confirm" then
         property:AddToDoorbellPoolTemp(src)
         Debug("Ringing doorbell") 
         return
-    else
-        local player = QBCore.Functions.GetPlayer(src)
-        local job = player.PlayerData.job
-        local jobName = job.name
-        local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
-        local onDuty = job.onduty
+    end
+end)
 
-        if jobName == "police" and onDuty and gradeAllowed then
-            if not property.raiding then
-                local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.label, property_id)
-                if confirmRaid == "confirm" then
-                    property:StartRaid(src)
-                    property:PlayerEnter(src)
-                end
-            else
-                property:PlayerEnter(src)
-            end
-        end
+RegisterNetEvent('ps-housing:server:raidProperty', function (property_id)
+    local src = source
+    Debug("Player is trying to raid property", property_id)
+
+    local property = PropertiesTable[tostring(property_id)]
+
+    if not property then 
+        Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
+        return 
     end
 
-    Debug("Player does not have access to property", citizenid, property.propertyData.owner, property:CheckForAccess(citizenid))
+    local player = QBCore.Functions.GetPlayer(src)
+    local job = player.PlayerData.job
+    local jobName = job.name
+    local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
+    local onDuty = job.onduty
+
+    if jobName == "police" and onDuty and gradeAllowed then
+        if not property.raiding then
+            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.label, property_id)
+            if confirmRaid == "confirm" then
+                property:StartRaid(src)
+                property:PlayerEnter(src)
+                TriggerClientEvent("ox_lib:notify", src, {title= "Raid started", type="success"})
+            end
+        else
+            TriggerClientEvent("ox_lib:notify", src, {title= "Raid in progress", type="success"})
+            property:PlayerEnter(src)
+        end
+    end
 end)
 
 lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_id)
