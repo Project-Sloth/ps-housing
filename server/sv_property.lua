@@ -99,7 +99,7 @@ Property = {
         end
 
         CreateThread(function ()
-            Wait(Config.RaidTime * 60000 )
+            Wait(Config.RaidTimer * 60000 )
             self.raiding = false
         end)
     end,
