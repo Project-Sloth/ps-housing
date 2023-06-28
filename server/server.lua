@@ -125,13 +125,13 @@ lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
 end)
 
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     property[type](property, data)
 
     if type == "DeleteProperty" then
-        PropertiesTable[property_id] = nil
+        PropertiesTable[tostring(property_id)] = nil
     else 
         TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
     end
@@ -187,7 +187,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
         end
     end
 
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     property:UpdateApartment(data)
@@ -206,7 +206,7 @@ lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, p
     local src = source
     local plate = plate
 
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return false end
 
     local citizenid = GetCitizenid(src, src)
@@ -227,7 +227,7 @@ lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, p
 end)
 
 exports('IsOwner', function(src, property_id)
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return false end
 
     local citizenid = GetCitizenid(src, src)

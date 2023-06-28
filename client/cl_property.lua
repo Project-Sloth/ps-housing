@@ -230,9 +230,8 @@ Property = {
 				icon = "key",
 				label = "Manage Property Access",
 				onSelect = function()
-					self:ManageAccesMenu()
+					self:ManageAccessMenu()
 				end,
-	
 			})
 		end
 
@@ -283,13 +282,13 @@ Property = {
 		DoScreenFadeIn(500)
 	end,
 
-	ManageAccesMenu = function(self)
+	ManageAccessMenu = function(self)
 		if not self.owner then
+			lib.notify({ title = "Only the owner can do this.", type = "error" })
 			return
 		end
 
-		local playersWithAccess = lib.callback.await("ps-housing:cb:getPlayersWithAccess", self.property_id) or {}
-
+		-- Creates the menu options
 		local id = "property-" .. self.property_id .. "-access"
 		local menu = {
 			id = id,
@@ -297,35 +296,17 @@ Property = {
 			options = {},
 		}
 
-		local alreadyAccessMenu = {
-			id = "property-" .. self.property_id .. "-access-already",
-			title = "Already Have Access",
-			options = {},
-		}
-
-		-- only stores names and citizenids in a table so if their offline you can still remove them
-		if #playersWithAccess > 0 then
-			for i = 1,  #playersWithAccess do
-				local v = playersWithAccess[i]
-				alreadyAccessMenu.options[#alreadyAccessMenu.options + 1] = {
-					title = v.name,
-					description = "Remove Access",
-					onSelect = function()
-						TriggerServerEvent("ps-housing:server:removeAccess", self.property_id, v.citizenid)
-					end,
-				}
-			end
-
-			menu.options[#menu.options + 1] = alreadyAccessMenu
-		end
-
-
-
-
 		menu.options[#menu.options + 1] = {
 			title = "Give Access",
 			onSelect = function()
 				self:GiveAccessMenu()
+			end,
+		}
+
+		menu.options[#menu.options + 1] = {
+			title = "Revoke Access",
+			onSelect = function()
+				self:RevokeAccessMenu()
 			end,
 		}
 
@@ -364,6 +345,38 @@ Property = {
 		else
 			lib.notify({ title = "No one is in the property", type = "error" })
 		end
+	end,
+
+	RevokeAccessMenu = function(self)
+		if not self.owner then
+			return
+		end
+
+		local id = "property-" .. self.property_id .. "-access-already"
+		local alreadyAccessMenu = {
+			id = id,
+			title = "Revoke Access",
+			options = {},
+		}
+
+		local playersWithAccess = lib.callback.await("ps-housing:cb:getPlayersWithAccess", source, self.property_id) or {}
+
+		-- only stores names and citizenids in a table so if their offline you can still remove them
+		if #playersWithAccess > 0 then
+			for i = 1,  #playersWithAccess do
+				local v = playersWithAccess[i]
+				alreadyAccessMenu.options[#alreadyAccessMenu.options + 1] = {
+					title = v.name,
+					description = "Remove Access",
+					onSelect = function()
+						TriggerServerEvent("ps-housing:server:removeAccess", self.property_id, v.citizenid)
+					end,
+				}
+			end
+		end
+
+		lib.registerContext(alreadyAccessMenu)
+		lib.showContext(id)
 	end,
 
 	OpenDoorbellMenu = function(self)

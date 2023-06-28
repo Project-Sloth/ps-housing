@@ -385,7 +385,7 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
     Debug("Player is trying to enter property", property_id)
 
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
 
     if not property then 
         Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
@@ -433,15 +433,16 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
 end)
 
 lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_id)
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     return property.propertyData.furnitures or {}
 end)
 
+
 lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, property_id)
 
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     local players = {}
@@ -463,7 +464,7 @@ end)
 
 RegisterNetEvent('ps-housing:server:leaveProperty', function (property_id)
     local src = source
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
 
     if not property then return end
 
@@ -475,7 +476,7 @@ RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data)
     local src = source
     local targetSrc = data.targetSrc
 
-    local property = PropertiesTable[data.property_id]
+    local property = PropertiesTable[tostring(data.property_id)]
     if not property then return end
     
     if not property.playersInside[tostring(src)] then return end
@@ -487,7 +488,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
     local src = source
     local citizenid, PlayerData, Player = GetCitizenid(src)
 
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     if not property:CheckForAccess(citizenid) then return end
@@ -522,7 +523,7 @@ end)
 RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, itemid)
     local src = source
     
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
     
     local citizenid = GetCitizenid(src)
@@ -543,7 +544,7 @@ end)
 RegisterNetEvent("ps-housing:server:updateFurniture", function(property_id, item)
     local src = source
 
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     local citizenid = GetCitizenid(src)
@@ -566,7 +567,7 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     local src = source
 
     local citizenid = GetCitizenid(src)
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     if not property.propertyData.owner == citizenid then
@@ -593,7 +594,7 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizen
     local src = source
 
     local citizenid = GetCitizenid(src)
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
 
     if not property.propertyData.owner == citizenid then
@@ -631,9 +632,8 @@ end)
 
 lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, property_id)
     local src = source
-
     local citizenidSrc = GetCitizenid(src)
-    local property = PropertiesTable[property_id]
+    local property = PropertiesTable[tostring(property_id)]
     if not property then return end
     if property.propertyData.owner ~= citizenidSrc then return end
 
@@ -643,9 +643,8 @@ lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, pr
     for i = 1, #has_access do
         local citizenid = has_access[i]
         local Player = QBCore.Functions.GetPlayerByCitizenId(citizenid) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenid)
-
         if Player then
-            withAccess[#withAccess+1] = {
+            withAccess[#withAccess + 1] = {
                 citizenid = citizenid,
                 name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
             }
