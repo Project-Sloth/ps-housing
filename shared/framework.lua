@@ -6,6 +6,7 @@ if IsDuplicityVersion() then
     Framework.qb = {}
 
     function Framework.ox.Notify(src, message, type)
+        type = type == "inform" and "info" or type
         TriggerClientEvent("ox_lib:notify", src, {title="Property", message=message, type=type})
     end
 
@@ -180,6 +181,8 @@ Framework.qb = {
 
 Framework.ox = {
     Notify = function(message, type)
+        type = type == "inform" and "info" or type
+        
         lib.notify({
             title = 'Property',
             description = message,

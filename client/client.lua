@@ -71,7 +71,7 @@ local findingOffset = false
 local function offsetThread()
     -- find the property that the player is in
     local propertyObj = nil
-    for k, v in pairs(PropertiesTable) do
+    for propertyId, v in pairs(PropertiesTable) do
         if v.inShell then
             propertyObj = v.shellObj
             break

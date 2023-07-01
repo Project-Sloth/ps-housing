@@ -139,7 +139,7 @@ end)
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
     if not Config.StartingApartment then return end
-    local citizenid, PlayerData = GetCitizenid(src, src)
+    local citizenid, PlayerData = GetCitizenid(src)
 
     local apartment = Config.Apartments[aptLabel]
     if not apartment then return end
