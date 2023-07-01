@@ -412,11 +412,20 @@ function Property:LoadFurnitures()
                 TriggerEvent("inventory:client:SetCurrentStash", stash)
             end
 
-            Framework[Config.Target].AddTargetEntity(entity, "Storage", nil, openStash)
+            Framework[Config.Target].AddTargetEntity(entity, "Storage", openStash)
         elseif v.type == "clothing" then
             self.clothingTarget = entity
 
-            Framework[Config.target].AddTargetEntity(entity, "Clothing", "qb-clothing:client:openOutfitMenu")
+            local function openClothing()
+                -- set entity heading opposite of current player heading
+                local heading = GetEntityHeading(cache.ped)
+                SetEntityHeading(cache.ped, heading - 180.0)
+                -- ^^ copilot goated
+
+                TriggerEvent("qb-clothing:client:openOutfitMenu")
+            end
+
+            Framework[Config.Target].AddTargetEntity(entity, "Clothing", openClothing)
         end
 
         self.furnitureObjs[#self.furnitureObjs + 1] = {

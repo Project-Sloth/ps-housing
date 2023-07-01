@@ -161,13 +161,11 @@ Framework.qb = {
         exports['qb-radialmenu']:RemoveOption(id)
     end,
 
-    AddTargetEntity = function (entity, label, event, action)
+    AddTargetEntity = function (entity, label, action)
         exports["qb-target"]:AddTargetEntity(entity, {
             options = {
                 {
                     label = label,
-                    type = event and "client" or nil,
-                    event = event,
                     action = action,
                 },
             },
@@ -298,12 +296,11 @@ Framework.ox = {
         lib.removeRadialItem(id)
     end,
 
-    AddTargetEntity = function (entity, label, event, action)
+    AddTargetEntity = function (entity, label, action)
         exports.ox_target:addLocalEntity(entity, {
             {
                 name = label,
                 label = label,
-                event = event,
                 onSelect = action,
             },
         })
