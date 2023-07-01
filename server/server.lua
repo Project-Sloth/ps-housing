@@ -109,7 +109,7 @@ AddEventHandler("ps-housing:server:registerProperty", function(propertyData) -- 
 
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
 
-        lib.notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
+        Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
     end
 end)
 
@@ -136,26 +136,23 @@ lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
 end)
 
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
-    local property = PropertiesTable[property_id]
-    if not property then
-        return
-    end
+    local property = PropertiesTable[tostring(property_id)]
+    if not property then return end
 
     property[type](property, data)
 
     if type == "DeleteProperty" then
-        PropertiesTable[property_id] = nil
-    else
+        PropertiesTable[tostring(property_id)] = nil
+    else 
         TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
     end
 end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
-    if not Config.StartingApartment then
-        return
-    end
-    local citizenid, PlayerData = GetCitizenid(src)
+    if not Config.StartingApartment then return end
+    local citizenid = GetCitizenid(src)
+    local PlayerData = GetPlayerData(src)
 
     local apartment = Config.Apartments[aptLabel]
     if not apartment then
@@ -183,19 +180,20 @@ end)
 
 AddEventHandler("ps-housing:server:addTenantToApartment", function(data)
     local apartment = data.apartment
-    local targetSrc = data.targetSrc
+    local targetSrc = tonumber(data.targetSrc)
     local realtorSrc = data.realtorSrc
-    local targetCitizenid = GetCitizenid(targetSrc)
+    local targetCitizenid = GetCitizenid(targetSrc, realtorSrc)
 
     -- id of current apartment so we can change it
     local property_id = nil
 
-    for k, v in pairs(PropertiesTable) do
+    for _, v in pairs(PropertiesTable) do
         local propertyData = v.propertyData
         if propertyData.owner == targetCitizenid then
             if propertyData.apartment == apartment then
-                lib.notify(targetSrc, "You are already in this apartment", "error")
-                lib.notify(realtorSrc, "This person is already in this apartment", "error")
+                Framework[Config.Notify].Notify(targetSrc, "You are already in this apartment", "error")
+                Framework[Config.Notify].Notify(targetSrc, "This person is already in this apartment", "error")
+
                 return
             elseif #propertyData.apartment > 1 then
                 property_id = propertyData.property_id
@@ -204,22 +202,18 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function(data)
         end
     end
 
-    local property = PropertiesTable[property_id]
-    if not property then
-        return
-    end
+    local property = PropertiesTable[tostring(property_id)]
+    if not property then return end
 
     property:UpdateApartment(data)
 
-    local citizenid = GetCitizenid(targetSrc)
+    local citizenid = GetCitizenid(targetSrc, realtorSrc)
     local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
     local targetPlayer = targetToAdd.PlayerData
 
-    lib.notify(targetSrc, "Your apartment is now at " .. apartment, "success")
-    lib.notify(realtorSrc,
-        "You have added " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname ..
-            " to apartment " .. apartment, "success")
-
+    Framework[Config.Notify].Notify(targetSrc, "Your apartment is now at "..apartment, "success")
+    Framework[Config.Notify].Notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
+    
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
 
@@ -227,19 +221,11 @@ lib.callback.register("ps-housing:cb:allowedToStore", function(source, plate, pr
     local src = source
     local plate = plate
 
-    local property = PropertiesTable[property_id]
-    if not property then
-        return false
-    end
+    local property = PropertiesTable[tostring(property_id)]
+    if not property then return false end
 
-    local citizenid = GetCitizenid(src)
-    if not property:CheckForAccess(citizenid) then
-        return false
-    end
-
-    local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {
-        ['@plate'] = plate
-    })
+    local citizenid = GetCitizenid(src, src)
+    if not property:CheckForAccess(citizenid) then return false end
 
     if result[1] then
         MySQL.update('UPDATE player_vehicles SET state = @state WHERE plate = @plate', {
@@ -253,18 +239,40 @@ lib.callback.register("ps-housing:cb:allowedToStore", function(source, plate, pr
 end)
 
 exports('IsOwner', function(src, property_id)
-    local property = PropertiesTable[property_id]
-    if not property then
-        return false
-    end
+    local property = PropertiesTable[tostring(property_id)]
+    if not property then return false end
 
-    local citizenid = GetCitizenid(src)
+    local citizenid = GetCitizenid(src, src)
     return property:CheckForAccess(citizenid)
 end)
 
-function GetCitizenid(src)
-    local Player = QBCore.Functions.GetPlayer(src)
+function GetCitizenid(targetSrc, callerSrc)
+    local Player = QBCore.Functions.GetPlayer(tonumber(targetSrc))
+    if not Player then
+        Framework[Config.Notify].Notify(callerSrc, "Player not found.", "error")
+        return
+    end
     local PlayerData = Player.PlayerData
     local citizenid = PlayerData.citizenid
-    return citizenid, PlayerData, Player
+    return citizenid
+end
+
+function GetCharName(src)
+    local Player = QBCore.Functions.GetPlayer(tonumber(src))
+    if not Player then return end
+    local PlayerData = Player.PlayerData
+    return PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname
+end
+
+function GetPlayerData(src)
+    local Player = QBCore.Functions.GetPlayer(tonumber(src))
+    if not Player then return end
+    local PlayerData = Player.PlayerData
+    return PlayerData
+end
+
+function GetPlayer(src)
+    local Player = QBCore.Functions.GetPlayer(tonumber(src))
+    if not Player then return end
+    return Player
 end

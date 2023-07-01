@@ -1,37 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
-PropertiesTable = {}
-ApartmentsTable = {}
-
-local function getProperties()
-	local properties = {}
-
-	for k, v in pairs(PropertiesTable) do
-		properties[#properties+1] = v.propertyData
-	end
-
-	return properties
-end
-
-local function getApartments()
-    local apartments = {}
-
-    for k, v in pairs(ApartmentsTable) do
-        apartments[#apartments+1] = v
-    end
-
-    return apartments
-end
-
-local function getData()
-    local data = {
-        properties = getProperties(),
-        apartments = getApartments()
-    }
-
-    return data
-end
-exports('GetData', getData)
 
 -- Not used but can be used for other resources
 exports('GetProperty', function(property_id)
@@ -46,24 +14,14 @@ end)
 
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
-    
-	if GetResourceState('bl-realtor') == 'started' then
-		local properties = getProperties()
-		TriggerEvent("bl-realtor:client:updateProperties", properties)
-
-        if property.apartment then
-            local apartments = getApartments()
-            TriggerEvent("bl-realtor:client:updateApartments", apartments)
-        end
-	end
 end
 RegisterNetEvent('ps-housing:client:addProperty', createProperty)
 
-RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
+RegisterNetEvent('ps-housing:client:removeProperty', function (property_id)
 	local property = PropertiesTable[property_id]
 
 	if property then
-		property:DeleteProperty()
+		property:RemoveProperty()
 	end
 
 	PropertiesTable[property_id] = nil
@@ -113,7 +71,7 @@ local findingOffset = false
 local function offsetThread()
     -- find the property that the player is in
     local propertyObj = nil
-    for k, v in pairs(PropertiesTable) do
+    for propertyId, v in pairs(PropertiesTable) do
         if v.inShell then
             propertyObj = v.shellObj
             break
@@ -125,10 +83,10 @@ local function offsetThread()
     while findingOffset do
         local ped = cache.ped
         local coords = GetEntityCoords(ped)
-        local x = math.floor((coords.x - shellCoords.x) * 100) / 100
-        local y = math.floor((coords.y - shellCoords.y) * 100) / 100
-        local z = math.floor((coords.z - shellCoords.z) * 100) / 100
-        local heading = math.floor(GetEntityHeading(ped) * 100) / 100
+        local x = math.floor((coords.x - shellCoords.x) * 10000) / 10000
+        local y = math.floor((coords.y - shellCoords.y) * 10000) / 10000
+        local z = math.floor((coords.z - shellCoords.z) * 10000) / 10000
+        local heading = math.floor(GetEntityHeading(ped) * 10000) / 10000
 
         BeginTextCommandDisplayText('STRING')
         AddTextComponentSubstringPlayerName('x: ' .. x .. ' y: ' .. y .. ' z: ' .. z .. ' heading: ' .. heading)
@@ -171,11 +129,50 @@ AddEventHandler("onResourceStop", function(resourceName)
 		end
 
 		for k, v in pairs(PropertiesTable) do
-			v:DeleteProperty()
+			v:RemoveProperty()
 		end
 
         for k, v in pairs(ApartmentsTable) do
             v:DeleteApartment()
         end
 	end
+end)
+
+lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label, id)
+    return lib.alertDialog({
+        header = 'Purchase Confirmation',
+        content = 'Are you sure you want to purchase '..label..' - ' .. id .. ' for $' .. amount .. '?',
+        centered = true,
+        cancel = true,
+        labels = {
+            confirm = "Purchase",
+            cancel = "Cancel"
+        }
+    })
+end)
+
+lib.callback.register('ps-housing:cb:confirmRaid', function(label, id)
+    return lib.alertDialog({
+        header = 'Raid',
+        content = 'Do you want to raid '..label..' - ' .. id .. '?',
+        centered = true,
+        cancel = true,
+        labels = {
+            confirm = "Raid",
+            cancel = "Cancel"
+        }
+    })
+end)
+
+lib.callback.register('ps-housing:cb:ringDoorbell', function()
+    return lib.alertDialog({
+        header = 'Ring Doorbell',
+        content = 'You dont have a key for this property, would you like to ring the doorbell?',
+        centered = true,
+        cancel = true,
+        labels = {
+            confirm = "Ring",
+            cancel = "Cancel"
+        }
+    })
 end)

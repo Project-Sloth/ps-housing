@@ -1,14 +1,22 @@
+PropertiesTable = {}
+ApartmentsTable = {}
+
+exports('GetProperties', function() return PropertiesTable end)
+exports('GetApartments', function() return ApartmentsTable end)
+
 Config = {}
+
+-- If you're not utilizing ox_lib, it's time to question your approach.
+Config.Target = "ox" -- "ox" or "qb"
+Config.Notify = "ox" -- "ox" or "qb"
+Config.Radial = "ox" -- "ox" or "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
 
---The following code is exclusively for targeting, and does not pertain to menus or any other elements. 
--- If you're not utilizing ox_lib, it's time to question your approach.
-Config.Target = "ox" -- "ox" or "qb"
-
 -- Draw the poly for the property
-Config.DebugMode = false
+Config.DebugMode = true
+
 
 function Debug(...)
     if Config.DebugMode then
@@ -16,13 +24,25 @@ function Debug(...)
     end
 end
 
+Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
+
+Config.RaidTimer = 5-- 5 minutes
+
+-- Realtor Commisions based on job grade, the rest goes to the owner, if any.
+Config.Commissions = {
+    [0] = 0.05, -- 5% commision for each sale
+    [1] = 0.10,
+    [2] = 0.15,
+    [3] = 0.20,
+}
+
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
 
 Config.Apartments = {
     ["Integrity Way"] = {
         label = "Integrity Way",
-        door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 1 },
+        door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106153553283784704/integrity.webp",
@@ -34,7 +54,7 @@ Config.Apartments = {
     
     ["South Rockford Drive"] = {
         label = "South Rockford Drive",
-        door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 1 },
+        door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -46,7 +66,7 @@ Config.Apartments = {
 
     ['Morningwood Blvd'] = {
         label = 'Morningwood Blvd',
-        door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 1 },
+        door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -58,7 +78,7 @@ Config.Apartments = {
 
     ['Tinsel Towers'] = {
         label = 'Tinsel Towers',
-        door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 1 },
+        door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -70,7 +90,7 @@ Config.Apartments = {
 
     ['Fantastic Plaza'] = {
         label = 'Fantastic Plaza',
-        door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 1 },
+        door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -87,6 +107,10 @@ Config.Shells = {
         label = "Standard Motel",
         hash = `standardmotel_shell`,
         doorOffset = { x = -0.5, y = -2.3, z = 0.0, heading = 90.0, width = 1.5 },
+        stash = {
+            maxweight = 100000, 
+            slots = 12,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712181017460736/motel.webp",
@@ -99,6 +123,10 @@ Config.Shells = {
         label = "Modern Hotel",
         hash = `modernhotel_shell`,
         doorOffset = { x = 4.98, y = 4.35, z = 0.0, heading = 179.79, width = 2.0  },
+        stash = {
+            maxweight = 150000, 
+            slots = 20,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712459691208704/angle_1.webp",
@@ -115,6 +143,10 @@ Config.Shells = {
         label = "Apartment Furnished",
         hash = `furnitured_midapart`,
         doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
+        stash = {
+            maxweight = 200000, 
+            slots = 25,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712598019354684/bathroom.webp",
@@ -147,6 +179,10 @@ Config.Shells = {
         label = "Apartment Unfurnished",
         hash = `shell_v16mid`,
         doorOffset = { x = 1.34, y = -14.36, z = -0.5, heading = 354.08, width = 1.5  },
+        stash = {
+            maxweight = 200000, 
+            slots = 25,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101712919412088955/bathroom.webp",
@@ -175,6 +211,10 @@ Config.Shells = {
         label = "Apartment 2 Unfurnished",
         hash = `shell_v16low`,
         doorOffset = { x = 4.69, y = -6.5, z = -1.0, heading = 358.50, width = 1.5  },
+        stash = {
+            maxweight = 200000, 
+            slots = 25,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713104288612384/entry.webp",
@@ -195,6 +235,10 @@ Config.Shells = {
         label = "Garage",
         hash = `shell_garagem`,
         doorOffset = { x = 14.0, y = 1.7, z = -0.76, heading = 88.49, width = 2.0  },
+        stash = {
+            maxweight = 500000, 
+            slots = 50,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713200220745748/entry.webp",
@@ -211,6 +255,10 @@ Config.Shells = {
         label = "Office",
         hash = `shell_office1`,
         doorOffset = { x = 1.2, y = 4.90, z = -0.73, heading = 180.0, width = 2.0  },
+        stash = {
+            maxweight = 250000, 
+            slots = 30,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713285117648976/entry.webp",
@@ -227,6 +275,10 @@ Config.Shells = {
         label = "Store",
         hash = `shell_store1`,
         doorOffset = { x = -2.69, y = -4.56, z = -0.62, heading = 1.91, width = 2.0  },
+        stash = {
+            maxweight = 500000, 
+            slots = 50,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713353291878420/room_1.webp",
@@ -243,6 +295,10 @@ Config.Shells = {
         label = "Warehouse",
         hash = `shell_warehouse1`,
         doorOffset = { x = -8.96, y = 0.11, z = -0.95, heading = 270.64, width = 2.0  },
+        stash = {
+            maxweight = 1000000, 
+            slots = 100,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713451149172766/angle1.webp",
@@ -259,6 +315,10 @@ Config.Shells = {
         label = "Container",
         hash = `container_shell`,
         doorOffset = { x = 0.05, y = -5.7, z = -0.22, heading = 1.7, width = 2.2  },
+        stash = {
+            maxweight = 500000, 
+            slots = 100,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713526319497267/container.webp",
@@ -271,6 +331,10 @@ Config.Shells = {
         label = "2 Floor House",
         hash = `shell_michael`,
         doorOffset = { x = -9.6, y = 5.63, z = -4.07, heading = 268.55, width = 2.0  },
+        stash = {
+            maxweight = 300000, 
+            slots = 50,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713596683145267/bathroom.webp",
@@ -315,6 +379,10 @@ Config.Shells = {
         label = "House 1",
         hash = `shell_frankaunt`,
         doorOffset = { x = -0.34, y = -5.97, z = -0.57, heading = 357.23, width = 2.0  },
+        stash = {
+            maxweight = 200000, 
+            slots = 50,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101713982059974656/bathroom.webp",
@@ -351,6 +419,10 @@ Config.Shells = {
         label = "House 2",
         hash = `shell_ranch`,
         doorOffset = { x = -1.23, y = -5.54, z = -1.1, heading = 272.21, width = 2.0  },
+        stash = {
+            maxweight = 500000, 
+            slots = 50,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714310809518131/entry.webp",
@@ -379,6 +451,10 @@ Config.Shells = {
         label = "House 3",
         hash = `shell_lester`,
         doorOffset = { x = -1.61, y = -6.02, z = -0.37, heading = 357.7, width = 2.0  },
+        stash = {
+            maxweight = 15000, 
+            slots = 20,
+        },
         imgs = {
             {
                 url = "https://i.postimgs.cc/HLbdwtRd/angle1.webp",
@@ -399,6 +475,10 @@ Config.Shells = {
         label = "House 4",
         hash = `shell_trevor`,
         doorOffset = { x = 0.2, y = -3.82, z = -0.41, heading = 358.4, width = 2.0  },
+        stash = {
+            maxweight = 10000, 
+            slots = 12,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714761596543107/bathroom.webp",
@@ -431,6 +511,10 @@ Config.Shells = {
         label = "Trailer",
         hash = `shell_trailer`,
         doorOffset = { x = -1.27, y = -2.08, z = -0.48, heading = 358.84, width = 2.0  },
+        stash = {
+            maxweight = 10000, 
+            slots = 12,
+        },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1101313033684394084/1101714470985809920/entranceandkitchen.webp",
@@ -453,7 +537,7 @@ Config.Furnitures = {
         category = "Prerequisites",
         items = {
             { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage" },
-            { ["object"] = "v_26_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
+            { ["object"] = "v_res_tre_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
         }
     },
 

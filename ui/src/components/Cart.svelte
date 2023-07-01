@@ -1,5 +1,5 @@
 <script>
-	import { CART, IS_CART_OPEN } from '@store/stores'
+	import { CART, CURRENTFURNITURE, IS_CART_OPEN } from '@store/stores'
 	import { SendNUI } from '@utils/SendNUI'
 </script>
 
@@ -59,6 +59,7 @@
 			<button
 				class="bg-[color:var(--color-secondary)] text-[2rem] h-full gap-4 whitespace-nowrap flex flex-row items-center justify-center px-8 text-center"
 				on:click={()=>{
+					$CURRENTFURNITURE = null
 					SendNUI('buyCartItems')
 				}}
 			>
