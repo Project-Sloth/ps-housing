@@ -362,7 +362,7 @@ Property = {
             end
         end)
 
-        TriggerClientEvent("ps-housing:client:deleteProperty", -1, self.property_id)
+        TriggerClientEvent("ps-housing:client:removeProperty", -1, self.property_id)
 
         Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
     end,

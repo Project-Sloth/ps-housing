@@ -1,6 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
 -- PSCore = exports['ps-core']:GetCoreObject()
-PropertiesTable = {}
 
 local dbloaded = false
 MySQL.ready(function()
@@ -101,7 +100,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
         TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
 
-        TriggerClientEvent("ox_lib:notify", src, {title="Open radial menu for furniture menu and place down your stash and clothing locker.", type="info"})
+        Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
     end
 end)
 
@@ -172,12 +171,12 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     -- id of current apartment so we can change it
     local property_id = nil
 
-    for k, v in pairs(PropertiesTable) do
+    for _, v in pairs(PropertiesTable) do
         local propertyData = v.propertyData
         if propertyData.owner == targetCitizenid then
             if propertyData.apartment == apartment then
-                TriggerClientEvent("ox_lib:notify", targetSrc, {title="You are already in this apartment", type="error"})
-                TriggerClientEvent("ox_lib:notify", realtorSrc, {title="This person is already in this apartment", type="error"})
+                Framework[Config.Notify].Notify(targetSrc, "You are already in this apartment", "error")
+                Framework[Config.Notify].Notify(targetSrc, "This person is already in this apartment", "error")
 
                 return
             elseif #propertyData.apartment > 1 then
@@ -196,8 +195,8 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid)
     local targetPlayer = targetToAdd.PlayerData
 
-    TriggerClientEvent("ox_lib:notify", targetSrc, {title="Your apartment is now at "..apartment, type="success"})
-    TriggerClientEvent("ox_lib:notify", realtorSrc, {title="You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, type="success"})
+    Framework[Config.Notify].Notify(targetSrc, "Your apartment is now at "..apartment, "success")
+    Framework[Config.Notify].Notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
     
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
@@ -237,7 +236,7 @@ end)
 function GetCitizenid(targetSrc, callerSrc)
     local Player = QBCore.Functions.GetPlayer(tonumber(targetSrc))
     if not Player then
-        TriggerClientEvent("ox_lib:notify", callerSrc, {title="Player not found.", type="error"})
+        Framework[Config.Notify].Notify(callerSrc, "Player not found.", "error")
         return
     end
     local PlayerData = Player.PlayerData

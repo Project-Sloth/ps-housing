@@ -109,12 +109,17 @@ Modeler = {
     OpenMenu = function(self, property_id)
 
 
-
         local property = PropertiesTable[property_id]
 
         if not property then return end
         if not property.owner and not property.has_access then return end
         if property.has_access and not Config.AccessCanEditFurniture  then return end 
+
+        SendNUIMessage({
+			action = "setOwnedItems",
+			data = property.furnitureObjs,
+		})
+
 
         self.shellPos = GetEntityCoords(property.shellObj)
         local min, max = GetModelDimensions(property.shellData.hash)
@@ -143,6 +148,11 @@ Modeler = {
     CloseMenu = function(self)
         self.IsMenuActive = false
         self:ClearCart()
+
+        SendNUIMessage({
+			action = "setOwnedItems",
+			data = {},
+		})
 
         SendNUIMessage({
             action = "setVisible",

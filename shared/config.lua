@@ -1,11 +1,18 @@
+PropertiesTable = {}
+ApartmentsTable = {}
+
+exports('GetProperties', function() return PropertiesTable end)
+exports('GetApartments', function() return ApartmentsTable end)
+
 Config = {}
+
+-- If you're not utilizing ox_lib, it's time to question your approach.
+Config.Target = "ox" -- "ox" or "qb"
+Config.Notify = "ox" -- "ox" or "qb"
+Config.Radial = "ox" -- "ox" or "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
-
---The following code is exclusively for targeting, and does not pertain to menus or any other elements. 
--- If you're not utilizing ox_lib, it's time to question your approach.
-Config.Target = "ox" -- "ox" or "qb"
 
 -- Draw the poly for the property
 Config.DebugMode = true

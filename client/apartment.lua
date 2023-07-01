@@ -122,7 +122,6 @@ Apartment = {
 	end,
 
     AddProperty = function(self, propertyId)
-        
         self.apartments[propertyId] = true
     end,
 
@@ -141,7 +140,7 @@ Apartment = {
 		end
 
         for propertyId, _ in pairs(self.apartments) do
-            PropertiesTable[propertyId]:DeleteProperty()
+            PropertiesTable[propertyId]:RemoveProperty()
         end
 
 		self:DeleteBlip()

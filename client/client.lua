@@ -1,37 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
-PropertiesTable = {}
-ApartmentsTable = {}
-
-local function getProperties()
-	local properties = {}
-
-	for k, v in pairs(PropertiesTable) do
-		properties[#properties+1] = v.propertyData
-	end
-
-	return properties
-end
-
-local function getApartments()
-    local apartments = {}
-
-    for k, v in pairs(ApartmentsTable) do
-        apartments[#apartments+1] = v
-    end
-
-    return apartments
-end
-
-local function getData()
-    local data = {
-        properties = getProperties(),
-        apartments = getApartments()
-    }
-
-    return data
-end
-exports('GetData', getData)
 
 -- Not used but can be used for other resources
 exports('GetProperty', function(property_id)
@@ -46,24 +14,14 @@ end)
 
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
-    
-	if GetResourceState('bl-realtor') == 'started' then
-		local properties = getProperties()
-		TriggerEvent("bl-realtor:client:updateProperties", properties)
-
-        if property.apartment then
-            local apartments = getApartments()
-            TriggerEvent("bl-realtor:client:updateApartments", apartments)
-        end
-	end
 end
 RegisterNetEvent('ps-housing:client:addProperty', createProperty)
 
-RegisterNetEvent('ps-housing:client:deleteProperty', function (property_id)
+RegisterNetEvent('ps-housing:client:removeProperty', function (property_id)
 	local property = PropertiesTable[property_id]
 
 	if property then
-		property:DeleteProperty()
+		property:RemoveProperty()
 	end
 
 	PropertiesTable[property_id] = nil
@@ -171,7 +129,7 @@ AddEventHandler("onResourceStop", function(resourceName)
 		end
 
 		for k, v in pairs(PropertiesTable) do
-			v:DeleteProperty()
+			v:RemoveProperty()
 		end
 
         for k, v in pairs(ApartmentsTable) do
