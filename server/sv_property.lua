@@ -104,6 +104,20 @@ function Property:AddToDoorbellPoolTemp(src)
     end)
 end
 
+function Property:RemoveFromDoorbellPool(src)
+    local _src = tostring(src)
+
+    if self.playersDoorbell[_src] then
+        self.playersDoorbell[_src] = nil
+    end
+
+    for i = 1, #self.playersInside do
+        local targetSrc = tonumber(self.playersInside[i])
+
+        TriggerClientEvent("ps-housing:client:updateDoorbellPool", targetSrc, self.property_id, self.playersDoorbell)
+    end
+end
+
 function Property:StartRaid(src)
     self.raiding = true
 
@@ -501,7 +515,8 @@ RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data)
     if not property then return end
     
     if not property.playersInside[tostring(src)] then return end
-
+    property:RemoveFromDoorbellPool(targetSrc)
+    
     property:PlayerEnter(targetSrc)
 end)
 
