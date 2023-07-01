@@ -42,7 +42,7 @@ Config.StartingApartment = true
 Config.Apartments = {
     ["Integrity Way"] = {
         label = "Integrity Way",
-        door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 1 },
+        door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106153553283784704/integrity.webp",
@@ -54,7 +54,7 @@ Config.Apartments = {
     
     ["South Rockford Drive"] = {
         label = "South Rockford Drive",
-        door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 1 },
+        door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -66,7 +66,7 @@ Config.Apartments = {
 
     ['Morningwood Blvd'] = {
         label = 'Morningwood Blvd',
-        door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 1 },
+        door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -78,7 +78,7 @@ Config.Apartments = {
 
     ['Tinsel Towers'] = {
         label = 'Tinsel Towers',
-        door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 1 },
+        door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
@@ -90,7 +90,7 @@ Config.Apartments = {
 
     ['Fantastic Plaza'] = {
         label = 'Fantastic Plaza',
-        door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 1 },
+        door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 2, width = 1 },
         imgs = {
             {
                 url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",

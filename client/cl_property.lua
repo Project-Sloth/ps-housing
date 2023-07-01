@@ -25,7 +25,6 @@ Property.__index = Property
 
 function Property:new(propertyData)
     local self = setmetatable({}, Property)
-
     self.property_id = tostring(propertyData.property_id)
 
     -- remove furnitures from property data for ram purposes just incase someone decides to create a fucking maze made out of sticks
@@ -463,6 +462,7 @@ function Property:UnloadFurnitures()
 end
 
 function Property:CreateBlip()
+    print("Creating blip", json.encode(self.propertyData, {indent = true}))
     local door_data = self.propertyData.door_data
     local blip = AddBlipForCoord(door_data.x, door_data.y, door_data.z)
     SetBlipSprite(blip, 40)

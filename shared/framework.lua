@@ -1,6 +1,10 @@
 Framework = {}
 
+
 if IsDuplicityVersion() then
+    Framework.ox = {}
+    Framework.qb = {}
+
     function Framework.ox.Notify(src, message, type)
         TriggerClientEvent("ox_lib:notify", src, {title="Property", message=message, type=type})
     end
@@ -10,22 +14,25 @@ if IsDuplicityVersion() then
     end
 
     return
-else
-    function Framework.ox.Notify(message, type)
-        lib.notify({
-            title = 'Property',
-            description = message,
-            type = type
-        })
-    end
-
-    function Framework.qb.Notify(message, type)
-        TriggerEvent('QBCore:Notify', message, type)
-    end
 end
 
+local function hasApartment(apts)
+    for propertyId, _  in pairs(apts) do
+        local property = PropertiesTable[propertyId]
+        if property.owner then
+            return true
+        end
+    end
+
+    return false
+end
 
 Framework.qb = {
+
+    Notify = function(message, type)
+        TriggerEvent('QBCore:Notify', message, type)
+    end,
+
     AddEntrance = function(coords, size, heading, propertyId, enter, raid, targetName)
         local property_id = propertyId
         local property = PropertiesTable[property_id]
@@ -78,6 +85,32 @@ Framework.qb = {
         return targetName
     end,
 
+    AddApartmentEntrance = function(coords, size, heading, apartment, enter, seeAll, targetName)
+
+        
+        exports['qb-target']:AddBoxZone(targetName, vector3(coords.x, coords.y, coords.z), size.x, size.y, {
+            name = targetName,
+            heading = heading,
+            debugPoly = Config.DebugMode,
+            minZ = coords.z - 1.0,
+            maxZ = coords.z + 2.0,
+        }, {
+            options = {
+                {
+                    label = "Enter Apartment",
+                    action = enter,
+                    canInteract = function()
+                        local apartments = ApartmentsTable[apartment].apartments
+                        return hasApartment(apartments)
+                    end,
+                },
+                {
+                    label = "See all apartments",
+                    action = seeAll,
+                }
+            }
+        })
+    end,
 
     AddDoorZoneInside = function(coords, size, heading, leave, checkDoor)
         exports["qb-target"]:AddBoxZone(
@@ -146,6 +179,13 @@ Framework.qb = {
 }
 
 Framework.ox = {
+    Notify = function(message, type)
+        lib.notify({
+            title = 'Property',
+            description = message,
+            type = type
+        })
+    end,
 
     AddEntrance = function (coords, size, heading, propertyId, enter, raid, _)
         local property_id = propertyId
@@ -183,6 +223,31 @@ Framework.ox = {
 
                         return jobName == "police" and onDuty and gradeAllowed
                     end,
+                },
+            },
+        })
+
+        return handler
+    end,
+
+    AddApartmentEntrance = function (coords, size, heading, apartment, enter, seeAll, _)        
+        local handler = exports.ox_target:addBoxZone({
+            coords = vector3(coords.x, coords.y, coords.z),
+            size = vector3(size.x, size.y, size.z),
+            rotation = heading,
+            debug = Config.DebugMode,
+            options = {
+                {
+                    label = "Enter Apartment",
+                    onSelect = enter,
+                    canInteract = function()
+                        local apartments = ApartmentsTable[apartment].apartments
+                        return hasApartment(apartments)
+                    end,
+                },
+                {
+                    label = "See all apartments",
+                    onSelect = seeAll,
                 },
             },
         })
