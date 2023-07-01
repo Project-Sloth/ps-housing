@@ -139,7 +139,8 @@ end)
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
     if not Config.StartingApartment then return end
-    local citizenid, PlayerData = GetCitizenid(src)
+    local citizenid = GetCitizenid(src)
+    local PlayerData = GetPlayerData(src)
 
     local apartment = Config.Apartments[aptLabel]
     if not apartment then return end
@@ -241,7 +242,27 @@ function GetCitizenid(targetSrc, callerSrc)
     end
     local PlayerData = Player.PlayerData
     local citizenid = PlayerData.citizenid
-    return citizenid, PlayerData, Player
+    return citizenid
+end
+
+function GetCharName(src)
+    local Player = QBCore.Functions.GetPlayer(tonumber(src))
+    if not Player then return end
+    local PlayerData = Player.PlayerData
+    return PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname
+end
+
+function GetPlayerData(src)
+    local Player = QBCore.Functions.GetPlayer(tonumber(src))
+    if not Player then return end
+    local PlayerData = Player.PlayerData
+    return PlayerData
+end
+
+function GetPlayer(src)
+    local Player = QBCore.Functions.GetPlayer(tonumber(src))
+    if not Player then return end
+    return Player
 end
 
 -- if PSCore then

@@ -72,9 +72,7 @@ end
 function Property:AddToDoorbellPoolTemp(src)
     local _src = tostring(src)
 
-    local _, PlayerData = GetCitizenid(src)
-
-    local name = PlayerData.firstname .. " " .. PlayerData.lastname
+    local name = GetCharName(src)
 
     self.playersDoorbell[_src] = {
         src = src,
@@ -446,7 +444,7 @@ RegisterNetEvent('ps-housing:server:raidProperty', function (property_id)
         return 
     end
 
-    local _, PlayerData = GetCitizenid(src)
+    local PlayerData = GetPlayerData(src)
     local job = PlayerData.job
     local jobName = job.name
     local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
@@ -484,8 +482,7 @@ lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, pro
 
     for plySrc, _ in pairs(property.playersInside) do
         if tonumber(plySrc) ~= source then
-            local _, PlayerData = GetCitizenid(plySrc)
-            local name = PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname
+            local name = GetCharName(plySrc)
 
             players[#players + 1] = {
                 src = plySrc,
@@ -523,7 +520,11 @@ end)
 --@@ NEED TO REDO THIS DOG SHIT
 RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, price)
     local src = source
-    local citizenid, PlayerData, Player = GetCitizenid(src)
+
+    local citizenid = GetCitizenid(src)
+    local PlayerData = GetPlayerData(src)
+    local Player = GetPlayer(src)
+    -- ik ik, i cbf rn. if your reading this and its still shit, tell me
 
     local property = Property.Get(property_id)
     if not property then return end
@@ -614,7 +615,9 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     end
 
     local has_access = property.propertyData.has_access
-    local targetCitizenid, targetPlayer = GetCitizenid(tonumber(srcToAdd))
+
+    local targetCitizenid GetCitizenid(srcToAdd)
+    local targetPlayer = GetPlayer(srcToAdd)
 
     if not property:CheckForAccess(targetCitizenid) then
         has_access[#has_access+1] = targetCitizenid
@@ -671,6 +674,7 @@ lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, pr
     local src = source
     local citizenidSrc = GetCitizenid(src)
     local property = Property.Get(property_id)
+    
     if not property then return end
     if property.propertyData.owner ~= citizenidSrc then return end
 
