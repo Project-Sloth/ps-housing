@@ -46,7 +46,7 @@ Framework.qb = {
                 heading = heading,
                 debugPoly = Config.DebugMode,
                 minZ = coords.z - 1.5,
-                maxZ = coords.z + 1.5,
+                maxZ = coords.z + 2.0,
             },
             {
                 options = {
