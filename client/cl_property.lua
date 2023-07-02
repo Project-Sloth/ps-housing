@@ -3,7 +3,7 @@ Property = {
 	propertyData = nil,
 
 	shellData = nil,
-	inShell = false,
+	inProperty = false,
 	shellObj = nil,
 
 	has_access = false,
@@ -27,41 +27,37 @@ function Property:new(propertyData)
     local self = setmetatable({}, Property)
     self.property_id = tostring(propertyData.property_id)
 
-    -- remove furnitures from property data for ram purposes just incase someone decides to create a fucking maze made out of sticks
-    propertyData.furnitures = {} 
+    -- Remove furnitures from property data for memory purposes
+    propertyData.furnitures = {}
     self.propertyData = propertyData
 
-    local Player =  QBCore.Functions.GetPlayerData()
+    local Player = QBCore.Functions.GetPlayerData()
     local citizenid = Player.citizenid
 
     self.owner = propertyData.owner == citizenid
-
     self.has_access = lib.table.contains(self.propertyData, citizenid)
 
     if propertyData.apartment then
         local aptName = propertyData.apartment
         local apartment = ApartmentsTable[aptName]
 
-        if not apartment and Config.Apartments[apartment] then
-                ApartmentsTable[aptName] = Apartment:new(Config.Apartments[aptName])
-                apartment = ApartmentsTable[aptName]
+        if not apartment and Config.Apartments[aptName] then
+            ApartmentsTable[aptName] = Apartment:new(Config.Apartments[aptName])
+            apartment = ApartmentsTable[aptName]
         elseif not apartment then
             Debug(aptName .. " not found in Config")
-			return
+            return
         end
-        print(aptName)
+
         apartment:AddProperty(self.property_id)
     else
         self:RegisterPropertyEntrance()
-		self:RegisterGarageZone()
-
-		if self.owner or self.has_access then
-			self:CreateBlip()
-		end
+        self:RegisterGarageZone()
     end
 
     return self
 end
+
 
 function Property:GetDoorCoords()
     local coords = nil
@@ -100,15 +96,11 @@ end
 function Property:RegisterDoorZone(offset)
 
     local function leave()
-        if self.inShell then
-            self:LeaveShell()
-        end
+        self:LeaveShell()
     end
 
     local function checkDoor()
-        if not self.inShell then
-            self:OpenDoorbellMenu()
-        end
+        self:OpenDoorbellMenu()
     end
     
     local coords = offset
@@ -123,6 +115,7 @@ function Property:RegisterPropertyEntrance()
     local size = vector3(door.length, door.width, 1.0)
     local heading = door.heading
 
+    --Can be anon functions but I like to keep them named its more readable
     local function enter()
         TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
     end
@@ -134,6 +127,17 @@ function Property:RegisterPropertyEntrance()
     local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
 
     self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid, targetName)
+
+    if self.owner or self.has_access then
+        self:CreateBlip()
+    end
+end
+
+function Property:UnregisterPropertyEntrance()
+    if not self.entranceTarget then return end
+
+    Framework[Config.Target].RemoveTargetZone(self.entranceTarget)
+    self.entranceTarget = nil
 end
 
 function Property:RegisterGarageZone()
@@ -173,45 +177,40 @@ function Property:RegisterGarageZone()
     end)
 end
 
+function Property:UnregisterGarageZone()
+    if not self.garageZone then return end
+
+    TriggerEvent("qb-garages:client:removeHouseGarage", self.property_id)
+
+    self.garageZone:destroy()
+    self.garageZone = nil
+end
+
 function Property:EnterShell()
     DoScreenFadeOut(250)
     Wait(250)
 
-    self.inShell = true
+    self.inProperty = true
 
     self.shellData = Config.Shells[self.propertyData.shell]
     self:CreateShell()
 
     self:LoadFurnitures()
 
-    local accessAndConfig = self.has_access and Config.AccessCanEditFurniture
-
-    if self.owner or accessAndConfig then
-        local function openFurnitureMenu()
-            Modeler:OpenMenu(self.property_id)
-        end
-
-        local function openAccessMenu()
-            self:ManageAccessMenu()
-        end
-
-        Framework[Config.Radial].AddRadialOption("furniture_menu", "Furniture Menu", "house", openFurnitureMenu)
-
-        Framework[Config.Radial].AddRadialOption("access_menu", "Manage Property Access", "key", openAccessMenu)
-    end
+    self:GiveMenus()
 
     Wait(250)
     DoScreenFadeIn(250)
 end
 
 function Property:LeaveShell()
+    if not self.inProperty then return end
+
     DoScreenFadeOut(250)
     Wait(250)
-    if not self.inShell then
-        return
-    end
+
     
-    self.inShell = false
+    self.inProperty = false
 
     local coords = self:GetDoorCoords()
     SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)
@@ -232,33 +231,48 @@ function Property:LeaveShell()
         self.exitTarget = nil
     end
 
-    if self.entranceTarget then
-        Framework[Config.Target].RemoveTargetZone(self.entranceTarget)
-        self.entranceTarget = nil
-    end
-
-    if self.garageZone then
-        self.garageZone:destroy()
-        self.garageZone = nil
-    end
-
-    if self.blip then
-        RemoveBlip(self.blip)
-        self.blip = nil
-    end
+    self:RemoveBlip()
 
     self.doorbellPool = {}
 
-    Framework[Config.Radial].RemoveRadialOption("furniture_menu")
-    Framework[Config.Radial].RemoveRadialOption("access_menu")
-
-    self:UnloadFurnitures()
 
     Wait(250)
     DoScreenFadeIn(250)
 end
 
+function Property:GiveMenus()
+    if not self.inProperty then return end
+
+    local accessAndConfig = self.has_access and Config.AccessCanEditFurniture
+
+    if self.owner or accessAndConfig then
+        Framework[Config.Radial].AddRadialOption("furniture_menu", "Furniture Menu", "house", function()
+            Modeler:OpenMenu(self.property_id)
+        end)
+    end
+
+    if self.owner then
+        Framework[Config.Radial].AddRadialOption("access_menu", "Manage Property Access", "key", function()
+            self:ManageAccessMenu()
+        end)
+    end
+end
+
+
+function Property:RemoveMenus()
+    if not self.inProperty then return end
+
+    Framework[Config.Radial].RemoveRadialOption("furniture_menu")
+
+    if self.owner then
+        Framework[Config.Radial].RemoveRadialOption("access_menu")
+    end
+end
+
+
 function Property:ManageAccessMenu()
+
+    if not self.inProperty then return end
 
     if not self.owner then
         Framework[Config.Notify].Notify("Only the owner can do this.", "error")
@@ -292,6 +306,8 @@ function Property:ManageAccessMenu()
 end
 
 function Property:GiveAccessMenu()
+    if not self.inProperty then return end
+
     if not self.owner then
         return
     end
@@ -359,6 +375,8 @@ function Property:RevokeAccessMenu()
 end
 
 function Property:OpenDoorbellMenu()
+    if not self.inProperty then return end
+
     if not next(self.doorbellPool) then
         Framework[Config.Notify].Notify("No one is at the door", "error")
         return
@@ -371,8 +389,9 @@ function Property:OpenDoorbellMenu()
         options = {},
     }
 
-    for _, v in pairs(self.doorbellPool) do
-        table.insert(menu.options, {
+    for i = 1, #self.doorbellPool do
+        local v = self.doorbellPool[i]
+        menu.options[#menu.options + 1] = {
             title = v.name,
             onSelect = function()
                 TriggerServerEvent(
@@ -380,7 +399,7 @@ function Property:OpenDoorbellMenu()
                     { targetSrc = v.src, property_id = self.property_id }
                 )
             end,
-        })
+        }
     end
 
     lib.registerContext(menu)
@@ -390,8 +409,7 @@ end
 function Property:LoadFurnitures()
     self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', source, self.property_id) or {}
 
-    for i = 1, #self.propertyData.furnitures do
-        local v = self.propertyData.furnitures[i]
+    for i, v in ipairs(self.propertyData.furnitures) do
         local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
         local hash = v.object
 
@@ -401,11 +419,10 @@ function Property:LoadFurnitures()
         SetEntityRotation(entity, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
         FreezeEntityPosition(entity, true)
 
-        -- For the prerequisites
         if v.type == "storage" then
             self.storageTarget = entity
-            -- WARNING: If you change this naming of the property id's, you will mess up all previous property stashes
-            local stash = string.format("property_%s", self.property_id)
+
+            local stash = string.format("property_%s", self.property_id) -- if you changed this you will fuck things up
             local function openStash()
                 local stashConfig = Config.Shells[self.propertyData.shell].stash
                 TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
@@ -417,11 +434,8 @@ function Property:LoadFurnitures()
             self.clothingTarget = entity
 
             local function openClothing()
-                -- set entity heading opposite of current player heading
                 local heading = GetEntityHeading(cache.ped)
                 SetEntityHeading(cache.ped, heading - 180.0)
-                -- ^^ copilot goated
-
                 TriggerEvent("qb-clothing:client:openOutfitMenu")
             end
 
@@ -438,16 +452,12 @@ function Property:LoadFurnitures()
                 y = coords.y,
                 z = coords.z,
             },
-            rotation = {
-                x = v.rotation.x,
-                y = v.rotation.y,
-                z = v.rotation.z,
-            },
+            rotation = v.rotation,
             type = v.type,
         }
-
     end
 end
+
 
 function Property:UnloadFurnitures()
     for i = 1, #self.furnitureObjs do
@@ -471,7 +481,6 @@ function Property:UnloadFurnitures()
 end
 
 function Property:CreateBlip()
-    print("Creating blip", json.encode(self.propertyData, {indent = true}))
     local door_data = self.propertyData.door_data
     local blip = AddBlipForCoord(door_data.x, door_data.y, door_data.z)
     SetBlipSprite(blip, 40)
@@ -485,6 +494,7 @@ function Property:CreateBlip()
 end
 
 function Property:RemoveBlip()
+    if not self.blip then return end
     RemoveBlip(self.blip)
     self.blip = nil
 end
@@ -494,15 +504,11 @@ function Property:RemoveProperty()
 
     Framework[Config.Target].RemoveTargetZone(targetName)
 
-    if self.blip then
-        self:RemoveBlip()
-    end
+    self:RemoveBlip()
 
-    if self.inShell then
-        self:LeaveShell()
-        Wait(1000)
-    end
+    self:LeaveShell()
 
+    --@@ comeback to this
     if self.propertyData.apartment then
         ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
     end
@@ -510,11 +516,114 @@ function Property:RemoveProperty()
     self = nil
 end
 
+-- function Property:UpdateFurnitures()
+    -- self:UnloadFurnitures()
+    -- self:LoadFurnitures()
+-- end
+
+function Property:UpdateLabel(newLabel)
+    self.propertyData.label = newLabel
+
+    --All below uses labels
+    self:UnregisterPropertyEntrance()
+    self:RegisterPropertyEntrance()
+
+    self:UnregisterGarageZone()
+    self:RegisterGarageZone()
+
+    Property:CreateBlip()
+end
+
+function Property:UpdateDescription(newDescription)
+    self.propertyData.description = newDescription
+end
+
+function Property:UpdatePrice(newPrice)
+    self.propertyData.price = newPrice
+end
+
+function Property:UpdateForSale(forSale)
+    self.propertyData.forSale = forSale
+end
+
+function Property:UpdateShell(newShell)
+    self:LeaveShell()
+    self.propertyData.shell = newShell
+
+    if self.inProperty then
+        self:EnterShell()
+    end
+end
+
+function Property:UpdateOwner(newOwner)
+    self.propertyData.owner = newOwner
+
+    local Player = QBCore.Functions.GetPlayerData()
+    local citizenid = Player.citizenid
+
+    self.owner = newOwner == citizenid
+
+    self:UnregisterGarageZone()
+    self:RegisterGarageZone()
+
+    self:CreateBlip()
+
+    if not self.inProperty then return end
+
+    self:RemoveMenus()
+    self:GiveMenus()
+end
+
+function Property:UpdateImgs(newImgs)
+    self.propertyData.imgs = newImgs
+end
+
+function Property:UpdateDoor(newDoor)
+    self.propertyData.door_data = newDoor
+
+    self:UnregisterPropertyEntrance()
+    self:RegisterPropertyEntrance()
+end
+
+function Property:UpdateHas_access(newHas_access)
+    self.propertyData.has_access = newHas_access
+
+    if not self.inProperty then return end
+
+    self:RemoveMenus()
+    self:GiveMenus()
+end
+
+function Property:UpdateGarage(newGarage)
+    self.propertyData.garage_data = newGarage
+
+    self:UnregisterGarageZone()
+    self:RegisterGarageZone()
+end
+
+function Property:UpdateApartment(newApartment)
+
+    if not self.inProperty then return end
+
+    self:LeaveShell()
+
+    local oldApt = ApartmentsTable[self.propertyData.apartment]
+    
+    if oldApt then
+        oldApt:RemoveProperty(self.property_id)
+    end
+
+    self.propertyData.apartment = newApartment
+
+    local newApt = ApartmentsTable[newApartment]
+
+    if newApt then
+        newApt:AddProperty(self.property_id)
+    end
+end
+
 function Property.Get(property_id)
-    print(type(property_id), "get")
-    local property = PropertiesTable[tostring(property_id)]
-    print(json.encode(PropertiesTable, {indent = true}))
-    return property
+    return PropertiesTable[tostring(property_id)]
 end
 
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
@@ -535,22 +644,10 @@ RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
 	property:LoadFurnitures()
 end)
 
-RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
-	local property_id = propertyData.property_id
+RegisterNetEvent("ps-housing:client:updateProperty", function(type, property_id, data)
 	local property = Property.Get(property_id)
-	propertyData.furnitures = {} -- will be fetched on enter, just to save some ram
-	property.propertyData = propertyData
 
-	if property.inShell then
-		property:LeaveShell()
-	end
+    if not property then return end
 
-	if propertyData.apartment ~= nil then
-		local apartment = ApartmentsTable[propertyData.apartment]
-		apartment:RemoveProperty(property_id)
-	end
-
-	property:RemoveProperty()
-	property = nil
-	PropertiesTable[property_id] = Property:new(propertyData)
+    property[type](property, data)
 end)

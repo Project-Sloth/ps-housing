@@ -232,6 +232,13 @@ With
 local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 ```
 
+`qb-garages > client > main.lua > line 443` under event `qb-garages:client:addHouseGarage`
+```lua
+RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
+    Config.HouseGarages[house] = nil
+end)
+```
+
 5. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 6. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 7. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)

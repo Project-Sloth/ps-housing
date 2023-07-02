@@ -152,8 +152,9 @@ function Property:UpdateLabel(data)
         ["@property_id"] = self.property_id
     })
 
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateLabel", self.property_id, label)
+    
     Debug("Changed Label of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
-    --@@
 end
 
 function Property:UpdateDescription(data)
@@ -168,6 +169,8 @@ function Property:UpdateDescription(data)
         ["@description"] = description,
         ["@property_id"] = self.property_id
     })
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateDescription", self.property_id, description)
 
     Debug("Changed Description of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -185,6 +188,8 @@ function Property:UpdatePrice(data)
         ["@property_id"] = self.property_id
     })
 
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdatePrice", self.property_id, price)
+
     Debug("Changed Price of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 
@@ -198,6 +203,8 @@ function Property:UpdateForSale(data)
         ["@for_sale"] = forsale and 1 or 0,
         ["@property_id"] = self.property_id
     })
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateForSale", self.property_id, forsale)
 
     Debug("Changed For Sale of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -214,6 +221,8 @@ function Property:UpdateShell(data)
         ["@shell"] = shell,
         ["@property_id"] = self.property_id
     })
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateShell", self.property_id, shell)
 
     Debug("Changed Shell of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -280,7 +289,9 @@ function Property:UpdateOwner(data)
         ["@property_id"] = self.property_id
     })
 
-    TriggerClientEvent("ps-housing:client:updateProperty", -1, self.propertyData) -- Update all clients here because it doesnt update by itself
+    self.propertyData.furnitures = {} -- to be fetched on enter
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateOwner", self.property_id, citizenid)
 
     Framework[Config.Notify].Notify(targetSrc, "You have bought the property for $"..self.propertyData.price, "success")
     Framework[Config.Notify].Notify(realtorSrc, "Client has bought the property for $'..self.propertyData.price", "success")
@@ -296,6 +307,8 @@ function Property:UpdateImgs(data)
         ["@extra_imgs"] = json.encode(imgs),
         ["@property_id"] = self.property_id
     })
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateImgs", self.property_id, imgs)
 
     Debug("Changed Imgs of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -322,6 +335,8 @@ function Property:UpdateDoor(data)
         ["@property_id"] = self.property_id
     })
 
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateDoor", self.property_id, door)
+
     Debug("Changed Door of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 
@@ -334,6 +349,8 @@ function Property:UpdateHas_access(data)
         ["@has_access"] = json.encode(has_access), --Array of cids
         ["@property_id"] = self.property_id
     })
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateHas_access", self.property_id, has_access)
 
     Debug("Changed Has Access of property with id: " .. self.property_id)
 end
@@ -361,6 +378,8 @@ function Property:UpdateGarage(data)
         ["@garageCoords"] = json.encode(newData),
         ["@property_id"] = self.property_id
     })
+    
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateGarage", self.property_id, garage)
 
     Debug("Changed Garage of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -379,6 +398,9 @@ function Property:UpdateApartment(data)
 
     Framework[Config.Notify].Notify(realtorSrc, "Changed Apartment of property with id: " .. self.property_id .." to ".. apartment, "success")
     Framework[Config.Notify].Notify(targetSrc, "Changed Apartment to " .. apartment, "success")
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateApartment", self.property_id, apartment)
+
     Debug("Changed Apartment of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 
@@ -396,7 +418,8 @@ function Property:DeleteProperty(data)
     TriggerClientEvent("ps-housing:client:removeProperty", -1, self.property_id)
 
     Framework[Config.Notify].Notify(realtorSrc, "Property with id: " .. self.property_id .." has been removed.", "info")
-
+    
+    self = nil
     Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 

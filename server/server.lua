@@ -126,12 +126,6 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     if not property then return end
 
     property[type](property, data)
-
-    if type == "DeleteProperty" then
-        PropertiesTable[tostring(property_id)] = nil
-    else 
-        TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
-    end
 end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
@@ -196,10 +190,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
 
     Framework[Config.Notify].Notify(targetSrc, "Your apartment is now at "..apartment, "success")
     Framework[Config.Notify].Notify(realtorSrc, "You have added ".. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname .. " to apartment "..apartment, "success")
-    
-    TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
-
 
 exports('IsOwner', function(src, property_id)
     local property = Property.Get(property_id)
