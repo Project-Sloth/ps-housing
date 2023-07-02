@@ -316,6 +316,8 @@ end
 
 function Property:UpdateDoor(data)
     local door = data.door
+
+    if not door then return end
     local realtorSrc = data.realtorSrc
 
     local newData = {
@@ -335,7 +337,7 @@ function Property:UpdateDoor(data)
         ["@property_id"] = self.property_id
     })
 
-    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateDoor", self.property_id, door)
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateDoor", self.property_id, newData)
 
     Debug("Changed Door of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -397,6 +399,7 @@ function Property:UpdateApartment(data)
     })
 
     Framework[Config.Notify].Notify(realtorSrc, "Changed Apartment of property with id: " .. self.property_id .." to ".. apartment, "success")
+    
     Framework[Config.Notify].Notify(targetSrc, "Changed Apartment to " .. apartment, "success")
 
     TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateApartment", self.property_id, apartment)
@@ -445,6 +448,18 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
         property:PlayerEnter(src)
         Debug("Player entered property")
         return
+    end
+
+    local PlayerData = GetPlayerData(src)
+    local job = PlayerData.job
+    local jobName = job.name
+    local onDuty = job.onduty
+    if jobName == "realtor" and onDuty then
+        local showcase = lib.callback.await('ps-housing:cb:showcase', src)
+        if showcase == "confirm" then
+            property:PlayerEnter(src)
+            return
+        end
     end
 
     local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)

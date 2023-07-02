@@ -106,7 +106,7 @@ Config.Shells = {
     ["Standard Motel"] = {
         label = "Standard Motel",
         hash = `standardmotel_shell`,
-        doorOffset = { x = -0.5, y = -2.3, z = 0.0, heading = 90.0, width = 1.5 },
+        doorOffset = { x = -0.5, y = -2.3, z = 0.0, h = 90.0, width = 1.5 },
         stash = {
             maxweight = 100000, 
             slots = 12,
@@ -122,7 +122,7 @@ Config.Shells = {
     ["Modern Hotel"] = {
         label = "Modern Hotel",
         hash = `modernhotel_shell`,
-        doorOffset = { x = 4.98, y = 4.35, z = 0.0, heading = 179.79, width = 2.0  },
+        doorOffset = { x = 4.98, y = 4.35, z = 0.0, h = 179.79, width = 2.0  },
         stash = {
             maxweight = 150000, 
             slots = 20,
@@ -142,7 +142,7 @@ Config.Shells = {
     ["Apartment Furnished"] = {
         label = "Apartment Furnished",
         hash = `furnitured_midapart`,
-        doorOffset = { x = 1.44, y = -10.25, z = 0.0, heading = 0.0, width = 1.5  },
+        doorOffset = { x = 1.44, y = -10.25, z = 0.0, h = 0.0, width = 1.5  },
         stash = {
             maxweight = 200000, 
             slots = 25,
@@ -178,7 +178,7 @@ Config.Shells = {
     ["Apartment Unfurnished"] = {
         label = "Apartment Unfurnished",
         hash = `shell_v16mid`,
-        doorOffset = { x = 1.34, y = -14.36, z = -0.5, heading = 354.08, width = 1.5  },
+        doorOffset = { x = 1.34, y = -14.36, z = -0.5, h = 354.08, width = 1.5  },
         stash = {
             maxweight = 200000, 
             slots = 25,
@@ -210,7 +210,7 @@ Config.Shells = {
     ["Apartment 2 Unfurnished"] = {
         label = "Apartment 2 Unfurnished",
         hash = `shell_v16low`,
-        doorOffset = { x = 4.69, y = -6.5, z = -1.0, heading = 358.50, width = 1.5  },
+        doorOffset = { x = 4.69, y = -6.5, z = -1.0, h = 358.50, width = 1.5  },
         stash = {
             maxweight = 200000, 
             slots = 25,
@@ -234,7 +234,7 @@ Config.Shells = {
     ["Garage"] = {
         label = "Garage",
         hash = `shell_garagem`,
-        doorOffset = { x = 14.0, y = 1.7, z = -0.76, heading = 88.49, width = 2.0  },
+        doorOffset = { x = 14.0, y = 1.7, z = -0.76, h = 88.49, width = 2.0  },
         stash = {
             maxweight = 500000, 
             slots = 50,
@@ -254,7 +254,7 @@ Config.Shells = {
     ["Office"] = {
         label = "Office",
         hash = `shell_office1`,
-        doorOffset = { x = 1.2, y = 4.90, z = -0.73, heading = 180.0, width = 2.0  },
+        doorOffset = { x = 1.2, y = 4.90, z = -0.73, h = 180.0, width = 2.0  },
         stash = {
             maxweight = 250000, 
             slots = 30,
@@ -274,7 +274,7 @@ Config.Shells = {
     ["Store"] = {
         label = "Store",
         hash = `shell_store1`,
-        doorOffset = { x = -2.69, y = -4.56, z = -0.62, heading = 1.91, width = 2.0  },
+        doorOffset = { x = -2.69, y = -4.56, z = -0.62, h = 1.91, width = 2.0  },
         stash = {
             maxweight = 500000, 
             slots = 50,
@@ -294,7 +294,7 @@ Config.Shells = {
     ["Warehouse"] = {
         label = "Warehouse",
         hash = `shell_warehouse1`,
-        doorOffset = { x = -8.96, y = 0.11, z = -0.95, heading = 270.64, width = 2.0  },
+        doorOffset = { x = -8.96, y = 0.11, z = -0.95, h = 270.64, width = 2.0  },
         stash = {
             maxweight = 1000000, 
             slots = 100,
@@ -314,7 +314,7 @@ Config.Shells = {
     ["Container"] = {
         label = "Container",
         hash = `container_shell`,
-        doorOffset = { x = 0.05, y = -5.7, z = -0.22, heading = 1.7, width = 2.2  },
+        doorOffset = { x = 0.05, y = -5.7, z = -0.22, h = 1.7, width = 2.2  },
         stash = {
             maxweight = 500000, 
             slots = 100,
@@ -330,7 +330,7 @@ Config.Shells = {
     ["2 Floor House"] = {
         label = "2 Floor House",
         hash = `shell_michael`,
-        doorOffset = { x = -9.6, y = 5.63, z = -4.07, heading = 268.55, width = 2.0  },
+        doorOffset = { x = -9.6, y = 5.63, z = -4.07, h = 268.55, width = 2.0  },
         stash = {
             maxweight = 300000, 
             slots = 50,
@@ -378,7 +378,7 @@ Config.Shells = {
     ["House 1"] = {
         label = "House 1",
         hash = `shell_frankaunt`,
-        doorOffset = { x = -0.34, y = -5.97, z = -0.57, heading = 357.23, width = 2.0  },
+        doorOffset = { x = -0.34, y = -5.97, z = -0.57, h = 357.23, width = 2.0  },
         stash = {
             maxweight = 200000, 
             slots = 50,
@@ -418,7 +418,7 @@ Config.Shells = {
     ["House 2"] = {
         label = "House 2",
         hash = `shell_ranch`,
-        doorOffset = { x = -1.23, y = -5.54, z = -1.1, heading = 272.21, width = 2.0  },
+        doorOffset = { x = -1.23, y = -5.54, z = -1.1, h = 272.21, width = 2.0  },
         stash = {
             maxweight = 500000, 
             slots = 50,
@@ -450,7 +450,7 @@ Config.Shells = {
     ["House 3"] = {
         label = "House 3",
         hash = `shell_lester`,
-        doorOffset = { x = -1.61, y = -6.02, z = -0.37, heading = 357.7, width = 2.0  },
+        doorOffset = { x = -1.61, y = -6.02, z = -0.37, h = 357.7, width = 2.0  },
         stash = {
             maxweight = 15000, 
             slots = 20,
@@ -474,7 +474,7 @@ Config.Shells = {
     ["House 4"] = {
         label = "House 4",
         hash = `shell_trevor`,
-        doorOffset = { x = 0.2, y = -3.82, z = -0.41, heading = 358.4, width = 2.0  },
+        doorOffset = { x = 0.2, y = -3.82, z = -0.41, h = 358.4, width = 2.0  },
         stash = {
             maxweight = 10000, 
             slots = 12,
@@ -510,7 +510,7 @@ Config.Shells = {
     ["Trailer"] = {
         label = "Trailer",
         hash = `shell_trailer`,
-        doorOffset = { x = -1.27, y = -2.08, z = -0.48, heading = 358.84, width = 2.0  },
+        doorOffset = { x = -1.27, y = -2.08, z = -0.48, h = 358.84, width = 2.0  },
         stash = {
             maxweight = 10000, 
             slots = 12,

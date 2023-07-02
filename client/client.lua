@@ -1,14 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
--- Not used but can be used for other resources
-exports('GetProperty', function(property_id)
-	return PropertiesTable[property_id]
-end)
-
-exports('GetShells', function()
-	return Config.Shells
-end)
-
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
 end
@@ -35,6 +26,9 @@ function InitialiseProperties()
     for k, v in pairs(properties) do
         createProperty(v)
     end
+
+    TriggerEvent("ps-housing:client:initialisedProperties")
+
     Debug("Initialised properties")
 end
 AddEventHandler("QBCore:Client:OnPlayerLoaded", InitialiseProperties)
@@ -80,6 +74,27 @@ AddEventHandler("onResourceStop", function(resourceName)
 	end
 end)
 
+exports('GetProperties', function()
+    return PropertiesTable
+end)
+
+exports('GetProperty', function(property_id)
+    return Property.Get(property_id)
+end)
+
+exports('GetApartments', function()
+    return ApartmentsTable
+end)
+
+exports('GetApartment', function(apartment)
+    return Apartment.Get(apartment)
+end)
+
+exports('GetShells', function()
+    return Config.Shells
+end)
+
+
 lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label, id)
     return lib.alertDialog({
         header = 'Purchase Confirmation',
@@ -114,6 +129,19 @@ lib.callback.register('ps-housing:cb:ringDoorbell', function()
         cancel = true,
         labels = {
             confirm = "Ring",
+            cancel = "Cancel"
+        }
+    })
+end)
+
+lib.callback.register('ps-housing:cb:showcase', function()
+    return lib.alertDialog({
+        header = 'Showcase Property',
+        content = 'Do you want to showcase this property?',
+        centered = true,
+        cancel = true,
+        labels = {
+            confirm = "Yes",
             cancel = "Cancel"
         }
     })

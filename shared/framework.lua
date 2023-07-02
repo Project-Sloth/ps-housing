@@ -7,7 +7,7 @@ if IsDuplicityVersion() then
 
     function Framework.ox.Notify(src, message, type)
         type = type == "inform" and "info" or type
-        TriggerClientEvent("ox_lib:notify", src, {title="Property", message=message, type=type})
+        TriggerClientEvent("ox_lib:notify", src, {title="Property", description=message, type=type})
     end
 
     function Framework.qb.Notify(src, message, type)
@@ -36,8 +36,6 @@ Framework.qb = {
 
     AddEntrance = function(coords, size, heading, propertyId, enter, raid, targetName)
         local property_id = propertyId
-        local property = PropertiesTable[property_id]
-
         exports["qb-target"]:AddBoxZone(
             targetName,
             vector3(coords.x, coords.y, coords.z),
@@ -46,9 +44,9 @@ Framework.qb = {
             {
                 name = targetName,
                 heading = heading,
-                debugPoly = Config.DebugPoly,
-                minZ = coords.z - 2.0,
-                maxZ = coords.z + 1.0,
+                debugPoly = Config.DebugMode,
+                minZ = coords.z - 1.5,
+                maxZ = coords.z + 1.5,
             },
             {
                 options = {
@@ -56,13 +54,26 @@ Framework.qb = {
                         label = "Enter Property",
                         action = enter,
                         canInteract = function()
+                            local property = Property.Get(property_id)
                             return property.has_access or property.owner
+                        end,
+                    },
+                    {
+                        label = "Showcase Property",
+                        action = enter,
+                        canInteract = function()
+                            local PlayerData = QBCore.Functions.GetPlayerData()
+                            local job = PlayerData.job
+                            local jobName = job.name
+                            local onDuty = job.onduty
+                            return jobName == "realtor" and onDuty
                         end,
                     },
                     {
                         label = "Ring Doorbell",
                         action = enter,
                         canInteract = function()
+                            local property = Property.Get(property_id)
                             return not property.has_access and not property.owner
                         end,
                     },
@@ -87,8 +98,6 @@ Framework.qb = {
     end,
 
     AddApartmentEntrance = function(coords, size, heading, apartment, enter, seeAll, targetName)
-
-        
         exports['qb-target']:AddBoxZone(targetName, vector3(coords.x, coords.y, coords.z), size.x, size.y, {
             name = targetName,
             heading = heading,
@@ -122,7 +131,7 @@ Framework.qb = {
             {
                 name = "shellExit",
                 heading = heading,
-                debugPoly = Config.DebugPoly,
+                debugPoly = Config.DebugMode,
                 minZ = coords.z - 2.0,
                 maxZ = coords.z + 1.0,
             },
@@ -190,11 +199,10 @@ Framework.ox = {
 
     AddEntrance = function (coords, size, heading, propertyId, enter, raid, _)
         local property_id = propertyId
-        local property = PropertiesTable[property_id]
 
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z),
-            size = vector3(size.x, size.y, size.z),
+            size = vector3(size.y, size.x, size.z),
             rotation = heading,
             debug = Config.DebugMode,
             options = {
@@ -202,13 +210,26 @@ Framework.ox = {
                     label = "Enter Property",
                     onSelect = enter,
                     canInteract = function()
+                        local property = Property.Get(property_id)
                         return property.has_access or property.owner
+                    end,
+                },
+                {
+                    label = "Showcase Property",
+                    onSelect = enter,
+                    canInteract = function()
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job
+                        local jobName = job.name
+
+                        return jobName == "realtor"
                     end,
                 },
                 {
                     label = "Ring Doorbell",
                     onSelect = enter,
                     canInteract = function()
+                        local property = Property.Get(property_id)
                         return not property.has_access and not property.owner
                     end,
                 },
@@ -234,7 +255,7 @@ Framework.ox = {
     AddApartmentEntrance = function (coords, size, heading, apartment, enter, seeAll, _)        
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z),
-            size = vector3(size.x, size.y, size.z),
+            size = vector3(size.y, size.x, size.z),
             rotation = heading,
             debug = Config.DebugMode,
             options = {
@@ -259,7 +280,7 @@ Framework.ox = {
     AddDoorZoneInside = function (coords, size, heading, leave, checkDoor)
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z), --z = 3.0
-            size = vector3(size.x, size.y, size.z),
+            size = vector3(size.y, size.x, size.z),
             rotation = heading,
             debug = Config.DebugMode,
             options = {

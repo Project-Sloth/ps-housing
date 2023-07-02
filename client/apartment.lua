@@ -50,7 +50,7 @@ function Apartment:EnterApartment()
     Framework[Config.Notify].Notify("You dont have an apartment here.", "error")
 end
 
-function Apartment:GetMenuForAll ()
+function Apartment:GetMenuForAll()
     if next(self.apartments) == nil then 
         Framework[Config.Notify].Notify("There are no apartments here.", "error")
         return
@@ -115,6 +115,7 @@ function Apartment:AddProperty(propertyId)
 end
 
 function Apartment:RemoveProperty(propertyId)
+    if not self:HasProperty(propertyId) then return end
     self.apartments[propertyId] = nil
 
     local property = Property.Get(propertyId)
@@ -135,3 +136,6 @@ function Apartment:RemoveApartment()
     self = {}
 end
 
+function Apartment.Get(apartmentName)
+    return ApartmentsTable[apartmentName]
+end

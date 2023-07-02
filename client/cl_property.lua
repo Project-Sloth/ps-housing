@@ -90,7 +90,7 @@ function Property:CreateShell()
     self:RegisterDoorZone(offset)
 
     SetEntityCoordsNoOffset(cache.ped, offset.x, offset.y, offset.z, false, false, true)
-    SetEntityHeading(cache.ped, self.shellData.doorOffset.heading)
+    SetEntityHeading(cache.ped, self.shellData.doorOffset.h)
 end
 
 function Property:RegisterDoorZone(offset)
@@ -105,16 +105,15 @@ function Property:RegisterDoorZone(offset)
     
     local coords = offset
     local size = vector3(1.0, self.shellData.doorOffset.width, 3.0)
-    local heading = self.shellData.doorOffset.heading
+    local heading = self.shellData.doorOffset.h
 
     self.exitTarget = Framework[Config.Target].AddDoorZoneInside(coords, size, heading, leave, checkDoor)
 end
 
 function Property:RegisterPropertyEntrance()
     local door = self.propertyData.door_data
-    local size = vector3(door.length, door.width, 1.0)
-    local heading = door.heading
-
+    local size = vector3(door.length, door.width, 2.5)
+    local heading = door.h
     --Can be anon functions but I like to keep them named its more readable
     local function enter()
         TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
@@ -602,13 +601,10 @@ function Property:UpdateGarage(newGarage)
 end
 
 function Property:UpdateApartment(newApartment)
-
-    if not self.inProperty then return end
-
     self:LeaveShell()
 
-    local oldApt = ApartmentsTable[self.propertyData.apartment]
-    
+    local oldAptName = self.propertyData.apartment
+    local oldApt = ApartmentsTable[oldAptName]
     if oldApt then
         oldApt:RemoveProperty(self.property_id)
     end
@@ -620,6 +616,8 @@ function Property:UpdateApartment(newApartment)
     if newApt then
         newApt:AddProperty(self.property_id)
     end
+
+    TriggerEvent("ps-housing:client:updateApartment", oldAptName, newApartment)
 end
 
 function Property.Get(property_id)
@@ -650,4 +648,6 @@ RegisterNetEvent("ps-housing:client:updateProperty", function(type, property_id,
     if not property then return end
 
     property[type](property, data)
+
+    TriggerEvent("ps-housing:client:updatedProperty", property_id)
 end)
