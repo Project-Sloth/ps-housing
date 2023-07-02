@@ -49,7 +49,7 @@ function Property:new(propertyData)
             Debug(aptName .. " not found in Config")
 			return
         end
-
+        print(aptName)
         apartment:AddProperty(self.property_id)
     else
         self:RegisterPropertyEntrance()
@@ -510,19 +510,26 @@ function Property:RemoveProperty()
     self = nil
 end
 
+function Property.Get(property_id)
+    print(type(property_id), "get")
+    local property = PropertiesTable[tostring(property_id)]
+    print(json.encode(PropertiesTable, {indent = true}))
+    return property
+end
+
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
-	local property = PropertiesTable[property_id]
+	local property = Property.Get(property_id)
 	property:EnterShell()
 end)
 
 RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, data)
-	local property = PropertiesTable[property_id]
+	local property = Property.Get(property_id)
 	property.doorbellPool = data
 end)
 
 RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
 	local property_id = propertyData.property_id
-	local property = PropertiesTable[property_id]
+	local property = Property.Get(property_id)
 	property.propertyData.furnitures = propertyData.furnitures
 	property:UnloadFurnitures()
 	property:LoadFurnitures()
@@ -530,7 +537,7 @@ end)
 
 RegisterNetEvent("ps-housing:client:updateProperty", function(propertyData)
 	local property_id = propertyData.property_id
-	local property = PropertiesTable[property_id]
+	local property = Property.Get(property_id)
 	propertyData.furnitures = {} -- will be fetched on enter, just to save some ram
 	property.propertyData = propertyData
 

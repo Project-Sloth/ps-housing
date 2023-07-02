@@ -1,5 +1,4 @@
 -- TBH I should have learnt how lua inheritance worked instead of making a new class but oh well. Maybe next time
- 
 
 Apartment = {
     apartmentData = {},
@@ -12,7 +11,6 @@ Apartment.__index = Apartment
 
 function Apartment:new(apartmentData)
     local self = setmetatable({}, Apartment)
-    print("new apartment")
     self.apartmentData = apartmentData
     self.apartments = {}
 
@@ -78,12 +76,21 @@ function Apartment:GetMenuForAll ()
     lib.showContext(id)
 end
 
-function Apartment:CreateBlip()
+function Apartment:CreateBlip(hasProperty)
+    self:DeleteBlip()
+
     local door = self.apartmentData.door
     local blip = AddBlipForCoord(door.x, door.y, door.z)
+
     SetBlipSprite(blip, 475)
     SetBlipScale(blip, 0.8)
-    SetBlipColour(blip, 4)
+    
+    if hasProperty then
+        SetBlipColour(blip, 2)
+    else
+        SetBlipColour(blip, 4)
+    end
+
     SetBlipAsShortRange(blip, true)
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentString(self.apartmentData.label)
@@ -92,16 +99,28 @@ function Apartment:CreateBlip()
 end
 
 function Apartment:DeleteBlip()
+    if not self.blip then return end
     RemoveBlip(self.blip)
     self.blip = nil
 end
 
 function Apartment:AddProperty(propertyId)
     self.apartments[propertyId] = true
+
+    local property = Property.Get(propertyId)
+
+    if property?.owner then
+        self:CreateBlip(true)
+    end
 end
 
 function Apartment:RemoveProperty(propertyId)
     self.apartments[propertyId] = nil
+
+    local property = Property.Get(propertyId)
+    if property.owner then
+        self:CreateBlip(false)
+    end
 end
 
 function Apartment:HasProperty(propertyId)

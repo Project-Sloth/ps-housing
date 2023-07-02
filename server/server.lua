@@ -5,11 +5,9 @@ local dbloaded = false
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)
         if not result then return end
-
         if result.id then -- If only one result
             result = {result}
         end
-
         for _, v in pairs(result) do
             local id = tostring(v.property_id)
             local propertyData = {
@@ -93,7 +91,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
 
-        local property = PropertiesTable[id]
+        local property = Property.Get(id)
         property:PlayerEnter(src)
 
         Wait(1000)
@@ -124,7 +122,7 @@ lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
 end)
 
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
-    local property = PropertiesTable[tostring(property_id)]
+    local property = Property.Get(property_id)
     if not property then return end
 
     property[type](property, data)
@@ -187,7 +185,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
         end
     end
 
-    local property = PropertiesTable[tostring(property_id)]
+    local property = Property.Get(property_id)
     if not property then return end
 
     property:UpdateApartment(data)
@@ -202,32 +200,9 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     TriggerClientEvent("ps-housing:client:updateProperty", -1, property.propertyData)
 end)
 
-lib.callback.register("ps-housing:cb:allowedToStore", function (source, plate, property_id)
-    local src = source
-    local plate = plate
-
-    local property = PropertiesTable[tostring(property_id)]
-    if not property then return false end
-
-    local citizenid = GetCitizenid(src, src)
-    if not property:CheckForAccess(citizenid) then return false end
-
-    local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {['@plate'] = plate})
-    
-    if result[1] then
-        MySQL.update('UPDATE player_vehicles SET state = @state WHERE plate = @plate', 
-        {
-            ['@state'] = 1,
-            ['@plate'] = plate,
-        })
-        return true
-    else
-        return false
-    end
-end)
 
 exports('IsOwner', function(src, property_id)
-    local property = PropertiesTable[tostring(property_id)]
+    local property = Property.Get(property_id)
     if not property then return false end
 
     local citizenid = GetCitizenid(src, src)
