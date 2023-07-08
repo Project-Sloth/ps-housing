@@ -17,7 +17,7 @@ Property = {
     doorbellPool = {},
 
     entranceTarget = nil, -- needed for ox target
-    exitTarget = nil,  -- needed for ox target
+    exitTarget = nil,     -- needed for ox target
 
     blip = nil,
 }
@@ -162,11 +162,11 @@ function Property:RegisterGarageZone()
 
     self.garageZone = BoxZone:Create(vector3(garageData.x + 5.0, garageData.y + 5.0, garageData.z), garageData.length,
         garageData.width, {
-        name = garageName,
-        debugPoly = Config.DebugMode,
-        minZ = garageData.z - 1.0,
-        maxZ = garageData.z + 3.0
-    })
+            name = garageName,
+            debugPoly = Config.DebugMode,
+            minZ = garageData.z - 1.0,
+            maxZ = garageData.z + 3.0
+        })
 
     self.garageZone:onPlayerInOut(function(isPointInside, point)
         if isPointInside then
@@ -403,7 +403,7 @@ end
 function Property:LoadFurniture(furniture)
     local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, furniture.position.x, furniture.position.y,
         furniture.position.z)
-    local hash = v.object
+    local hash = furniture.object
 
     lib.requestModel(hash)
     local entity = CreateObjectNoOffset(hash, coords.x, coords.y, coords.z, false, true, false)
@@ -414,7 +414,7 @@ function Property:LoadFurniture(furniture)
     if furniture.type == "storage" then
         self.storageTarget = entity
 
-        local stash = string.format("property_%s", self.property_id)     -- if you changed this you will fuck things up
+        local stash = string.format("property_%s", self.property_id) -- if you changed this you will fuck things up
         local function openStash()
             local stashConfig = Config.Shells[self.propertyData.shell].stash
             TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
@@ -451,35 +451,45 @@ end
 
 function Property:LoadFurnitures()
     self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', source, self.property_id) or {}
-
-    print("Loading furnitures", json.encode(self.propertyData.furnitures, {indent=true}))
-    for _, furniture in ipairs(self.propertyData.furnitures) do
+    
+    for i = 1, #self.propertyData.furnitures do
+        local furniture = self.propertyData.furnitures[i]
         self:LoadFurniture(furniture)
     end
 end
 
--- function Property:UnloadFurniture(furniture)
-    
--- end
+function Property:UnloadFurniture(furniture, index)
+    local entity = furniture.entity
+
+    if self.clothingTarget == entity or self.storageTarget == entity then
+        Framework[Config.Target].RemoveTargetEntity(entity)
+
+        if self.clothingTarget == entity then
+            self.clothingTarget = nil
+        elseif self.storageTarget == entity then
+            self.storageTarget = nil
+        end
+    end
+
+    if index and self.furnitureObjs?[index] then
+        self.furnitureObjs[index] = nil
+    else 
+        for i = 1, #self.furnitureObjs do
+            if self.furnitureObjs[i].id == furniture.id then
+                self.furnitureObjs[i] = nil
+                break
+            end
+        end
+    end
+
+    DeleteObject(entity)
+end
 
 function Property:UnloadFurnitures()
     for i = 1, #self.furnitureObjs do
-        local v = self.furnitureObjs[i]
-        local entity = v.entity
-
-        if self.clothingTarget == entity or self.storageTarget == entity then
-            Framework[Config.Target].RemoveTargetEntity(entity)
-
-            if self.clothingTarget == entity then
-                self.clothingTarget = nil
-            elseif self.storageTarget == entity then
-                self.storageTarget = nil
-            end
-        end
-
-        DeleteObject(entity)
+        local furniture = self.furnitureObjs[i]
+        self:UnloadFurniture(furniture, i)
     end
-
     self.furnitureObjs = {}
 end
 
@@ -512,6 +522,7 @@ function Property:RemoveProperty()
     self:LeaveShell()
 
     --@@ comeback to this
+    -- Think it works now
     if self.propertyData.apartment then
         ApartmentsTable[self.propertyData.apartment]:RemoveProperty()
     end
@@ -519,11 +530,60 @@ function Property:RemoveProperty()
     self = nil
 end
 
--- function Property:UpdateFurnitures()
---     if not self.inProperty then return end
+local function findFurnitureDifference(new, old)
+    local added = {}
+    local removed = {}
 
+    for i = 1, #new do
+        local found = false
+        for j = 1, #old do
+            if new[i].id == old[j].id then
+                found = true
+                break
+            end
+        end
+        if not found then
+            added[#added + 1] = new[i]
+        end
+    end
 
--- end
+    for i = 1, #old do
+        local found = false
+        for j = 1, #new do
+            if old[i].id == new[j].id then
+                found = true
+                break
+            end
+        end
+        if not found then
+            removed[#removed + 1] = old[i]
+        end
+    end
+
+    return added, removed
+end
+
+-- I think this whole furniture sync is a bit shit, but I cbf thinking 
+function Property:UpdateFurnitures(newFurnitures)
+    if not self.inProperty then return end
+
+    local oldFurnitures = self.propertyData.furnitures
+    local added, removed = findFurnitureDifference(newFurnitures, oldFurnitures)
+
+    for i = 1, #added do
+        local furniture = added[i]
+        self:LoadFurniture(furniture)
+    end
+
+    for i = 1, #removed do
+        local furniture = removed[i]
+        self:UnloadFurniture(furniture)
+    end
+
+    self.propertyData.furnitures = newFurnitures
+
+    Modeler:UpdateFurnitures()
+end
 
 function Property:UpdateLabel(newLabel)
     self.propertyData.label = newLabel
@@ -639,12 +699,10 @@ RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, d
     property.doorbellPool = data
 end)
 
-RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
-    local property_id = propertyData.property_id
+RegisterNetEvent("ps-housing:client:updateFurniture", function(property_id, furnitures)
     local property = Property.Get(property_id)
-    property.propertyData.furnitures = propertyData.furnitures
-    -- property:UnloadFurnitures()
-    -- property:LoadFurnitures()
+    if not property then return end
+    property:UpdateFurnitures(furnitures)
 end)
 
 RegisterNetEvent("ps-housing:client:updateProperty", function(type, property_id, data)

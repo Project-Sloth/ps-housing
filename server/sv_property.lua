@@ -79,8 +79,8 @@ function Property:AddToDoorbellPoolTemp(src)
         name = name
     }
 
-    for i = 1, #self.playersInside do
-        local targetSrc = tonumber(self.playersInside[i])
+    for src, _ in pairs(self.playersInside) do
+        local targetSrc = tonumber(src)
 
         Framework[Config.Notify].Notify(targetSrc, "Someone is at the door.", "info")
         TriggerClientEvent("ps-housing:client:updateDoorbellPool", targetSrc, self.property_id, self.playersDoorbell)
@@ -94,8 +94,8 @@ function Property:AddToDoorbellPoolTemp(src)
             Framework[Config.Notify].Notify(src, "No one answered the door.", "error")
         end
 
-        for i = 1, #self.playersInside do
-            local targetSrc = tonumber(self.playersInside[i])
+        for src, _ in pairs(self.playersInside) do
+            local targetSrc = tonumber(src)
 
             TriggerClientEvent("ps-housing:client:updateDoorbellPool", targetSrc, self.property_id, self.playersDoorbell)
         end
@@ -109,8 +109,8 @@ function Property:RemoveFromDoorbellPool(src)
         self.playersDoorbell[_src] = nil
     end
 
-    for i = 1, #self.playersInside do
-        local targetSrc = tonumber(self.playersInside[i])
+    for src, _ in pairs(self.playersInside) do
+        local targetSrc = tonumber(src)
 
         TriggerClientEvent("ps-housing:client:updateDoorbellPool", targetSrc, self.property_id, self.playersDoorbell)
     end
@@ -119,8 +119,8 @@ end
 function Property:StartRaid(src)
     self.raiding = true
 
-    for i = 1, #self.playersInside do
-        local targetSrc = tonumber(self.playersInside[i])
+    for src, _ in pairs(self.playersInside) do
+        local targetSrc = tonumber(src)
         Framework[Config.Notify].Notify(targetSrc, "This Property is being Raided.", "error")
     end
 
@@ -137,7 +137,10 @@ function Property:UpdateFurnitures(furnitures)
         ["@property_id"] = self.property_id
     })
 
-    --@@
+    for src, _ in pairs(self.playersInside) do
+        local targetSrc = tonumber(src)
+        TriggerClientEvent("ps-housing:client:updateFurniture", targetSrc, self.property_id, furnitures)
+    end
 end
 
 function Property:UpdateLabel(data)
@@ -518,12 +521,13 @@ lib.callback.register('ps-housing:cb:getPlayersInProperty', function(source, pro
 
     local players = {}
 
-    for plySrc, _ in pairs(property.playersInside) do
-        if tonumber(plySrc) ~= source then
-            local name = GetCharName(plySrc)
+    for src, _ in pairs(property.playersInside) do
+        local targetSrc = tonumber(src)
+        if targetSrc ~= source then
+            local name = GetCharName(targetSrc)
 
             players[#players + 1] = {
-                src = plySrc,
+                src = targetSrc,
                 name = name
             }
         end
@@ -556,6 +560,7 @@ RegisterNetEvent("ps-housing:server:doorbellAnswer", function (data)
 end)
 
 --@@ NEED TO REDO THIS DOG SHIT
+-- I think its not bad anymore but if u got a better idea lmk
 RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, price)
     local src = source
 
@@ -617,6 +622,7 @@ RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item
 end)
 
 -- @@ VERY BAD 
+-- I think its not bad anymore but if u got a better idea lmk
 RegisterNetEvent("ps-housing:server:updateFurniture", function(property_id, item)
     local src = source
 

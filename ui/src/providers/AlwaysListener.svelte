@@ -89,10 +89,8 @@
 	})
 
 	ReceiveNUI("removeOwnedItem", (data: any) => {
-		console.log("removeOwnedItem", data)
-		let newItems = $OWNEDITEMS.filter((entry: any) => entry.entity != data.entity)
+		let newItems = $OWNEDITEMS.filter((entry: any) => entry.id != data.id)
 		$OWNEDITEMS = [...newItems]
-		console.log("removeOwnedItem", $OWNEDITEMS)
 	})
 
 
