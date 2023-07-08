@@ -1,25 +1,25 @@
 Property = {
-	property_id = nil,
-	propertyData = nil,
+    property_id = nil,
+    propertyData = nil,
 
-	shellData = nil,
-	inProperty = false,
-	shellObj = nil,
+    shellData = nil,
+    inProperty = false,
+    shellObj = nil,
 
-	has_access = false,
-	owner = false,
+    has_access = false,
+    owner = false,
 
-	storageTarget = nil,
-	clothingTarget = nil,
-	furnitureObjs = {},
+    storageTarget = nil,
+    clothingTarget = nil,
+    furnitureObjs = {},
 
-	garageZone = nil,
-	doorbellPool = {},
+    garageZone = nil,
+    doorbellPool = {},
 
-	entranceTarget = nil, -- needed for ox target
-	exitTarget = nil, -- needed for ox target
+    entranceTarget = nil, -- needed for ox target
+    exitTarget = nil,  -- needed for ox target
 
-	blip = nil,
+    blip = nil,
 }
 Property.__index = Property
 
@@ -58,7 +58,6 @@ function Property:new(propertyData)
     return self
 end
 
-
 function Property:GetDoorCoords()
     local coords = nil
 
@@ -74,7 +73,6 @@ function Property:GetDoorCoords()
 end
 
 function Property:CreateShell()
-
     local coords = self:GetDoorCoords()
 
     local shellHash = self.shellData.hash
@@ -94,7 +92,6 @@ function Property:CreateShell()
 end
 
 function Property:RegisterDoorZone(offset)
-
     local function leave()
         self:LeaveShell()
     end
@@ -102,7 +99,7 @@ function Property:RegisterDoorZone(offset)
     local function checkDoor()
         self:OpenDoorbellMenu()
     end
-    
+
     local coords = offset
     local size = vector3(1.0, self.shellData.doorOffset.width, 3.0)
     local heading = self.shellData.doorOffset.h
@@ -125,7 +122,8 @@ function Property:RegisterPropertyEntrance()
 
     local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
 
-    self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid, targetName)
+    self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid,
+        targetName)
 
     if self.owner or self.has_access then
         self:CreateBlip()
@@ -162,11 +160,12 @@ function Property:RegisterGarageZone()
 
     TriggerEvent("qb-garages:client:addHouseGarage", self.property_id, data)
 
-    self.garageZone = BoxZone:Create(vector3(garageData.x + 5.0, garageData.y + 5.0, garageData.z), garageData.length, garageData.width, {
+    self.garageZone = BoxZone:Create(vector3(garageData.x + 5.0, garageData.y + 5.0, garageData.z), garageData.length,
+        garageData.width, {
         name = garageName,
         debugPoly = Config.DebugMode,
-        minZ= garageData.z - 1.0,
-        maxZ=garageData.z + 3.0
+        minZ = garageData.z - 1.0,
+        maxZ = garageData.z + 3.0
     })
 
     self.garageZone:onPlayerInOut(function(isPointInside, point)
@@ -208,9 +207,6 @@ function Property:LeaveShell()
     DoScreenFadeOut(250)
     Wait(250)
 
-    
-    self.inProperty = false
-
     local coords = self:GetDoorCoords()
     SetEntityCoordsNoOffset(cache.ped, coords.x, coords.y, coords.z, false, false, true)
 
@@ -232,9 +228,11 @@ function Property:LeaveShell()
 
     self:RemoveBlip()
 
+    self:RemoveMenus()
+
     self.doorbellPool = {}
 
-
+    self.inProperty = false
     Wait(250)
     DoScreenFadeIn(250)
 end
@@ -257,7 +255,6 @@ function Property:GiveMenus()
     end
 end
 
-
 function Property:RemoveMenus()
     if not self.inProperty then return end
 
@@ -268,9 +265,7 @@ function Property:RemoveMenus()
     end
 end
 
-
 function Property:ManageAccessMenu()
-
     if not self.inProperty then return end
 
     if not self.owner then
@@ -355,7 +350,7 @@ function Property:RevokeAccessMenu()
 
     -- only stores names and citizenids in a table so if their offline you can still remove them
     if #playersWithAccess > 0 then
-        for i = 1,  #playersWithAccess do
+        for i = 1, #playersWithAccess do
             local v = playersWithAccess[i]
             alreadyAccessMenu.options[#alreadyAccessMenu.options + 1] = {
                 title = v.name,
@@ -370,7 +365,7 @@ function Property:RevokeAccessMenu()
         lib.showContext(id)
     else
         Framework[Config.Notify].Notify("No one has access to this property", "error")
-    end 
+    end
 end
 
 function Property:OpenDoorbellMenu()
@@ -405,58 +400,67 @@ function Property:OpenDoorbellMenu()
     lib.showContext(id)
 end
 
+function Property:LoadFurniture(furniture)
+    local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, furniture.position.x, furniture.position.y,
+        furniture.position.z)
+    local hash = v.object
+
+    lib.requestModel(hash)
+    local entity = CreateObjectNoOffset(hash, coords.x, coords.y, coords.z, false, true, false)
+    SetModelAsNoLongerNeeded(hash)
+    SetEntityRotation(entity, furniture.rotation.x, furniture.rotation.y, furniture.rotation.z, 2, true)
+    FreezeEntityPosition(entity, true)
+
+    if furniture.type == "storage" then
+        self.storageTarget = entity
+
+        local stash = string.format("property_%s", self.property_id)     -- if you changed this you will fuck things up
+        local function openStash()
+            local stashConfig = Config.Shells[self.propertyData.shell].stash
+            TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
+            TriggerEvent("inventory:client:SetCurrentStash", stash)
+        end
+
+        Framework[Config.Target].AddTargetEntity(entity, "Storage", openStash)
+    elseif furniture.type == "clothing" then
+        self.clothingTarget = entity
+
+        local function openClothing()
+            local heading = GetEntityHeading(cache.ped)
+            SetEntityHeading(cache.ped, heading - 180.0)
+            TriggerEvent("qb-clothing:client:openOutfitMenu")
+        end
+
+        Framework[Config.Target].AddTargetEntity(entity, "Clothing", openClothing)
+    end
+
+    self.furnitureObjs[#self.furnitureObjs + 1] = {
+        entity = entity,
+        id = furniture.id,
+        label = furniture.label,
+        object = furniture.object,
+        position = {
+            x = coords.x,
+            y = coords.y,
+            z = coords.z,
+        },
+        rotation = furniture.rotation,
+        type = furniture.type,
+    }
+end
+
 function Property:LoadFurnitures()
     self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', source, self.property_id) or {}
 
-    for i, v in ipairs(self.propertyData.furnitures) do
-        local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, v.position.x, v.position.y, v.position.z)
-        local hash = v.object
-
-        lib.requestModel(hash)
-        local entity = CreateObjectNoOffset(hash, coords.x, coords.y, coords.z, false, true, false)
-        SetModelAsNoLongerNeeded(hash)
-        SetEntityRotation(entity, v.rotation.x, v.rotation.y, v.rotation.z, 2, true)
-        FreezeEntityPosition(entity, true)
-
-        if v.type == "storage" then
-            self.storageTarget = entity
-
-            local stash = string.format("property_%s", self.property_id) -- if you changed this you will fuck things up
-            local function openStash()
-                local stashConfig = Config.Shells[self.propertyData.shell].stash
-                TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
-                TriggerEvent("inventory:client:SetCurrentStash", stash)
-            end
-
-            Framework[Config.Target].AddTargetEntity(entity, "Storage", openStash)
-        elseif v.type == "clothing" then
-            self.clothingTarget = entity
-
-            local function openClothing()
-                local heading = GetEntityHeading(cache.ped)
-                SetEntityHeading(cache.ped, heading - 180.0)
-                TriggerEvent("qb-clothing:client:openOutfitMenu")
-            end
-
-            Framework[Config.Target].AddTargetEntity(entity, "Clothing", openClothing)
-        end
-
-        self.furnitureObjs[#self.furnitureObjs + 1] = {
-            entity = entity,
-            id = v.id,
-            label = v.label,
-            object = v.object,
-            position = {
-                x = coords.x,
-                y = coords.y,
-                z = coords.z,
-            },
-            rotation = v.rotation,
-            type = v.type,
-        }
+    print("Loading furnitures", json.encode(self.propertyData.furnitures, {indent=true}))
+    for _, furniture in ipairs(self.propertyData.furnitures) do
+        self:LoadFurniture(furniture)
     end
 end
 
+-- function Property:UnloadFurniture(furniture)
+    
+-- end
 
 function Property:UnloadFurnitures()
     for i = 1, #self.furnitureObjs do
@@ -516,8 +520,9 @@ function Property:RemoveProperty()
 end
 
 -- function Property:UpdateFurnitures()
-    -- self:UnloadFurnitures()
-    -- self:LoadFurnitures()
+--     if not self.inProperty then return end
+
+
 -- end
 
 function Property:UpdateLabel(newLabel)
@@ -625,25 +630,25 @@ function Property.Get(property_id)
 end
 
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
-	local property = Property.Get(property_id)
-	property:EnterShell()
+    local property = Property.Get(property_id)
+    property:EnterShell()
 end)
 
 RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, data)
-	local property = Property.Get(property_id)
-	property.doorbellPool = data
+    local property = Property.Get(property_id)
+    property.doorbellPool = data
 end)
 
 RegisterNetEvent("ps-housing:client:updateFurniture", function(propertyData)
-	local property_id = propertyData.property_id
-	local property = Property.Get(property_id)
-	property.propertyData.furnitures = propertyData.furnitures
-	property:UnloadFurnitures()
-	property:LoadFurnitures()
+    local property_id = propertyData.property_id
+    local property = Property.Get(property_id)
+    property.propertyData.furnitures = propertyData.furnitures
+    -- property:UnloadFurnitures()
+    -- property:LoadFurnitures()
 end)
 
 RegisterNetEvent("ps-housing:client:updateProperty", function(type, property_id, data)
-	local property = Property.Get(property_id)
+    local property = Property.Get(property_id)
 
     if not property then return end
 

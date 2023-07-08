@@ -109,17 +109,11 @@ Modeler = {
     OpenMenu = function(self, property_id)
 
 
-        local property = PropertiesTable[property_id]
+        local property = Property.Get(property_id)
 
         if not property then return end
         if not property.owner and not property.has_access then return end
         if property.has_access and not Config.AccessCanEditFurniture  then return end 
-
-        SendNUIMessage({
-			action = "setOwnedItems",
-			data = property.furnitureObjs,
-		})
-
 
         self.shellPos = GetEntityCoords(property.shellObj)
         local min, max = GetModelDimensions(property.shellData.hash)
@@ -128,6 +122,8 @@ Modeler = {
         
         self.property_id = property_id
         self.IsMenuActive = true
+
+        self:UpdateFurnitures()
 
         SendNUIMessage({
             action = "setVisible",
@@ -303,6 +299,27 @@ Modeler = {
         SetEntityDrawOutline(self.CurrentObject, false)
         SetEntityAlpha(self.CurrentObject, 255, false)
         self.CurrentObject = nil
+    end,
+
+    UpdateFurnitures = function(self)
+
+        if not self.IsMenuActive then
+            return
+        end
+
+        if not self.property_id then return end
+
+        local property = Property.Get(self.property_id)
+
+        if not property then return end
+        if not property.owner and not property.has_access then return end
+        if property.has_access and not Config.AccessCanEditFurniture  then return end 
+
+
+        SendNUIMessage({
+			action = "setOwnedItems",
+			data = property.furnitureObjs,
+		})
     end,
 
     -- can be better
