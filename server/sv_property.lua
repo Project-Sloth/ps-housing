@@ -116,7 +116,7 @@ function Property:RemoveFromDoorbellPool(src)
     end
 end
 
-function Property:StartRaid(src)
+function Property:StartRaid()
     self.raiding = true
 
     for src, _ in pairs(self.playersInside) do
@@ -141,23 +141,6 @@ function Property:UpdateFurnitures(furnitures)
         local targetSrc = tonumber(src)
         TriggerClientEvent("ps-housing:client:updateFurniture", targetSrc, self.property_id, furnitures)
     end
-end
-
-function Property:UpdateLabel(data)
-    local label = data.label
-    local realtorSrc = data.realtorSrc
-
-    if self.propertyData.label == label then return end
-    self.propertyData.label = label
-
-    MySQL.update("UPDATE properties SET label = @label WHERE property_id = @property_id", {
-        ["@label"] = label,
-        ["@property_id"] = self.property_id
-    })
-
-    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateLabel", self.property_id, label)
-    
-    Debug("Changed Label of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 
 function Property:UpdateDescription(data)
@@ -249,7 +232,7 @@ function Property:UpdateOwner(data)
     end
 
     --add callback 
-    local targetAllow = lib.callback.await("ps-housing:cb:confirmPurchase", targetSrc, self.propertyData.price, self.propertyData.label, self.propertyData.property_id)
+    local targetAllow = lib.callback.await("ps-housing:cb:confirmPurchase", targetSrc, self.propertyData.price, self.propertyData.street, self.propertyData.property_id)
 
     if targetAllow ~= "confirm" then
         Framework[Config.Notify].Notify(targetSrc, "You did not confirm the purchase", "info")
@@ -263,7 +246,7 @@ function Property:UpdateOwner(data)
         return
     end
 
-    targetPlayer.Functions.RemoveMoney('bank', self.propertyData.price, "Bought Property: " .. self.propertyData.label)
+    targetPlayer.Functions.RemoveMoney('bank', self.propertyData.price, "Bought Property: " .. self.propertyData.street .. " " .. self.property_id)
 
     local prevPlayer = QBCore.Functions.GetPlayerByCitizenId(previousOwner)
     local realtor = QBCore.Functions.GetPlayer(tonumber(realtorSrc))
@@ -274,7 +257,7 @@ function Property:UpdateOwner(data)
     local totalAfterCommission = self.propertyData.price - commission
     
     if prevPlayer ~= nil then
-        prevPlayer.Functions.AddMoney('bank', self.propertyData.price, "Sold Property: " .. self.propertyData.label)
+        prevPlayer.Functions.AddMoney('bank', self.propertyData.price, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id)
     elseif previousOwner then
         MySQL.Async.execute('UPDATE `players` SET `bank` = `bank` + @price WHERE `citizenid` = @citizenid', {
             ['@citizenid'] = previousOwner,
@@ -282,7 +265,7 @@ function Property:UpdateOwner(data)
         })
     end
     
-    realtor.Functions.AddMoney('bank', commission, "Commission from Property: " .. self.propertyData.label)
+    realtor.Functions.AddMoney('bank', commission, "Commission from Property: " .. self.propertyData.street .. " " .. self.property_id)
 
     self.propertyData.owner = citizenid
 
@@ -323,7 +306,7 @@ function Property:UpdateDoor(data)
     if not door then return end
     local realtorSrc = data.realtorSrc
 
-    local newData = {
+    local newDoor = {
         x = math.floor(door.x * 10000) / 10000,
         y = math.floor(door.y * 10000) / 10000,
         z = math.floor(door.z * 10000) / 10000,
@@ -333,14 +316,20 @@ function Property:UpdateDoor(data)
         locked = door.locked or false,
     }
 
-    self.propertyData.door_data = newData
+    self.propertyData.door_data = newDoor
 
-    MySQL.update("UPDATE properties SET door_data = @data WHERE property_id = @property_id", {
-        ["@data"] = json.encode(newData),
-        ["@property_id"] = self.property_id
+    self.propertyData.street = data.street
+    self.propertyData.region = data.region
+
+
+    MySQL.update("UPDATE properties SET door_data = @door, street = @street, region = @region WHERE property_id = @property_id", {
+        ["@door"] = json.encode(newDoor),
+        ["@property_id"] = self.property_id,
+        ["@street"] = data.street,
+        ["@region"] = data.region
     })
 
-    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateDoor", self.property_id, newData)
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateDoor", self.property_id, newDoor, data.street, data.region)
 
     Debug("Changed Door of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
@@ -493,7 +482,7 @@ RegisterNetEvent('ps-housing:server:raidProperty', function (property_id)
 
     if jobName == "police" and onDuty and gradeAllowed then
         if not property.raiding then
-            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.label, property_id)
+            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.street .. " " .. property.property_id, property_id)
             if confirmRaid == "confirm" then
                 property:StartRaid(src)
                 property:PlayerEnter(src)
@@ -668,7 +657,7 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
         property:UpdateHas_access(has_access)
 
         Framework[Config.Notify].Notify(src, "You added access to " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname, "success")
-        Framework[Config.Notify].Notify(srcToAdd, "You got access to " .. property.propertyData.label, "success")
+        Framework[Config.Notify].Notify(srcToAdd, "You got access to " .. property.propertyData.street .. " " .. property.property_id, "success")
     else
         Framework[Config.Notify].Notify(srcToAdd, "This person already has access to this property!", "error")
     end
@@ -707,7 +696,7 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizen
         Framework[Config.Notify].Notify(src, "You removed access from " .. removePlayerData.charinfo.firstname .. " " .. removePlayerData.charinfo.lastname, "success")
 
         if srcToRemove then
-            Framework[Config.Notify].Notify(srcToRemove, "You lost access to " .. property.propertyData.label, "error")
+            Framework[Config.Notify].Notify(srcToRemove, "You lost access to " .. property.propertyData.street .. " " .. property.property_id, "error")
         end
     else
         Framework[Config.Notify].Notify(src, "This person does not have access to this property!", "error")

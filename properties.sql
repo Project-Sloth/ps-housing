@@ -3,7 +3,8 @@ DROP table IF EXISTS `properties`;
 CREATE TABLE IF NOT EXISTS `properties` (
     `property_id` int(11) NOT NULL AUTO_INCREMENT,
     `owner_citizenid` varchar(50) NULL,
-    `label` VARCHAR(50) NOT NULL,
+    `street` VARCHAR(100) NULL,
+    `region` VARCHAR(100) NULL,
     `description` LONGTEXT NULL,
     `has_access` JSON NULL DEFAULT (JSON_ARRAY()), -- [citizenid1, citizenid2, ...]
     `extra_imgs` JSON NULL DEFAULT (JSON_ARRAY()),

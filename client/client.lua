@@ -95,10 +95,10 @@ exports('GetShells', function()
 end)
 
 
-lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label, id)
+lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, street, id)
     return lib.alertDialog({
         header = 'Purchase Confirmation',
-        content = 'Are you sure you want to purchase '..label..' - ' .. id .. ' for $' .. amount .. '?',
+        content = 'Are you sure you want to purchase '..street..' ' .. id .. ' for $' .. amount .. '?',
         centered = true,
         cancel = true,
         labels = {
@@ -108,10 +108,10 @@ lib.callback.register('ps-housing:cb:confirmPurchase', function(amount, label, i
     })
 end)
 
-lib.callback.register('ps-housing:cb:confirmRaid', function(label, id)
+lib.callback.register('ps-housing:cb:confirmRaid', function(street, id)
     return lib.alertDialog({
         header = 'Raid',
-        content = 'Do you want to raid '..label..' - ' .. id .. '?',
+        content = 'Do you want to raid '..street..' ' .. id .. '?',
         centered = true,
         cancel = true,
         labels = {

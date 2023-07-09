@@ -65,7 +65,7 @@ function Apartment:GetMenuForAll()
 
     for propertyId, _ in pairs(self.apartments) do
         table.insert(menu.options,{
-            title = PropertiesTable[propertyId].propertyData.label .. " - " .. propertyId,
+            title = self.apartmentData.label .. " " .. propertyId,
             onSelect = function()
                 TriggerServerEvent('ps-housing:server:enterProperty', propertyId) 
             end,

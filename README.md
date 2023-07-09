@@ -112,7 +112,7 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
                     local house = houses[i]
                     myHouses[#myHouses+1] = {
                         house = house,
-                        label = house.label,
+                        label = house.steet .. " " .. house.property_id,
                     }
                 end
             end

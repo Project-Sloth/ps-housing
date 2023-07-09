@@ -13,7 +13,8 @@ MySQL.ready(function()
             local propertyData = {
                 property_id = tostring(id),
                 owner = v.owner_citizenid,
-                label = v.label,
+                street = v.street,
+                region = v.region,
                 description = v.description,
                 has_access = json.decode(v.has_access),
                 extra_imgs = json.decode(v.extra_imgs),
@@ -56,20 +57,13 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
 
-    local Player = propertyData.owner and QBCore.Functions.GetPlayerByCitizenId(propertyData.owner) or nil
-    local name
-    if Player then
-        name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
-    else
-        name = "Unowned"
-    end
-
-    local cols = "(owner_citizenid, label, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
-    local vals = "(@owner_citizenid, @label, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
+    local cols = "(owner_citizenid, street, region, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
+    local vals = "(@owner_citizenid, @street, @region, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
 
     local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
         ["@owner_citizenid"] = propertyData.owner or nil,
-        ["@label"] = propertyData.label .. " " .. name,
+        ["@street"] = propertyData.street,
+        ["@region"] = propertyData.region,
         ["@description"] = propertyData.description,
         ["@has_access"] = json.encode(propertyData.has_access),
         ["@extra_imgs"] = json.encode(propertyData.extra_imgs),
@@ -139,7 +133,6 @@ RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
 
     local propertyData = {
         owner = citizenid,
-        label = string.format("%s Apartment", apartment.label),
         description = string.format("This is %s's apartment in %s", PlayerData.charinfo.firstname .. " " .. PlayerData.charinfo.lastname, apartment.label),
         for_sale = 0,
         shell = apartment.shell,

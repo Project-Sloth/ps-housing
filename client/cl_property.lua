@@ -120,7 +120,7 @@ function Property:RegisterPropertyEntrance()
         TriggerServerEvent("ps-housing:server:raidProperty", self.property_id)
     end
 
-    local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
+    local targetName = string.format("%s_%s", self.propertyData.street, self.property_id)
 
     self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid,
         targetName)
@@ -155,7 +155,7 @@ function Property:RegisterGarageZone()
             w = garageData.h
         },
         type = "house",
-        label = self.propertyData.label
+        label = self.propertyData.street .. self.property_id .. " Garage",
     }
 
     TriggerEvent("qb-garages:client:addHouseGarage", self.property_id, data)
@@ -501,7 +501,7 @@ function Property:CreateBlip()
     SetBlipColour(blip, 2)
     SetBlipAsShortRange(blip, true)
     BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(self.propertyData.label .. " - " .. self.property_id)
+    AddTextComponentString(self.propertyData.street .. " " .. self.property_id)
     EndTextCommandSetBlipName(blip)
     self.blip = blip
 end
@@ -513,7 +513,7 @@ function Property:RemoveBlip()
 end
 
 function Property:RemoveProperty()
-    local targetName = string.format("%s_%s", self.propertyData.label, self.property_id)
+    local targetName = string.format("%s_%s", self.propertyData.street, self.property_id)
 
     Framework[Config.Target].RemoveTargetZone(targetName)
 
@@ -585,19 +585,6 @@ function Property:UpdateFurnitures(newFurnitures)
     Modeler:UpdateFurnitures()
 end
 
-function Property:UpdateLabel(newLabel)
-    self.propertyData.label = newLabel
-
-    --All below uses labels
-    self:UnregisterPropertyEntrance()
-    self:RegisterPropertyEntrance()
-
-    self:UnregisterGarageZone()
-    self:RegisterGarageZone()
-
-    Property:CreateBlip()
-end
-
 function Property:UpdateDescription(newDescription)
     self.propertyData.description = newDescription
 end
@@ -642,8 +629,10 @@ function Property:UpdateImgs(newImgs)
     self.propertyData.imgs = newImgs
 end
 
-function Property:UpdateDoor(newDoor)
+function Property:UpdateDoor(newDoor, newStreet, newRegion)
     self.propertyData.door_data = newDoor
+    self.propertyData.street = newStreet
+    self.propertyData.region = newRegion
 
     self:UnregisterPropertyEntrance()
     self:RegisterPropertyEntrance()
