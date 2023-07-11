@@ -110,9 +110,10 @@ RegisterNetEvent('qb-spawn:client:setupSpawns', function(cData, new, apps)
             if houses ~= nil then
                 for i = 1, (#houses), 1 do
                     local house = houses[i]
+
                     myHouses[#myHouses+1] = {
                         house = house,
-                        label = house.street .. " " .. house.property_id,
+                        label = (house.apartment or house.street) .. " " .. house.property_id,
                     }
                 end
             end
