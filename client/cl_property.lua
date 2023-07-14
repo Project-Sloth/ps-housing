@@ -580,7 +580,7 @@ function Property:UpdateFurnitures(newFurnitures)
 
     local oldFurnitures = self.propertyData.furnitures
     local added, removed = findFurnitureDifference(newFurnitures, oldFurnitures)
-    
+
     for i = 1, #added do
         local furniture = added[i]
         self:LoadFurniture(furniture)

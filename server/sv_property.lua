@@ -256,8 +256,8 @@ function Property:UpdateOwner(data)
 
     local totalAfterCommission = self.propertyData.price - commission
     
-    if prevPlayer ~= nil then
-        prevPlayer.Functions.AddMoney('bank', self.propertyData.price, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id)
+    if prevPlayer ~= nil then 
+        prevPlayer.Functions.AddMoney('bank', totalAfterCommission, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id)
     elseif previousOwner then
         MySQL.Async.execute('UPDATE `players` SET `bank` = `bank` + @price WHERE `citizenid` = @citizenid', {
             ['@citizenid'] = previousOwner,
@@ -280,7 +280,7 @@ function Property:UpdateOwner(data)
     TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateOwner", self.property_id, citizenid)
 
     Framework[Config.Notify].Notify(targetSrc, "You have bought the property for $"..self.propertyData.price, "success")
-    Framework[Config.Notify].Notify(realtorSrc, "Client has bought the property for $'..self.propertyData.price", "success")
+    Framework[Config.Notify].Notify(realtorSrc, "Client has bought the property for $"..self.propertyData.price, "success")
 end
 
 function Property:UpdateImgs(data)
