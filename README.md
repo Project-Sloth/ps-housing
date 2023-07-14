@@ -255,6 +255,15 @@ end)
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 5. [ps-core](https://github.com/Project-Sloth/ps-core) (WIP)
 
+## For reference your server.cfg should be ensured like below:
+```
+ensure ox_lib
+ensure bl-realtor
+ensure ps-core
+ensure ps-housing
+ensure five-freecam
+```
+
 # To Do
 - Remake Realtor UI
 
