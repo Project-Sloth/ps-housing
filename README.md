@@ -222,7 +222,7 @@ end)
 ```
 
 4. Find the following events in `qb-garages` and change: 
-`qb-garages > server > main.lua > line 100` on event `qb-garage:server:checkOwnership`
+`qb-garages > server > main.lua > around line 120` on event `qb-garage:server:checkOwnership`
 
 Replace 
 ```lua
