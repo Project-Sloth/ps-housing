@@ -251,7 +251,7 @@ end)
 # Dependency
 1. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 2. [five-freecam](https://github.com/Deltanic/fivem-freecam)
-3. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance. Make sure this is ensured before ps-housing and bl-realtor.
+3. [ox_lib](https://github.com/overextended/ox_lib) - MAKE SURE TO BUILD THE UI, DO NOT SKIP THAT. Find their docs [here](https://overextended.dev/ox_lib#building-the-ui) on how to build the UI.
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 5. [ps-core](https://github.com/Project-Sloth/ps-core) (WIP)
 
