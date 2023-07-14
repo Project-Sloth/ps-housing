@@ -256,7 +256,8 @@ function Property:UpdateOwner(data)
 
     local totalAfterCommission = self.propertyData.price - commission
     
-    if prevPlayer ~= nil then 
+    if prevPlayer ~= nil then
+        Framework[Config.Notify].Notify(prevPlayer.PlayerData.source, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id, "success")
         prevPlayer.Functions.AddMoney('bank', totalAfterCommission, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id)
     elseif previousOwner then
         MySQL.Async.execute('UPDATE `players` SET `bank` = `bank` + @price WHERE `citizenid` = @citizenid', {
