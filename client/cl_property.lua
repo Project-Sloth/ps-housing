@@ -124,9 +124,26 @@ function Property:RegisterPropertyEntrance()
         TriggerServerEvent("ps-housing:server:showcaseProperty", self.property_id)
     end
 
+    local function showData()
+        local data = lib.callback.await("ps-housing:cb:getPropertyInfo", source, self.property_id)
+        if not data then return end
+
+        local content = "**Owner:** " .. data.owner .. "  \n" .. "**Description:** " .. data.description .. "  \n" .. "**Street:** " .. data.street .. "  \n" .. "**Region:** " .. data.region .. "  \n" .. "**Shell:** " .. data.shell .. "  \n" .. "**For Sale:** " .. (data.for_sale and "Yes" or "No")
+
+        if data.for_sale then
+            content = content .. "  \n" .. "**Price:** " .. data.price
+        end
+
+        lib.alertDialog({
+            header = data.street .. " " .. data.property_id,
+            content = content,
+            centered = true,
+        })
+    end
+
     local targetName = string.format("%s_%s", self.propertyData.street, self.property_id)
 
-    self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid, showcase, targetName)
+    self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid, showcase, showData, targetName)
 
     if self.owner or self.has_access then
         self:CreateBlip()

@@ -34,7 +34,7 @@ Framework.qb = {
         TriggerEvent('QBCore:Notify', message, type)
     end,
 
-    AddEntrance = function(coords, size, heading, propertyId, enter, raid, showcase, targetName)
+    AddEntrance = function(coords, size, heading, propertyId, enter, raid, showcase, showData, targetName)
         local property_id = propertyId
         exports["qb-target"]:AddBoxZone(
             targetName,
@@ -61,6 +61,17 @@ Framework.qb = {
                     {
                         label = "Showcase Property",
                         action = showcase,
+                        canInteract = function()
+                            local PlayerData = QBCore.Functions.GetPlayerData()
+                            local job = PlayerData.job
+                            local jobName = job.name
+                            local onDuty = job.onduty
+                            return jobName == "realtor" and onDuty
+                        end,
+                    },
+                    {
+                        label = "Property Info",
+                        action = showData,
                         canInteract = function()
                             local PlayerData = QBCore.Functions.GetPlayerData()
                             local job = PlayerData.job
@@ -197,7 +208,7 @@ Framework.ox = {
         })
     end,
 
-    AddEntrance = function (coords, size, heading, propertyId, enter, raid, showcase, _)
+    AddEntrance = function (coords, size, heading, propertyId, enter, raid, showcase, showData, _)
         local property_id = propertyId
 
         local handler = exports.ox_target:addBoxZone({
@@ -226,6 +237,17 @@ Framework.ox = {
                         local jobName = job.name
 
                         return jobName == "realtor"
+                    end,
+                },
+                {
+                    label = "Property Info",
+                    onSelect = showData,
+                    canInteract = function()
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job
+                        local jobName = job.name
+                        local onDuty = job.onduty
+                        return jobName == "realtor" and onDuty
                     end,
                 },
                 {

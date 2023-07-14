@@ -255,7 +255,7 @@ function Property:UpdateOwner(data)
     local commission = math.floor(self.propertyData.price * Config.Commissions[realtorGradeLevel])
 
     local totalAfterCommission = self.propertyData.price - commission
-    
+
     if prevPlayer ~= nil then
         Framework[Config.Notify].Notify(prevPlayer.PlayerData.source, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id, "success")
         prevPlayer.Functions.AddMoney('bank', totalAfterCommission, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id)
@@ -739,6 +739,44 @@ lib.callback.register("ps-housing:cb:getPlayersWithAccess", function (source, pr
     end
 
     return withAccess
+end)
+
+lib.callback.register('ps-housing:cb:getPropertyInfo', function (source, property_id)
+    local src = source
+    local property = Property.Get(property_id)
+
+    if not property then return end
+
+    
+    local PlayerData = GetPlayerData(src)
+    local job = PlayerData.job
+    local jobName = job.name
+    local onDuty = job.onduty
+
+    if  not jobName == "realtor" and not onDuty then return end
+
+    local data = {}
+
+    local ownerPlayer, ownerName
+
+    local ownerCid = property.propertyData.owner
+    if ownerCid then
+        ownerPlayer = QBCore.Functions.GetPlayerByCitizenId(ownerCid) or QBCore.Functions.GetOfflinePlayerByCitizenId(ownerCid)
+        ownerName = ownerPlayer.PlayerData.charinfo.firstname .. " " .. ownerPlayer.PlayerData.charinfo.lastname
+    else
+        ownerName = "No Owner"
+    end
+
+    data.owner = ownerName
+    data.street = property.propertyData.street
+    data.region = property.propertyData.region
+    data.description = property.propertyData.description
+    data.for_sale = property.propertyData.for_sale
+    data.price = property.propertyData.price
+    data.shell = property.propertyData.shell
+    data.property_id = property.property_id
+
+    return data
 end)
 
 RegisterNetEvent('ps-housing:server:resetMetaData', function()
