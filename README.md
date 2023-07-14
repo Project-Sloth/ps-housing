@@ -243,7 +243,7 @@ end)
 5. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 6. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 7. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
-8. Delete `qb-apartments/config.lua` references in both `qb-spawn` and `qb-multicharacter` fxmanifest.lua (and any other scripts that may reference it).
+8. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
 9. Ensure bl-realtor above ps-housing.
 10. In your server.cfg, add `ensure ox_lib` above all other resources
 11. Install the dependencies below.
