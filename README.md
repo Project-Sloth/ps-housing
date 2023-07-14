@@ -253,11 +253,10 @@ end)
 2. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 3. [ox_lib](https://github.com/overextended/ox_lib) - Find their docs [here](https://overextended.github.io/docs/ox_lib) for assistance. Make sure this is ensured before ps-housing and bl-realtor.
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
-5. [ps-core](https://github.com/Project-Sloth/ps-core)
+5. [ps-core](https://github.com/Project-Sloth/ps-core) (WIP)
 
 # To Do
-- Optimise RAM Usage
-    - Callback the stuff needed only when entering the property. (like furniture).
+- Remake Realtor UI
 
 # Credits
 * [Xirvin](https://github.com/ImXirvin)
