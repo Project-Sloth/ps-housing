@@ -34,7 +34,7 @@ Framework.qb = {
         TriggerEvent('QBCore:Notify', message, type)
     end,
 
-    AddEntrance = function(coords, size, heading, propertyId, enter, raid, targetName)
+    AddEntrance = function(coords, size, heading, propertyId, enter, raid, showcase, targetName)
         local property_id = propertyId
         exports["qb-target"]:AddBoxZone(
             targetName,
@@ -60,7 +60,7 @@ Framework.qb = {
                     },
                     {
                         label = "Showcase Property",
-                        action = enter,
+                        action = showcase,
                         canInteract = function()
                             local PlayerData = QBCore.Functions.GetPlayerData()
                             local job = PlayerData.job
@@ -197,7 +197,7 @@ Framework.ox = {
         })
     end,
 
-    AddEntrance = function (coords, size, heading, propertyId, enter, raid, _)
+    AddEntrance = function (coords, size, heading, propertyId, enter, raid, showcase, _)
         local property_id = propertyId
 
         local handler = exports.ox_target:addBoxZone({
@@ -216,8 +216,11 @@ Framework.ox = {
                 },
                 {
                     label = "Showcase Property",
-                    onSelect = enter,
+                    onSelect = showcase,
                     canInteract = function()
+                        -- local property = Property.Get(property_id)
+                        -- if property.propertyData.owner ~= nil then return false end -- if its owned, it cannot be showcased
+                        
                         local PlayerData = QBCore.Functions.GetPlayerData()
                         local job = PlayerData.job
                         local jobName = job.name

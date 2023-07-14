@@ -120,10 +120,13 @@ function Property:RegisterPropertyEntrance()
         TriggerServerEvent("ps-housing:server:raidProperty", self.property_id)
     end
 
+    local function showcase()
+        TriggerServerEvent("ps-housing:server:showcaseProperty", self.property_id)
+    end
+
     local targetName = string.format("%s_%s", self.propertyData.street, self.property_id)
 
-    self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid,
-        targetName)
+    self.entranceTarget = Framework[Config.Target].AddEntrance(door, size, heading, self.property_id, enter, raid, showcase, targetName)
 
     if self.owner or self.has_access then
         self:CreateBlip()
@@ -383,8 +386,7 @@ function Property:OpenDoorbellMenu()
         options = {},
     }
 
-    for i = 1, #self.doorbellPool do
-        local v = self.doorbellPool[i]
+    for k, v in pairs(self.doorbellPool) do
         menu.options[#menu.options + 1] = {
             title = v.name,
             onSelect = function()

@@ -442,24 +442,36 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
         return
     end
 
+    local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
+    if ringDoorbellConfirmation == "confirm" then
+        property:AddToDoorbellPoolTemp(src)
+        Debug("Ringing doorbell") 
+        return
+    end
+end)
+
+RegisterNetEvent("ps-housing:server:showcaseProperty", function(property_id)
+    local src = source
+
+    local property = Property.Get(property_id)
+
+    if not property then 
+        Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
+        return 
+    end
+
+
     local PlayerData = GetPlayerData(src)
     local job = PlayerData.job
     local jobName = job.name
     local onDuty = job.onduty
+    
     if jobName == "realtor" and onDuty then
         local showcase = lib.callback.await('ps-housing:cb:showcase', src)
         if showcase == "confirm" then
             property:PlayerEnter(src)
             return
         end
-    end
-
-    local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
-
-    if ringDoorbellConfirmation == "confirm" then
-        property:AddToDoorbellPoolTemp(src)
-        Debug("Ringing doorbell") 
-        return
     end
 end)
 
