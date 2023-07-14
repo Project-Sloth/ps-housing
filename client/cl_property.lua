@@ -463,6 +463,15 @@ end
 function Property:UnloadFurniture(furniture, index)
     local entity = furniture.entity
 
+    if not entity then 
+        for i = 1, #self.furnitureObjs do
+            if self.furnitureObjs[i].id == furniture.id then
+                entity = self.furnitureObjs[i].entity
+                break
+            end
+        end
+    end
+
     if self.clothingTarget == entity or self.storageTarget == entity then
         Framework[Config.Target].RemoveTargetEntity(entity)
 
@@ -571,7 +580,7 @@ function Property:UpdateFurnitures(newFurnitures)
 
     local oldFurnitures = self.propertyData.furnitures
     local added, removed = findFurnitureDifference(newFurnitures, oldFurnitures)
-
+    
     for i = 1, #added do
         local furniture = added[i]
         self:LoadFurniture(furniture)

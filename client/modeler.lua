@@ -508,8 +508,6 @@ Modeler = {
         local item = data
 
         if item ~= nil then
-            DeleteEntity(item.entity)
-
             SendNUIMessage({
                 action = "removeOwnedItem",
                 data = item
