@@ -256,6 +256,8 @@ end)
 5. [ps-core](https://github.com/Project-Sloth/ps-core) (WIP)
 
 ## For reference your server.cfg should be ensured like below:
+* We highly recommend making a folder named [ps-housing] and add `bl-realtor`, `fivem-freecam`, `ox_lib`, `ps-core`, `ps-housing` inside the folder.
+  
 ```
 ensure ox_lib
 ensure bl-realtor
