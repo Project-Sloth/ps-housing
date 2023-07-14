@@ -233,7 +233,7 @@ With
 local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 ```
 
-`qb-garages > client > main.lua > line 443` under event `qb-garages:client:addHouseGarage`
+`qb-garages > client > main.lua > around line 451` under event `qb-garages:client:addHouseGarage`
 ```lua
 RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
     Config.HouseGarages[house] = nil
