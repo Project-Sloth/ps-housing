@@ -66,7 +66,7 @@ end
 
 function Property:CheckForAccess(citizenid)
     if self.propertyData.owner == citizenid then return true end
-    return lib.table.contains(self.propertyData, citizenid)
+    return lib.table.contains(self.propertyData.has_access, citizenid)
 end
 
 function Property:AddToDoorbellPoolTemp(src)
@@ -465,7 +465,7 @@ RegisterNetEvent("ps-housing:server:showcaseProperty", function(property_id)
     local job = PlayerData.job
     local jobName = job.name
     local onDuty = job.onduty
-    
+
     if jobName == "realtor" and onDuty then
         local showcase = lib.callback.await('ps-housing:cb:showcase', src)
         if showcase == "confirm" then
@@ -661,8 +661,8 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
 
     local has_access = property.propertyData.has_access
 
-    local targetCitizenid GetCitizenid(srcToAdd)
-    local targetPlayer = GetPlayer(srcToAdd)
+    local targetCitizenid = GetCitizenid(srcToAdd)
+    local targetPlayer = GetPlayerData(srcToAdd)
 
     if not property:CheckForAccess(targetCitizenid) then
         has_access[#has_access+1] = targetCitizenid

@@ -35,7 +35,7 @@ function Property:new(propertyData)
     local citizenid = Player.citizenid
 
     self.owner = propertyData.owner == citizenid
-    self.has_access = lib.table.contains(self.propertyData, citizenid)
+    self.has_access = lib.table.contains(self.propertyData.has_access, citizenid)
 
     if propertyData.apartment then
         local aptName = propertyData.apartment
@@ -641,7 +641,10 @@ function Property:UpdateDoor(newDoor, newStreet, newRegion)
 end
 
 function Property:UpdateHas_access(newHas_access)
+    local Player = QBCore.Functions.GetPlayerData()
+    local citizenid = Player.citizenid
     self.propertyData.has_access = newHas_access
+    self.has_access = lib.table.contains(newHas_access, citizenid)
 
     if not self.inProperty then return end
 
