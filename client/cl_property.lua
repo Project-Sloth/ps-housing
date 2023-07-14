@@ -605,7 +605,7 @@ function Property:UpdatePrice(newPrice)
 end
 
 function Property:UpdateForSale(forSale)
-    self.propertyData.forSale = forSale
+    self.propertyData.for_sale = forSale
 end
 
 function Property:UpdateShell(newShell)
