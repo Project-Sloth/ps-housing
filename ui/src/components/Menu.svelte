@@ -42,7 +42,7 @@
 
 
 
-<div class="w-[97%] h-fit flex flex-col absolute left-1/2 overflow-visible -translate-x-1/2 {$IS_MENU_MINIMIZED ? "-bottom-[24rem]" : "bottom-[3rem]"} z-[1]">
+<div class="w-[97%] h-fit flex flex-col absolute left-1/2 overflow-visible -translate-x-1/2 {$IS_MENU_MINIMIZED ? "-bottom-[24rem]" : "bottom-[3rem]"} z-[1] transition-all">
     <Header />
     <ItemList />
     <Cart />

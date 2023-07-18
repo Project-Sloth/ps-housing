@@ -21,16 +21,16 @@
 	let switchToFurniture: any = null
 </script>
 
-<div class="w-full h-[24rem] bg-[color:var(--color-primary)] p-[1rem]">
+<div class="w-full h-[24rem] bg-[color:var(--color-primary)] p-[2rem] ">
 	<div
 		bind:this={scrollableElement}
 		on:wheel={scrollHorizontally}
-		class="grid grid-rows-2 grid-flow-col-dense gap-[1rem] overflow-x-scroll overflow-y-hidden w-fit max-w-full h-full relative scroll-style scroll-style-horizontal"
+		class="grid grid-rows-2 grid-flow-col-dense gap-[2rem] overflow-x-scroll overflow-y-hidden w-fit max-w-full h-full relative scroll-style scroll-style-horizontal"
 	>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		{#each $SHOWFURNITURES.items as furniture, i}
 			<button
-				class="h-full w-[30rem] bg-[color:var(--color-secondary)] flex flex-row items-center px-[1.5rem] py-[0.5rem] hover:cursor-pointer"
+				class="h-full w-[30rem] bg-[color:var(--color-secondary)] flex flex-row items-center hover:cursor-pointer"
 				on:click={() => {
 					SendNUI('hoverOut')
 
@@ -63,20 +63,25 @@
 			>
 				<!-- Furniture name -->
 				<div
-					class="w-full h-full flex flex-col justify-center items-start"
+					class="w-full h-full flex flex-col justify-center items-start ml-10"
 				>
 					<p
 						class="text-[color:var(--color-text)] text-[2rem] font-bold text-start"
 					>
 						{furniture.label}
 					</p>
-					<p class="text-[color:var(--color-text)] text-[2rem]">
-						${furniture.price}
-					</p>
+					<div class="flex">
+						<p class="text-[color:var(--color-text)] text-[1.2rem]">
+							Price:
+						</p>
+						<p class="text-[color:var(--color-accent)] ml-2 font-bold text-[1.2rem]">
+							${furniture.price}
+						</p>
+					</div>
 				</div>
 				<!-- eye button -->
 				<div
-					class=" bg-[color:var(--color-tertiary)] aspect-square h-[5rem] grid place-items-center justify-center items-center"
+					class=" bg-[color:var(--color-tertiary)] aspect-square h-full grid place-items-center justify-center items-center"
 					on:mouseenter={() => {
 						SendNUI('hoverIn', furniture)
 					}}

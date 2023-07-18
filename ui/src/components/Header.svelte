@@ -36,7 +36,7 @@
 		} else {
 			if (selected === -1) {
 				const allFurnitureItems = $FURNITURES.flatMap(furniture => furniture.items);
-				$SHOWFURNITURES = { category: "Show All", items: allFurnitureItems }
+				$SHOWFURNITURES = { category: "All Objects", items: allFurnitureItems }
 			} else {
 				$SHOWFURNITURES = $FURNITURES[selected]
 			}
@@ -53,19 +53,19 @@
 
 	>
 		<button
-			class="h-[4.5rem] w-[5rem] aspect-square bg-[color:var(--color-secondary)] flex flex-row gap-2 items-center justify-center"
+			class="h-[4.5rem] w-[4.5rem] aspect-square bg-[color:var(--color-secondary)] flex flex-row gap-2 items-center justify-center"
 		on:click={() => {
 			showSearch = !showSearch
 			if ($IS_MENU_MINIMIZED) $IS_MENU_MINIMIZED = false
 		}}>
-			<i class="fas fa-magnifying-glass text-[2rem]" />
+			<i class="fas fa-magnifying-glass text-[1.6rem]" />
 		</button>
 
 		{#if showSearch}
 			<input
 				bind:value={searchTerm}
 				autofocus
-				class="min-w-[10rem] h-[4.5rem] px-[1rem] text-[2rem] bg-[color:var(--color-tertiary)]"
+				class="min-w-[10rem] h-[4.5rem] px-[1rem] text-[1.6rem] bg-[color:var(--color-tertiary)]"
 				type="text"
 				placeholder="Search"
 			/>
@@ -78,18 +78,18 @@
 		class=" w-full  h-[5rem] items-end flex flex-row gap-2 overflow-y-visible overflow-x-scroll categories"
 	>
 		<button
-			class="whitespace-nowrap w-fit px-10 h-[4.5rem] text-[2rem] bg-[color:var(--color-secondary)] grid place-items-center transition-all duration-200 ease-in-out"
+			class="whitespace-nowrap w-fit px-10 h-[4.5rem] text-[1.6rem] bg-[color:var(--color-secondary)] grid place-items-center transition-all duration-200 ease-in-out"
 			on:click={() => {
 				selected = -1
 				const allFurnitureItems = $FURNITURES.flatMap(furniture => furniture.items);
-				$SHOWFURNITURES = { category: "Show All", items: allFurnitureItems }
+				$SHOWFURNITURES = { category: "All Objects", items: allFurnitureItems }
 				if ($IS_MENU_MINIMIZED) $IS_MENU_MINIMIZED = false
 			}}
-			class:selected={selected === -1}>Show All</button
+			class:selected={selected === -1}>All Objects</button
 		>
 		{#each $FURNITURES as category, i}
 			<button
-				class=" whitespace-nowrap w-fit px-10 h-[4.5rem] text-[2rem] bg-[color:var(--color-secondary)] grid place-items-center transition-all duration-200 ease-in-out"
+				class=" whitespace-nowrap w-fit px-10 h-[4.5rem] text-[1.6rem] bg-[color:var(--color-secondary)] grid place-items-center transition-all duration-200 ease-in-out"
 				on:click={() => {
 					selected = i
 					$SHOWFURNITURES = $FURNITURES[i]
@@ -102,7 +102,7 @@
 
 	<div class="overflow-y-visible flex flex-row gap-2 ml-auto">
 		<button
-			class="w-fit px-[2rem] items-center justify-center break h-[4.5rem] text-[2rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 transition-all duration-200 ease-in-out"
+			class="w-fit px-[2rem] items-center justify-center break h-[4.5rem] text-[1.6rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 transition-all duration-200 ease-in-out"
 			on:click={() => {
 				$IS_CART_OPEN = false
 				$IS_OWNEDITEMS_OPEN = !$IS_OWNEDITEMS_OPEN
@@ -115,7 +115,7 @@
 			>
 		</button>
 		<button
-			class="h-[4.5rem] w-fit px-[2rem] text-[2rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 items-center justify-center transition-all duration-200 ease-in-out"
+			class="h-[4.5rem] w-fit px-[2rem] text-[1.6rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 items-center justify-center transition-all duration-200 ease-in-out"
 			on:click={() => {
 				$IS_OWNEDITEMS_OPEN = false
 				$IS_CART_OPEN = !$IS_CART_OPEN
@@ -128,7 +128,7 @@
 			>
 		</button>
 		<button
-			class="h-[4.5rem] w-fit aspect-square text-[2rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 items-center justify-center transition-all duration-200 ease-in-out"
+			class="h-[4.5rem] w-fit aspect-square text-[1.6rem] bg-[color:var(--color-secondary)] flex flex-row gap-4 items-center justify-center transition-all duration-200 ease-in-out"
 			on:click={() => {
 				$IS_MENU_MINIMIZED = !$IS_MENU_MINIMIZED
 			}}

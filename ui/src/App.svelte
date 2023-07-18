@@ -29,4 +29,5 @@
 <AlwaysListener />
 {#if $browserMode}
 	<DebugBrowser />
+	<body class=" bg-neutral-700"></body>
 {/if}
