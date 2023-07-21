@@ -24,6 +24,8 @@ function Debug(...)
     end
 end
 
+Config.PoliceJobName = "police"
+
 Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
 
 Config.RaidTimer = 5-- 5 minutes
