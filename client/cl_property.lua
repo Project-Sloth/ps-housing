@@ -263,15 +263,29 @@ function Property:GiveMenus()
     local accessAndConfig = self.has_access and Config.AccessCanEditFurniture
 
     if self.owner or accessAndConfig then
-        Framework[Config.Radial].AddRadialOption("furniture_menu", "Furniture Menu", "house", function()
-            Modeler:OpenMenu(self.property_id)
-        end)
+        Framework[Config.Radial].AddRadialOption(
+            "furniture_menu",
+            "Furniture Menu",
+            "home",
+            function()
+                Modeler:OpenMenu(self.property_id)
+            end,
+            "ps-housing:client:openFurnitureMenu",
+            { propertyId = self.property_id }
+        )
     end
 
     if self.owner then
-        Framework[Config.Radial].AddRadialOption("access_menu", "Manage Property Access", "key", function()
-            self:ManageAccessMenu()
-        end)
+        Framework[Config.Radial].AddRadialOption(
+            "access_menu",
+            "Manage Property",
+            "key",
+            function()
+                self:ManageAccessMenu()
+            end,
+            "ps-housing:client:openManagePropertyAccessMenu",
+            { propertyId = self.property_id }
+        )
     end
 end
 
@@ -733,4 +747,15 @@ RegisterNetEvent("ps-housing:client:updateProperty", function(type, property_id,
     property[type](property, data)
 
     TriggerEvent("ps-housing:client:updatedProperty", property_id)
+end)
+
+RegisterNetEvent("ps-housing:client:openFurnitureMenu", function(data)
+    Modeler:OpenMenu(data.options.propertyId)
+end)
+
+RegisterNetEvent("ps-housing:client:openManagePropertyAccessMenu", function(data)
+    local property = Property.Get(data.options.propertyId)
+    if not property then return end
+
+    property:ManageAccessMenu()
 end)

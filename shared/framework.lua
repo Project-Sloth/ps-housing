@@ -167,13 +167,15 @@ Framework.qb = {
         exports["qb-target"]:RemoveZone(targetName)
     end,
 
-    AddRadialOption = function(id, label, icon, fn)
+    AddRadialOption = function(id, label, icon, _, event, options)
         exports['qb-radialmenu']:AddOption({
             id = id,
             title = label,
             icon = icon,
-            action = fn,
-            shouldClose = true
+            type = 'client',
+            event = event,
+            shouldClose = true,
+            options = options
         }, id)
     end,
 
