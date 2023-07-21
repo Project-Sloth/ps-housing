@@ -11,6 +11,7 @@ if IsDuplicityVersion() then
     end
 
     function Framework.qb.Notify(src, message, type)
+        type = type == "info" and "primary" or type
         TriggerClientEvent('QBCore:Notify', src, message, type)
     end
 
@@ -31,6 +32,7 @@ end
 Framework.qb = {
 
     Notify = function(message, type)
+        type = type == "info" and "primary" or type
         TriggerEvent('QBCore:Notify', message, type)
     end,
 

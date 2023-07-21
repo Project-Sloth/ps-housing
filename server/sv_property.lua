@@ -495,7 +495,7 @@ RegisterNetEvent('ps-housing:server:raidProperty', function (property_id)
 
     if jobName == "police" and onDuty and gradeAllowed then
         if not property.raiding then
-            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, property.propertyData.street .. " " .. property.property_id, property_id)
+            local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, (property.propertyData.street or property.propertyData.apartment) .. " " .. property.property_id, property_id)
             if confirmRaid == "confirm" then
                 property:StartRaid(src)
                 property:PlayerEnter(src)
@@ -670,9 +670,9 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
         property:UpdateHas_access(has_access)
 
         Framework[Config.Notify].Notify(src, "You added access to " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname, "success")
-        Framework[Config.Notify].Notify(srcToAdd, "You got access to " .. property.propertyData.street .. " " .. property.property_id, "success")
+        Framework[Config.Notify].Notify(srcToAdd, "You got access to this property!", "success")
     else
-        Framework[Config.Notify].Notify(srcToAdd, "This person already has access to this property!", "error")
+        Framework[Config.Notify].Notify(src, "This person already has access to this property!", "error")
     end
 end)
 
@@ -709,7 +709,7 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizen
         Framework[Config.Notify].Notify(src, "You removed access from " .. removePlayerData.charinfo.firstname .. " " .. removePlayerData.charinfo.lastname, "success")
 
         if srcToRemove then
-            Framework[Config.Notify].Notify(srcToRemove, "You lost access to " .. property.propertyData.street .. " " .. property.property_id, "error")
+            Framework[Config.Notify].Notify(srcToRemove, "You lost access to " .. (property.propertyData.street or property.propertyData.apartment) .. " " .. property.property_id, "error")
         end
     else
         Framework[Config.Notify].Notify(src, "This person does not have access to this property!", "error")
