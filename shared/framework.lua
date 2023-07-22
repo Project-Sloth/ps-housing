@@ -110,7 +110,7 @@ Framework.qb = {
         return targetName
     end,
 
-    AddApartmentEntrance = function(coords, size, heading, apartment, enter, seeAll, targetName)
+    AddApartmentEntrance = function(coords, size, heading, apartment, enter, seeAll, seeAllToRaid, targetName)
         exports['qb-target']:AddBoxZone(targetName, vector3(coords.x, coords.y, coords.z), size.x, size.y, {
             name = targetName,
             heading = heading,
@@ -130,7 +130,20 @@ Framework.qb = {
                 {
                     label = "See all apartments",
                     action = seeAll,
-                }
+                },
+                {
+                    label = "Raid Apartment",
+                    action = seeAllToRaid,
+                    canInteract = function()
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job
+                        local jobName = job.name
+                        local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
+                        local onDuty = job.onduty
+
+                        return jobName == Config.PoliceJobName and gradeAllowed and onDuty
+                    end,
+                },
             }
         })
     end,
@@ -281,7 +294,7 @@ Framework.ox = {
         return handler
     end,
 
-    AddApartmentEntrance = function (coords, size, heading, apartment, enter, seeAll, _)        
+    AddApartmentEntrance = function (coords, size, heading, apartment, enter, seeAll, seeAllToRaid, _)        
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z),
             size = vector3(size.y, size.x, size.z),
@@ -299,6 +312,19 @@ Framework.ox = {
                 {
                     label = "See all apartments",
                     onSelect = seeAll,
+                },
+                {
+                    label = "Raid Apartment",
+                    onSelect = seeAllToRaid,
+                    canInteract = function()
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job
+                        local jobName = job.name
+                        local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
+                        local onDuty = job.onduty
+
+                        return jobName == "police" and onDuty and gradeAllowed
+                    end,
                 },
             },
         })

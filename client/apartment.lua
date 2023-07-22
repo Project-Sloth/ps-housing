@@ -32,10 +32,14 @@ function Apartment:RegisterPropertyEntrance()
         self:GetMenuForAll()
     end
 
+    local function seeAllToRaid()
+        self:GetMenuForAllToRaid()
+    end
+
     local size = vector3(door.length, door.width, 3.0)
     local heading = door.h
 
-    Framework[Config.Target].AddApartmentEntrance(door, size, heading, self.apartmentData.label, enterApartment, seeAll, targetName)
+    Framework[Config.Target].AddApartmentEntrance(door, size, heading, self.apartmentData.label, enterApartment, seeAll, seeAllToRaid, targetName)
 end
 
 function Apartment:EnterApartment()
@@ -68,6 +72,32 @@ function Apartment:GetMenuForAll()
             title = self.apartmentData.label .. " " .. propertyId,
             onSelect = function()
                 TriggerServerEvent('ps-housing:server:enterProperty', propertyId) 
+            end,
+        })
+    end 
+
+    lib.registerContext(menu)
+    lib.showContext(id)
+end
+
+function Apartment:GetMenuForAllToRaid()
+    if next(self.apartments) == nil then 
+        Framework[Config.Notify].Notify("There are no apartments here.", "error")
+        return
+    end
+
+    local id = "apartments-" .. self.apartmentData.label
+    local menu = {
+        id = id,
+        title = "Apartments To Raid",
+        options = {}
+    }
+
+    for propertyId, _ in pairs(self.apartments) do
+        table.insert(menu.options,{
+            title = "Raid " .. self.apartmentData.label .. " " .. propertyId,
+            onSelect = function()
+                TriggerServerEvent("ps-housing:server:raidProperty", propertyId)
             end,
         })
     end 
