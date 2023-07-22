@@ -607,3 +607,8 @@ RegisterNUICallback("removeOwnedItem", function(data, cb)
     Modeler:RemoveOwnedItem(data)
     cb("ok")
 end)
+
+RegisterNUICallback("showNotification", function(data, cb)
+    Framework[Config.Notify].Notify(data.message, data.type)
+    cb("ok")
+end)

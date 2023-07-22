@@ -534,12 +534,39 @@ Config.Shells = {
     },
 }
 
+
+Config.FurnitureTypes = {
+    ["storage"] = function(entity, property_id, shell, furniture, count)
+        local stash = string.format("property_%s", property_id) -- if you changed this you will fuck things up
+
+        Framework[Config.Target].AddTargetEntity(entity, "Storage", function()
+            local stashConfig = Config.Shells[shell].stash
+            TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
+            TriggerEvent("inventory:client:SetCurrentStash", stash)
+        end)
+
+        local property = Property.Get(property_id)
+        property.storageTarget = entity
+    end,
+
+    ["clothing"] = function(entity, property_id, shell, furniture, count)
+        Framework[Config.Target].AddTargetEntity(entity, "Clothing", function()
+            local heading = GetEntityHeading(cache.ped)
+            SetEntityHeading(cache.ped, heading - 180.0)
+            TriggerEvent("qb-clothing:client:openOutfitMenu")
+        end)
+
+        local property = Property.Get(property_id)
+        property.clothingTarget = entity
+    end
+}
+
 Config.Furnitures = {
     {
         category = "Prerequisites",
         items = {
-            { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage" },
-            { ["object"] = "v_res_tre_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing"}
+            { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage", ["max"] = 1 },
+            { ["object"] = "v_res_tre_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing", ["max"] = 1 },
         }
     },
 

@@ -10,6 +10,7 @@ interface IFurniture {
     object: string;
     price: number;
     type?: string;
+    max?: number;
 }
 
 interface IOwnedFurniture extends IFurniture {

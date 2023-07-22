@@ -34,18 +34,27 @@
 				on:click={() => {
 					SendNUI('hoverOut')
 
-					if (
-						furniture.type === 'clothing' ||
-						furniture.type === 'storage'
-					) {
-						const found = $OWNEDITEMS.find(
-							(item) => item.type === furniture.type
-						)
+					if (furniture.type) {
 
-						if (found) {
-							SendNUI('selectOwnedItem', found)
-							return
+						const itemsWithSameType = $OWNEDITEMS.filter(item => item.type === furniture.type);
+
+						let furnitureTypeMax = furniture.max || 1;
+
+						if (itemsWithSameType.length >= furnitureTypeMax) {
+							SendNUI('showNotification', {
+								type: 'error',
+								message: `You can only have ${furnitureTypeMax} of this item!`,
+							})
+							return;
 						}
+						// const found = $OWNEDITEMS.find(
+						// 	(item) => item.type === furniture.type
+						// )
+
+						// if (found) {
+						// 	SendNUI('selectOwnedItem', found)
+						// 	return
+						// }
 					}
 
 					if ($CURRENTFURNITURE != null) {

@@ -444,27 +444,9 @@ function Property:LoadFurniture(furniture)
     SetEntityRotation(entity, furniture.rotation.x, furniture.rotation.y, furniture.rotation.z, 2, true)
     FreezeEntityPosition(entity, true)
 
-    if furniture.type == "storage" then
-        self.storageTarget = entity
 
-        local stash = string.format("property_%s", self.property_id) -- if you changed this you will fuck things up
-        local function openStash()
-            local stashConfig = Config.Shells[self.propertyData.shell].stash
-            TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
-            TriggerEvent("inventory:client:SetCurrentStash", stash)
-        end
-
-        Framework[Config.Target].AddTargetEntity(entity, "Storage", openStash)
-    elseif furniture.type == "clothing" then
-        self.clothingTarget = entity
-
-        local function openClothing()
-            local heading = GetEntityHeading(cache.ped)
-            SetEntityHeading(cache.ped, heading - 180.0)
-            TriggerEvent("qb-clothing:client:openOutfitMenu")
-        end
-
-        Framework[Config.Target].AddTargetEntity(entity, "Clothing", openClothing)
+    if furniture.type and Config.FurnitureTypes[furniture.type] then
+        Config.FurnitureTypes[furniture.type](entity, self.property_id, self.propertyData.shell)
     end
 
     self.furnitureObjs[#self.furnitureObjs + 1] = {
