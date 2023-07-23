@@ -19,6 +19,7 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 # Usage
 - Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
 - Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
+  - When a player first spawns after enabling ps-housing, they will have to choose an apartment. Once they spawn in the stashitems from their previous qb-apartment will be migrated to their new apartment stash.
 - Allows players to purchase and list houses for sale through `bl-realtor` and the realtor job
 - Houses come with personal garages
 - Houses and apartments come with personal wardrobes and stashes
@@ -272,7 +273,6 @@ ensure five-freecam
 # Notes
 - If a player is in their apartment/house and an admin does a "Bring to me" function, they will not see the player nor will the player see anyone else. This is because the player is still in their own unique routing bucket. **Workaround**: To fix this, the player must go back into their apartment and leave on their own. 
     - Likewise, if an admin tries to "Go to" or "Spectate" a player that is in their apartment/house, the admin will not be able to see the apartment or player because it is in a different routing bucket.
- 
 # Credits
 * [Xirvin](https://github.com/ImXirvin)
 * [Byte Labs Project](https://github.com/Byte-Labs-Project)
