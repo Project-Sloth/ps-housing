@@ -54,6 +54,7 @@ Framework.qb = {
                 options = {
                     {
                         label = "Enter Property",
+                        icon = "fas fa-door-open",
                         action = enter,
                         canInteract = function()
                             local property = Property.Get(property_id)
@@ -62,6 +63,7 @@ Framework.qb = {
                     },
                     {
                         label = "Showcase Property",
+                        icon = "fas fa-eye",
                         action = showcase,
                         canInteract = function()
                             local PlayerData = QBCore.Functions.GetPlayerData()
@@ -73,6 +75,7 @@ Framework.qb = {
                     },
                     {
                         label = "Property Info",
+                        icon = "fas fa-circle-info",
                         action = showData,
                         canInteract = function()
                             local PlayerData = QBCore.Functions.GetPlayerData()
@@ -84,6 +87,7 @@ Framework.qb = {
                     },
                     {
                         label = "Ring Doorbell",
+                        icon = "fas fa-bell",
                         action = enter,
                         canInteract = function()
                             local property = Property.Get(property_id)
@@ -92,6 +96,7 @@ Framework.qb = {
                     },
                     {
                         label = "Raid Property",
+                        icon = "fas fa-building-shield",
                         action = raid,
                         canInteract = function()
                             local PlayerData = QBCore.Functions.GetPlayerData()
@@ -122,6 +127,7 @@ Framework.qb = {
                 {
                     label = "Enter Apartment",
                     action = enter,
+                    icon = "fas fa-door-open",
                     canInteract = function()
                         local apartments = ApartmentsTable[apartment].apartments
                         return hasApartment(apartments)
@@ -129,11 +135,13 @@ Framework.qb = {
                 },
                 {
                     label = "See all apartments",
+                    icon = "fas fa-circle-info",
                     action = seeAll,
                 },
                 {
                     label = "Raid Apartment",
                     action = seeAllToRaid,
+                    icon = "fas fa-building-shield",
                     canInteract = function()
                         local PlayerData = QBCore.Functions.GetPlayerData()
                         local job = PlayerData.job
@@ -166,10 +174,12 @@ Framework.qb = {
                     {
                         label = "Leave Property",
                         action = leave,
+                        icon = "fas fa-right-from-bracket",
                     },
                     {
                         label = "Check Door",
                         action = checkDoor,
+                        icon = "fas fa-bell",
                     },
                 },
             }
