@@ -24,7 +24,7 @@ function InitialiseProperties()
     local properties = lib.callback.await('ps-housing:server:requestProperties')
 
     for k, v in pairs(properties) do
-        createProperty(v)
+        createProperty(v.propertyData)
     end
 
     TriggerEvent("ps-housing:client:initialisedProperties")

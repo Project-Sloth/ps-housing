@@ -38,13 +38,7 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
         Wait(100)
     end
 
-    local propertiesData = {}
-
-    for k, v in pairs(PropertiesTable) do
-        propertiesData[k] = v.propertyData
-    end
-
-    return propertiesData
+    return PropertiesTable
 end)
 
 AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
