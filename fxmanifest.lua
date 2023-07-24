@@ -35,10 +35,9 @@ server_script {
 }
 
 files {
-    'html/**',
-    'starter_shells_k4mb1.ytyp'
+  'html/**',
+  'stream/starter_shells_k4mb1.ytyp'
 }
 
 this_is_a_map 'yes'
-
 data_file 'DLC_ITYP_REQUEST' 'starter_shells_k4mb1.ytyp'
