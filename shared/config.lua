@@ -542,7 +542,7 @@ Config.FurnitureTypes = {
 
         Framework[Config.Target].AddTargetEntity(entity, "Storage", function()
             local stashConfig = Config.Shells[shell].stash
-            Framework[Config.Inventory]:OpenInventory(stash, stashConfig)
+            Framework[Config.Inventory].OpenInventory(stash, stashConfig)
         end)
 
         local property = Property.Get(property_id)

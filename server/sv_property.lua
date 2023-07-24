@@ -17,7 +17,7 @@ function Property:new(propertyData)
     local stash = string.format("property_%s", propertyData.property_id)
     local stashConfig = Config.Shells[propertyData.shell].stash
 
-    Framework[Config.Inventory]:RegisterInventory(stash, stashConfig, propertyData.street)
+    Framework[Config.Inventory].RegisterInventory(stash, stashConfig, propertyData.street)
 
     return self
 end
