@@ -212,6 +212,15 @@ Framework.qb = {
     RemoveTargetEntity = function (entity)
         exports["qb-target"]:RemoveTargetEntity(entity)
     end,
+
+    OpenInventory = function (stash, stashConfig)
+        TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
+        TriggerEvent("inventory:client:SetCurrentStash", stash)
+    end
+
+    RegisterInventory = function (stash, stashConfig, label)
+        -- Used for ox_inventory compat
+    end
 }
 
 Framework.ox = {
@@ -385,4 +394,12 @@ Framework.ox = {
     RemoveTargetEntity = function (entity)
         exports.ox_target:removeLocalEntity(entity)
     end,
+
+    OpenInventory = function (stash, stashConfig)
+        exports.ox_inventory:openInventory('stash', stash)
+    end
+
+    RegisterInventory = function (stash, stashConfig, label)
+        exports.ox_inventory:RegisterStash(stash, label, stashConfig.slots, stashConfig.maxweight, nil)
+    end
 }

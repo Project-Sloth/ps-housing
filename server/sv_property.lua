@@ -14,6 +14,11 @@ function Property:new(propertyData)
     self.property_id = tostring(propertyData.property_id)
     self.propertyData = propertyData
 
+    local stash = string.format("property_%s", propertyData.property_id)
+    local stashConfig = Config.Shells[propertyData.shell].stash
+
+    Framework[Config.Inventory]:RegisterInventory(stash, stashConfig, propertyData.street)
+
     return self
 end
 
