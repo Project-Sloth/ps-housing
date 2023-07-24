@@ -53,6 +53,7 @@ Players need to place their [stash](https://github.com/Project-Sloth/ps-housing/
 
 # Installation
 ## PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
+### Refrain from asking us how to circumvent paid scripts that can't be adjusted for ps-housing support. Instead, request their support for ps-housing - this was our intention when we made this script open source. Any inquiries related to this be ignored.
 1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
 
 ```lua
