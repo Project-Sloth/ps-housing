@@ -3,11 +3,6 @@ QBCore = exports['qb-core']:GetCoreObject()
 
 if Config.Inventory == "ox" then
 local function registerOxInventoryStashes()
-    for k,v in pairs(Config.Apartments) do
-        if v.stash then
-            exports.ox_inventory:RegisterStash(k, v.label.. " Stash", v.stash.slots, v.stash.maxweight, true)
-        end
-    end
     for k,v in pairs(Config.Shells) do
         if v.stash then
             exports.ox_inventory:RegisterStash(k, v.label.. " Stash", v.stash.slots, v.stash.maxweight, true)

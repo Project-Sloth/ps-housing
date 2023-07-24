@@ -57,11 +57,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
-        stash = {
-            maxweight = 60000,
-            slots = 8,
-        },
+        shell = "Apartment Furnished"
     },
 
     ["South Rockford Drive"] = {
@@ -73,11 +69,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
-        stash = {
-            maxweight = 60000,
-            slots = 8,
-        },
+        shell = "Apartment Furnished"
     },
 
     ['Morningwood Blvd'] = {
@@ -89,11 +81,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
-        stash = {
-            maxweight = 60000,
-            slots = 8,
-        },
+        shell = "Apartment Furnished"
     },
 
     ['Tinsel Towers'] = {
@@ -105,11 +93,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
-        stash = {
-            maxweight = 60000,
-            slots = 8,
-        },
+        shell = "Apartment Furnished"
     },
 
     ['Fantastic Plaza'] = {
@@ -121,11 +105,7 @@ Config.Apartments = {
                 label = "Outside",
             },
         },
-        shell = "Apartment Furnished",
-        stash = {
-            maxweight = 60000,
-            slots = 8,
-        },
+        shell = "Apartment Furnished"
     }
 }
 
