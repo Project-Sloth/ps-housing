@@ -467,7 +467,7 @@ RegisterNetEvent("ps-housing:server:showcaseProperty", function(property_id)
     local jobName = job.name
     local onDuty = job.onduty
 
-    if jobName == "realtor" and onDuty then
+    if jobName == "realestate" and onDuty then
         local showcase = lib.callback.await('ps-housing:cb:showcase', src)
         if showcase == "confirm" then
             property:PlayerEnter(src)
@@ -753,7 +753,7 @@ lib.callback.register('ps-housing:cb:getPropertyInfo', function (source, propert
     local jobName = job.name
     local onDuty = job.onduty
 
-    if  not jobName == "realtor" and not onDuty then return end
+    if  not jobName == "realestate" and not onDuty then return end
 
     local data = {}
 
