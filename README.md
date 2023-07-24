@@ -275,6 +275,7 @@ ensure five-freecam
     - Likewise, if an admin tries to "Go to" or "Spectate" a player that is in their apartment/house, the admin will not be able to see the apartment or player because it is in a different routing bucket.
 # Credits
 * [Xirvin](https://github.com/ImXirvin)
+* [BackSH00TER](https://github.com/backsh00ter)
 * [Byte Labs Project](https://github.com/Byte-Labs-Project)
 * [Project Sloth Team](https://discord.gg/projectsloth)
 * [K4MB1](https://www.k4mb1maps.com/)
