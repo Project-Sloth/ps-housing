@@ -15,6 +15,14 @@ if IsDuplicityVersion() then
         TriggerClientEvent('QBCore:Notify', src, message, type)
     end
 
+    function Framework.ox.RegisterInventory(stash, label, stashConfig)
+        exports.ox_inventory:RegisterStash(stash, label, stashConfig.slots, stashConfig.maxweight, nil)
+    end
+
+    function Framework.qb.RegisterInventory(stash, label, stashConfig)
+        -- Used for ox_inventory compat
+    end
+
     return
 end
 
@@ -217,10 +225,6 @@ Framework.qb = {
         TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
         TriggerEvent("inventory:client:SetCurrentStash", stash)
     end,
-
-    RegisterInventory = function (stash, stashConfig, label)
-        -- Used for ox_inventory compat
-    end,
 }
 
 Framework.ox = {
@@ -397,9 +401,5 @@ Framework.ox = {
 
     OpenInventory = function (stash, stashConfig)
         exports.ox_inventory:openInventory('stash', stash)
-    end,
-
-    RegisterInventory = function (stash, stashConfig, label)
-        exports.ox_inventory:RegisterStash(stash, label, stashConfig.slots, stashConfig.maxweight, nil)
     end,
 }
