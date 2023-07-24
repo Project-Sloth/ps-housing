@@ -51,7 +51,8 @@ This will open a furniture store complete with all of the props. Select an item 
 
 Players need to place their [stash](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#LL426C96-L426C96) and [wardrobe](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L427) or else they wont have one. Check [Config](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L422) for more information.
 
-# Installation - PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
+# Installation
+## PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
 1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
 
 ```lua
