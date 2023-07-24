@@ -266,7 +266,7 @@ function Property:GiveMenus()
         Framework[Config.Radial].AddRadialOption(
             "furniture_menu",
             "Furniture Menu",
-            "home",
+            "house",
             function()
                 Modeler:OpenMenu(self.property_id)
             end,
