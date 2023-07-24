@@ -180,19 +180,15 @@ function Property:RegisterGarageZone()
 
     TriggerEvent("qb-garages:client:addHouseGarage", self.property_id, data)
 
-    self.garageZone = BoxZone:Create(vector3(garageData.x + 5.0, garageData.y + 5.0, garageData.z), garageData.length,
-        garageData.width, {
-            name = garageName,
-            debugPoly = Config.DebugMode,
-            minZ = garageData.z - 1.0,
-            maxZ = garageData.z + 3.0
-        })
-
-    self.garageZone:onPlayerInOut(function(isPointInside, point)
-        if isPointInside then
+    self.garageZone = lib.zones.box({
+        coords = vec3(garageData.x, garageData.y, garageData.z),
+        size = vector3(garageData.length + 5.0, garageData.width + 5.0, 3.5),
+        rotation = 45,
+        debug = Config.DebugMode,
+        onEnter = function()
             TriggerEvent('qb-garages:client:setHouseGarage', self.property_id, true)
-        end
-    end)
+        end,
+    })
 end
 
 function Property:UnregisterGarageZone()
