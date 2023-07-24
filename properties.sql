@@ -2,7 +2,7 @@ DROP table IF EXISTS `properties`;
 
 CREATE TABLE IF NOT EXISTS `properties` (
     `property_id` int(11) NOT NULL AUTO_INCREMENT,
-    `owner_citizenid` varchar(50) NULL,
+    `owner_citizenid` varchar(50) NOT NULL,
     `street` VARCHAR(100) NULL,
     `region` VARCHAR(100) NULL,
     `description` LONGTEXT NULL,
@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS `properties` (
     PRIMARY KEY (`property_id`),
     CONSTRAINT `FK_owner_citizenid` FOREIGN KEY (`owner_citizenid`) REFERENCES `players` (`citizenid`) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT `UQ_owner_apartment` UNIQUE (`owner_citizenid`, `apartment`) -- A character can only own one apartment
-) ENGINE=InnoDB AUTO_INCREMENT=1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
