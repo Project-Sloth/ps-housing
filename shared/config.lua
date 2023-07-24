@@ -7,15 +7,16 @@ exports('GetApartments', function() return ApartmentsTable end)
 Config = {}
 
 -- If you're not utilizing ox_lib, it's time to question your approach.
-Config.Target = "ox" -- "ox" or "qb"
-Config.Notify = "ox" -- "ox" or "qb"
-Config.Radial = "ox" -- "ox" or "qb"
+Config.Target    = "ox" -- "ox" or "qb"
+Config.Notify    = "ox" -- "ox" or "qb"
+Config.Radial    = "ox" -- "ox" or "qb"
+Config.Inventory = "ox" -- "ox" or "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
 
 -- Draw the poly for the property
-Config.DebugMode = true
+Config.DebugMode = false
 
 
 function Debug(...)
@@ -24,11 +25,16 @@ function Debug(...)
     end
 end
 
-Config.PoliceJobName = "police"
+-- If you have multiple police jobs, just add them like below!
+Config.PoliceJobNames = {
+    ["police"] = "police",
+    -- ["police2"] = "police2",
+    -- ["police3"] = "police3",
+}
 
 Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
 
-Config.RaidTimer = 5-- 5 minutes
+Config.RaidTimer = 5 -- 5 minutes
 
 -- Realtor Commisions based on job grade, the rest goes to the owner, if any.
 Config.Commissions = {
@@ -52,8 +58,12 @@ Config.Apartments = {
             },
         },
         shell = "Apartment Furnished",
+        stash = {
+            maxweight = 60000,
+            slots = 8,
+        },
     },
-    
+
     ["South Rockford Drive"] = {
         label = "South Rockford Drive",
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 2 },
@@ -64,6 +74,10 @@ Config.Apartments = {
             },
         },
         shell = "Apartment Furnished",
+        stash = {
+            maxweight = 60000,
+            slots = 8,
+        },
     },
 
     ['Morningwood Blvd'] = {
@@ -76,6 +90,10 @@ Config.Apartments = {
             },
         },
         shell = "Apartment Furnished",
+        stash = {
+            maxweight = 60000,
+            slots = 8,
+        },
     },
 
     ['Tinsel Towers'] = {
@@ -88,6 +106,10 @@ Config.Apartments = {
             },
         },
         shell = "Apartment Furnished",
+        stash = {
+            maxweight = 60000,
+            slots = 8,
+        },
     },
 
     ['Fantastic Plaza'] = {
@@ -100,6 +122,10 @@ Config.Apartments = {
             },
         },
         shell = "Apartment Furnished",
+        stash = {
+            maxweight = 60000,
+            slots = 8,
+        },
     }
 }
 
@@ -110,7 +136,7 @@ Config.Shells = {
         hash = `standardmotel_shell`,
         doorOffset = { x = -0.5, y = -2.3, z = 0.0, h = 90.0, width = 1.5 },
         stash = {
-            maxweight = 100000, 
+            maxweight = 100000,
             slots = 12,
         },
         imgs = {
@@ -126,7 +152,7 @@ Config.Shells = {
         hash = `modernhotel_shell`,
         doorOffset = { x = 4.98, y = 4.35, z = 0.0, h = 179.79, width = 2.0  },
         stash = {
-            maxweight = 150000, 
+            maxweight = 150000,
             slots = 20,
         },
         imgs = {
@@ -146,7 +172,7 @@ Config.Shells = {
         hash = `furnitured_midapart`,
         doorOffset = { x = 1.44, y = -10.25, z = 0.0, h = 0.0, width = 1.5  },
         stash = {
-            maxweight = 200000, 
+            maxweight = 200000,
             slots = 25,
         },
         imgs = {
@@ -182,7 +208,7 @@ Config.Shells = {
         hash = `shell_v16mid`,
         doorOffset = { x = 1.34, y = -14.36, z = -0.5, h = 354.08, width = 1.5  },
         stash = {
-            maxweight = 200000, 
+            maxweight = 200000,
             slots = 25,
         },
         imgs = {
@@ -214,7 +240,7 @@ Config.Shells = {
         hash = `shell_v16low`,
         doorOffset = { x = 4.69, y = -6.5, z = -1.0, h = 358.50, width = 1.5  },
         stash = {
-            maxweight = 200000, 
+            maxweight = 200000,
             slots = 25,
         },
         imgs = {
@@ -238,7 +264,7 @@ Config.Shells = {
         hash = `shell_garagem`,
         doorOffset = { x = 14.0, y = 1.7, z = -0.76, h = 88.49, width = 2.0  },
         stash = {
-            maxweight = 500000, 
+            maxweight = 500000,
             slots = 50,
         },
         imgs = {
@@ -258,7 +284,7 @@ Config.Shells = {
         hash = `shell_office1`,
         doorOffset = { x = 1.2, y = 4.90, z = -0.73, h = 180.0, width = 2.0  },
         stash = {
-            maxweight = 250000, 
+            maxweight = 250000,
             slots = 30,
         },
         imgs = {
@@ -278,7 +304,7 @@ Config.Shells = {
         hash = `shell_store1`,
         doorOffset = { x = -2.69, y = -4.56, z = -0.62, h = 1.91, width = 2.0  },
         stash = {
-            maxweight = 500000, 
+            maxweight = 500000,
             slots = 50,
         },
         imgs = {
@@ -298,7 +324,7 @@ Config.Shells = {
         hash = `shell_warehouse1`,
         doorOffset = { x = -8.96, y = 0.11, z = -0.95, h = 270.64, width = 2.0  },
         stash = {
-            maxweight = 1000000, 
+            maxweight = 1000000,
             slots = 100,
         },
         imgs = {
@@ -318,7 +344,7 @@ Config.Shells = {
         hash = `container_shell`,
         doorOffset = { x = 0.05, y = -5.7, z = -0.22, h = 1.7, width = 2.2  },
         stash = {
-            maxweight = 500000, 
+            maxweight = 500000,
             slots = 100,
         },
         imgs = {
@@ -334,7 +360,7 @@ Config.Shells = {
         hash = `shell_michael`,
         doorOffset = { x = -9.6, y = 5.63, z = -4.07, h = 268.55, width = 2.0  },
         stash = {
-            maxweight = 300000, 
+            maxweight = 300000,
             slots = 50,
         },
         imgs = {
@@ -382,7 +408,7 @@ Config.Shells = {
         hash = `shell_frankaunt`,
         doorOffset = { x = -0.34, y = -5.97, z = -0.57, h = 357.23, width = 2.0  },
         stash = {
-            maxweight = 200000, 
+            maxweight = 200000,
             slots = 50,
         },
         imgs = {
@@ -422,7 +448,7 @@ Config.Shells = {
         hash = `shell_ranch`,
         doorOffset = { x = -1.23, y = -5.54, z = -1.1, h = 272.21, width = 2.0  },
         stash = {
-            maxweight = 500000, 
+            maxweight = 500000,
             slots = 50,
         },
         imgs = {
@@ -454,7 +480,7 @@ Config.Shells = {
         hash = `shell_lester`,
         doorOffset = { x = -1.61, y = -6.02, z = -0.37, h = 357.7, width = 2.0  },
         stash = {
-            maxweight = 15000, 
+            maxweight = 15000,
             slots = 20,
         },
         imgs = {
@@ -478,7 +504,7 @@ Config.Shells = {
         hash = `shell_trevor`,
         doorOffset = { x = 0.2, y = -3.82, z = -0.41, h = 358.4, width = 2.0  },
         stash = {
-            maxweight = 10000, 
+            maxweight = 10000,
             slots = 12,
         },
         imgs = {
@@ -514,7 +540,7 @@ Config.Shells = {
         hash = `shell_trailer`,
         doorOffset = { x = -1.27, y = -2.08, z = -0.48, h = 358.84, width = 2.0  },
         stash = {
-            maxweight = 10000, 
+            maxweight = 10000,
             slots = 12,
         },
         imgs = {
@@ -540,9 +566,13 @@ Config.FurnitureTypes = {
         local stash = string.format("property_%s", property_id) -- if you changed this you will fuck things up
 
         Framework[Config.Target].AddTargetEntity(entity, "Storage", function()
-            local stashConfig = Config.Shells[shell].stash
-            TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
-            TriggerEvent("inventory:client:SetCurrentStash", stash)
+            if Config.Inventory == "ox" then
+                exports.ox_inventory:openInventory('stash', shell)
+            else
+                local stashConfig = Config.Shells[shell].stash
+                TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
+                TriggerEvent("inventory:client:SetCurrentStash", stash)
+            end
         end)
 
         local property = Property.Get(property_id)
