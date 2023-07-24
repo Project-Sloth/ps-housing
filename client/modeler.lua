@@ -413,7 +413,7 @@ Modeler = {
     end,
 
     ClearCart = function (self)
-        for k, v in pairs(self.Cart) do
+        for _, v in pairs(self.Cart) do
             DeleteEntity(v.entity)
         end
 
@@ -427,8 +427,14 @@ Modeler = {
         local items = {}
         local totalPrice = 0
 
+	-- If the cart is empty, return notify
+        if not next(self.Cart) then
+            lib.notify({title= "Your cart is empty", type = "error"})
+            return
+        end
+
         -- seperate loop to get total price so it doesnt have to do all that math for no reason
-        for k, v in pairs(self.Cart) do
+        for _, v in pairs(self.Cart) do
             totalPrice = totalPrice + v.price
         end
 
@@ -438,7 +444,7 @@ Modeler = {
             return
         end
 
-        for k, v in pairs(self.Cart) do
+        for _, v in pairs(self.Cart) do
 
             local offsetPos = {
                 x = math.floor((v.position.x - self.shellPos.x) * 10000) / 10000,
