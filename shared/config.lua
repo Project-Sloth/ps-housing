@@ -25,9 +25,13 @@ function Debug(...)
     end
 end
 
-Config.PoliceJobName = "police"
+Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid properties!
+    "police",
+    -- "police2",
+    -- "police3",
+}
 
-Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
+Config.MinGradeToRaid = 3  -- Minimum grade to raid a property
 
 Config.RaidTimer = 5-- 5 minutes
 

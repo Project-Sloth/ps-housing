@@ -1,5 +1,11 @@
 Framework = {}
 
+PoliceJobs = {}
+
+-- Convert config table to usable keys
+for i = 1, #Config.PoliceJobNames do
+    PoliceJobs[Config.PoliceJobNames[i]] = true
+end
 
 if IsDuplicityVersion() then
     Framework.ox = {}
@@ -100,7 +106,7 @@ Framework.qb = {
                             local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                             local onDuty = job.onduty
 
-                            return jobName == Config.PoliceJobName and gradeAllowed and onDuty
+                            return PoliceJobs[jobName] and gradeAllowed and onDuty
                         end,
                     },
                 },
@@ -141,7 +147,7 @@ Framework.qb = {
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == Config.PoliceJobName and gradeAllowed and onDuty
+                        return jobName == PoliceJobs[jobName] and gradeAllowed and onDuty
                     end,
                 },
             }
