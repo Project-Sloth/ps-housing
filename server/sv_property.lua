@@ -217,6 +217,9 @@ function Property:UpdateOwner(data)
     local targetSrc = data.targetSrc
     local realtorSrc = data.realtorSrc
 
+    if not realtorSrc then Debug("No Realtor Src found") return end
+    if not targetSrc then Debug("No Target Src found") return end
+
     local previousOwner = self.propertyData.owner
 
     local targetPlayer  = QBCore.Functions.GetPlayer(tonumber(targetSrc))
