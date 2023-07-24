@@ -2,7 +2,7 @@ DROP table IF EXISTS `properties`;
 
 CREATE TABLE IF NOT EXISTS `properties` (
     `property_id` int(11) NOT NULL AUTO_INCREMENT,
-    `owner_citizenid` varchar(50) NOT NULL,
+    `owner_citizenid` varchar(50) NULL,
     `street` VARCHAR(100) NULL,
     `region` VARCHAR(100) NULL,
     `description` LONGTEXT NULL,

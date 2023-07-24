@@ -7,7 +7,7 @@ if IsDuplicityVersion() then
 
     function Framework.ox.Notify(src, message, type)
         type = type == "inform" and "info" or type
-        TriggerClientEvent("ox_lib:notify", src, {title="Property", description=message, type=type})
+        TriggerClientEvent("ox_lib:notify", src, { title = "Property", description = message, type = type })
     end
 
     function Framework.qb.Notify(src, message, type)
@@ -19,7 +19,7 @@ if IsDuplicityVersion() then
 end
 
 local function hasApartment(apts)
-    for propertyId, _  in pairs(apts) do
+    for propertyId, _ in pairs(apts) do
         local property = PropertiesTable[propertyId]
         if property.owner then
             return true
@@ -30,12 +30,10 @@ local function hasApartment(apts)
 end
 
 Framework.qb = {
-
     Notify = function(message, type)
         type = type == "info" and "primary" or type
         TriggerEvent('QBCore:Notify', message, type)
     end,
-
     AddEntrance = function(coords, size, heading, propertyId, enter, raid, showcase, showData, targetName)
         local property_id = propertyId
         exports["qb-target"]:AddBoxZone(
@@ -99,7 +97,6 @@ Framework.qb = {
                             local jobType = job.type
                             local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                             local onDuty = job.onduty
-
                             return jobType == Config.PoliceJobType and gradeAllowed and onDuty
                         end,
                     },
@@ -109,7 +106,6 @@ Framework.qb = {
 
         return targetName
     end,
-
     AddApartmentEntrance = function(coords, size, heading, apartment, enter, seeAll, seeAllToRaid, targetName)
         exports['qb-target']:AddBoxZone(targetName, vector3(coords.x, coords.y, coords.z), size.x, size.y, {
             name = targetName,
@@ -135,19 +131,17 @@ Framework.qb = {
                     label = "Raid Apartment",
                     action = seeAllToRaid,
                     canInteract = function()
-                        local PlayerData = QBCore.Functions.GetPlayerData()
-                        local job = PlayerData.job
-                        local jobName = job.name
-                        local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
-                        local onDuty = job.onduty
-
-                        return jobName == Config.PoliceJobName and gradeAllowed and onDuty
+                           local PlayerData = QBCore.Functions.GetPlayerData()
+                            local job = PlayerData.job
+                            local jobType = job.type
+                            local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
+                            local onDuty = job.onduty
+                            return jobType == Config.PoliceJobType and gradeAllowed and onDuty
                     end,
                 },
             }
         })
     end,
-
     AddDoorZoneInside = function(coords, size, heading, leave, checkDoor)
         exports["qb-target"]:AddBoxZone(
             "shellExit",
@@ -177,11 +171,9 @@ Framework.qb = {
 
         return "shellExit"
     end,
-
     RemoveTargetZone = function(targetName)
         exports["qb-target"]:RemoveZone(targetName)
     end,
-
     AddRadialOption = function(id, label, icon, _, event, options)
         exports['qb-radialmenu']:AddOption({
             id = id,
@@ -193,12 +185,10 @@ Framework.qb = {
             options = options
         }, id)
     end,
-
     RemoveRadialOption = function(id)
         exports['qb-radialmenu']:RemoveOption(id)
     end,
-
-    AddTargetEntity = function (entity, label, action)
+    AddTargetEntity = function(entity, label, action)
         exports["qb-target"]:AddTargetEntity(entity, {
             options = {
                 {
@@ -208,8 +198,7 @@ Framework.qb = {
             },
         })
     end,
-
-    RemoveTargetEntity = function (entity)
+    RemoveTargetEntity = function(entity)
         exports["qb-target"]:RemoveTargetEntity(entity)
     end,
 }
@@ -217,15 +206,14 @@ Framework.qb = {
 Framework.ox = {
     Notify = function(message, type)
         type = type == "inform" and "info" or type
-        
+
         lib.notify({
             title = 'Property',
             description = message,
             type = type
         })
     end,
-
-    AddEntrance = function (coords, size, heading, propertyId, enter, raid, showcase, showData, _)
+    AddEntrance = function(coords, size, heading, propertyId, enter, raid, showcase, showData, _)
         local property_id = propertyId
 
         local handler = exports.ox_target:addBoxZone({
@@ -248,7 +236,7 @@ Framework.ox = {
                     canInteract = function()
                         -- local property = Property.Get(property_id)
                         -- if property.propertyData.owner ~= nil then return false end -- if its owned, it cannot be showcased
-                        
+
                         local PlayerData = QBCore.Functions.GetPlayerData()
                         local job = PlayerData.job
                         local jobName = job.name
@@ -293,8 +281,7 @@ Framework.ox = {
 
         return handler
     end,
-
-    AddApartmentEntrance = function (coords, size, heading, apartment, enter, seeAll, seeAllToRaid, _)        
+    AddApartmentEntrance = function(coords, size, heading, apartment, enter, seeAll, seeAllToRaid, _)
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z),
             size = vector3(size.y, size.x, size.z),
@@ -331,8 +318,7 @@ Framework.ox = {
 
         return handler
     end,
-
-    AddDoorZoneInside = function (coords, size, heading, leave, checkDoor)
+    AddDoorZoneInside = function(coords, size, heading, leave, checkDoor)
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z), --z = 3.0
             size = vector3(size.y, size.x, size.z),
@@ -354,11 +340,9 @@ Framework.ox = {
 
         return handler
     end,
-
-    RemoveTargetZone = function (handler)
+    RemoveTargetZone = function(handler)
         exports.ox_target:removeZone(handler)
     end,
-
     AddRadialOption = function(id, label, icon, fn)
         lib.addRadialItem({
             id = id,
@@ -367,12 +351,10 @@ Framework.ox = {
             onSelect = fn,
         })
     end,
-
     RemoveRadialOption = function(id)
         lib.removeRadialItem(id)
     end,
-
-    AddTargetEntity = function (entity, label, action)
+    AddTargetEntity = function(entity, label, action)
         exports.ox_target:addLocalEntity(entity, {
             {
                 name = label,
@@ -381,8 +363,7 @@ Framework.ox = {
             },
         })
     end,
-
-    RemoveTargetEntity = function (entity)
+    RemoveTargetEntity = function(entity)
         exports.ox_target:removeLocalEntity(entity)
     end,
 }

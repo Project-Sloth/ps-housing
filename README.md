@@ -56,17 +56,7 @@ This will open a furniture store complete with all of the props. Select an item 
 # Installation
 ## PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
 
-1. Insert the following event towards the end of qb-multicharacters > client > main.lua 
-
-```lua
-RegisterNetEvent("qb-multicharacter:client:destroyCam", function ()
-    SetCamActive(cam, false)
-    DestroyCam(cam, true)
-    RenderScriptCams(false, false, 1, true, true)
-end)
-```
-
-2. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
+1. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
 
 `qb-multicharacter > server > main.lua`
 ```lua
@@ -104,7 +94,7 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     end
 end)
 ```
-3. Find the following events in `qb-spawn` and change in client/client.lua event to: 
+2. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
 `qb-spawn > client.lua > line 51 > 'qb-spawn:client:setupSpawns' event`
 ```lua
@@ -226,7 +216,7 @@ QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb
 end)
 ```
 
-4. Find the following events in `qb-garages` and change: 
+3. Find the following events in `qb-garages` and change: 
 `qb-garages > server > main.lua > around line 120` on event `qb-garage:server:checkOwnership`
 
 Replace 
@@ -245,13 +235,19 @@ RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
 end)
 ```
 
-5. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
-6. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
-7. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
-8. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
-9. Ensure bl-realtor above ps-housing.
-10. In your server.cfg, add `ensure ox_lib` above all other resources
-11. Install the dependencies below.
+4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
+
+5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
+
+6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
+
+7. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
+
+8. Ensure bl-realtor above ps-housing.
+
+9. In your server.cfg, add `ensure ox_lib` above all other resources
+
+10. Install the dependencies below.
 
 # Dependency
 1. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
