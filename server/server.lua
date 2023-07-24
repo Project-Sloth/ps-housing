@@ -1,31 +1,12 @@
 QBCore = exports['qb-core']:GetCoreObject()
 -- PSCore = exports['ps-core']:GetCoreObject()
 
-if Config.Inventory == "ox" then
-local function registerOxInventoryStashes()
-    for k,v in pairs(Config.Shells) do
-        if v.stash then
-            exports.ox_inventory:RegisterStash(k, v.label.. " Stash", v.stash.slots, v.stash.maxweight, true)
-        end
-    end
-end
-
-registerOxInventoryStashes()
-
-AddEventHandler('onServerResourceStart', function(resourceName)
-    if resourceName == 'ox_inventory' then
-        Wait(0)
-        registerOxInventoryStashes()
-    end
-end)
-end
-
 local dbloaded = false
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)
         if not result then return end
         if result.id then -- If only one result
-            result = { result }
+            result = {result}
         end
         for _, v in pairs(result) do
             local id = tostring(v.property_id)
@@ -66,7 +47,7 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
     return propertiesData
 end)
 
-AddEventHandler("ps-housing:server:registerProperty", function(propertyData)  -- triggered by realtor job
+AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
     local propertyData = propertyData
 
     propertyData.owner = propertyData.owner or nil
@@ -75,11 +56,11 @@ AddEventHandler("ps-housing:server:registerProperty", function(propertyData)  --
     propertyData.furnitures = propertyData.furnitures or {}
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
-
+    
     local cols = "(owner_citizenid, street, region, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
     local vals = "(@owner_citizenid, @street, @region, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
 
-    local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals, {
+    local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
         ["@owner_citizenid"] = propertyData.owner or nil,
         ["@street"] = propertyData.street,
         ["@region"] = propertyData.region,
@@ -97,7 +78,7 @@ AddEventHandler("ps-housing:server:registerProperty", function(propertyData)  --
     id = tostring(id)
     propertyData.property_id = id
     PropertiesTable[id] = Property:new(propertyData)
-
+    
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
     if propertyData.apartment then
@@ -114,7 +95,7 @@ AddEventHandler("ps-housing:server:registerProperty", function(propertyData)  --
         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
 
         -- This will create the stash for the apartment and migrate the items from the old apartment stash if applicable
-        TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id, propertyData.shell)
+        TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id)
     end
 end)
 
@@ -167,37 +148,22 @@ end)
 
 -- Creates apartment stash
 -- If player has an existing apartment from qb-apartments, it will transfer the items over to the new apartment stash
-RegisterNetEvent("ps-housing:server:createApartmentStash", function(citizenId, propertyId, propertyShell)
+RegisterNetEvent("ps-housing:server:createApartmentStash", function(citizenId, propertyId)
     local stashId = string.format("property_%s", propertyId)
 
-    if Config.Inventory == "ox" then
-        -- Check for existing apartment and corresponding stash
-        local result = MySQL.query.await('SELECT `name`, `data` FROM ox_inventory WHERE `owner` = ? AND `name` LIKE "%apartment%"', { citizenId })
+    -- Check for existing apartment and corresponding stash
+    local result = MySQL.query.await('SELECT items, stash FROM stashitems WHERE stash IN (SELECT name FROM apartments WHERE citizenid = ?)', { citizenId }) 
+   
+    local items = {}
+    if result[1] ~= nil then
+        items = json.decode(result[1].items)
 
-        local items = {}
-
-        if result[1] ~= nil then
-            items = json.decode(result[1].data)
-
-            -- MySQL.Async.execute('DELETE FROM ox_inventory WHERE `owner` = ? AND `name` LIKE "%apartment%"', { citizenId })
-        end
-
-        MySQL.Async.execute("INSERT INTO ox_inventory (owner, name, data) VALUES (?, ?, ?)", { citizenId, propertyShell, json.encode(items) })
-    else
-        -- Check for existing apartment and corresponding stash
-        local result = MySQL.query.await('SELECT items, stash FROM stashitems WHERE stash IN (SELECT name FROM apartments WHERE citizenid = ?)', { citizenId })
-
-        local items = {}
-        if result[1] ~= nil then
-            items = json.decode(result[1].items)
-
-            -- Delete the old apartment stash as it is no longer needed
-            MySQL.Async.execute('DELETE FROM stashitems WHERE stash = ?', { result[1].stash })
-        end
-
-        -- This will create the stash for the apartment (without requiring player to have first opened and placed item in it)
-        TriggerEvent('qb-inventory:server:SaveStashItems', stashId, items)
+        -- Delete the old apartment stash as it is no longer needed
+        MySQL.Async.execute('DELETE FROM stashitems WHERE stash = ?', { result[1].stash })
     end
+
+    -- This will create the stash for the apartment (without requiring player to have first opened and placed item in it)
+    TriggerEvent('qb-inventory:server:SaveStashItems', stashId, items)
 end)
 
 RegisterNetEvent('qb-apartments:returnBucket', function()
@@ -205,7 +171,7 @@ RegisterNetEvent('qb-apartments:returnBucket', function()
     SetPlayerRoutingBucket(src, 0)
 end)
 
-AddEventHandler("ps-housing:server:addTenantToApartment", function(data)
+AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
     local apartment = data.apartment
     local targetSrc = tonumber(data.targetSrc)
     local realtorSrc = data.realtorSrc

@@ -14,25 +14,25 @@ ui_page 'html/index.html'
 dependency 'fivem-freecam'
 
 shared_script {
-    '@ox_lib/init.lua',
-    "shared/config.lua",
-    "shared/framework.lua",
-}
+  '@ox_lib/init.lua',
+  "shared/config.lua",
+  "shared/framework.lua",
+  }
 
 client_script {
-    '@PolyZone/client.lua',
-    '@PolyZone/BoxZone.lua',
-    'client/apartment.lua',
-    'client/cl_property.lua',
-    'client/client.lua',
-    'client/modeler.lua',
+  '@PolyZone/client.lua',
+  '@PolyZone/BoxZone.lua',
+  'client/apartment.lua',
+  'client/cl_property.lua',
+  'client/client.lua',
+  'client/modeler.lua',
 }
 
 server_script {
-    '@oxmysql/lib/MySQL.lua',
-    "server/sv_property.lua",
-    "server/server.lua",
-}
+  '@oxmysql/lib/MySQL.lua',
+  "server/sv_property.lua",
+  "server/server.lua",
+  }
 
 files {
   'html/**',
