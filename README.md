@@ -282,4 +282,4 @@ ensure five-freecam
 * [Byte Labs Project](https://github.com/Byte-Labs-Project)
 * [Project Sloth Team](https://discord.gg/projectsloth)
 * [K4MB1](https://www.k4mb1maps.com/)
-* [Candrex](https://github.com/ImXirvin)
+* [Candrex](https://github.com/CandrexDev)
