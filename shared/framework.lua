@@ -216,11 +216,11 @@ Framework.qb = {
     OpenInventory = function (stash, stashConfig)
         TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
         TriggerEvent("inventory:client:SetCurrentStash", stash)
-    end
+    end,
 
     RegisterInventory = function (stash, stashConfig, label)
         -- Used for ox_inventory compat
-    end
+    end,
 }
 
 Framework.ox = {
@@ -397,9 +397,9 @@ Framework.ox = {
 
     OpenInventory = function (stash, stashConfig)
         exports.ox_inventory:openInventory('stash', stash)
-    end
+    end,
 
     RegisterInventory = function (stash, stashConfig, label)
         exports.ox_inventory:RegisterStash(stash, label, stashConfig.slots, stashConfig.maxweight, nil)
-    end
+    end,
 }
