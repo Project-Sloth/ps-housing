@@ -66,7 +66,7 @@ Framework.qb = {
                             local job = PlayerData.job
                             local jobName = job.name
                             local onDuty = job.onduty
-                            return jobName == "realestate" and onDuty
+                            return jobName == "realtor" and onDuty
                         end,
                     },
                     {
@@ -77,7 +77,7 @@ Framework.qb = {
                             local job = PlayerData.job
                             local jobName = job.name
                             local onDuty = job.onduty
-                            return jobName == "realestate" and onDuty
+                            return jobName == "realtor" and onDuty
                         end,
                     },
                     {
@@ -243,7 +243,7 @@ Framework.ox = {
                         local job = PlayerData.job
                         local jobName = job.name
 
-                        return jobName == "realestate"
+                        return jobName == "realtor"
                     end,
                 },
                 {
@@ -254,7 +254,7 @@ Framework.ox = {
                         local job = PlayerData.job
                         local jobName = job.name
                         local onDuty = job.onduty
-                        return jobName == "realestate" and onDuty
+                        return jobName == "realtor" and onDuty
                     end,
                 },
                 {
