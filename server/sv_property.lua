@@ -489,11 +489,11 @@ RegisterNetEvent('ps-housing:server:raidProperty', function (property_id)
 
     local PlayerData = GetPlayerData(src)
     local job = PlayerData.job
-    local jobName = job.name
+    local jobType = job.type
     local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
     local onDuty = job.onduty
 
-    if jobName == "police" and onDuty and gradeAllowed then
+    if jobType == Config.PoliceJobType and onDuty and gradeAllowed then
         if not property.raiding then
             local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, (property.propertyData.street or property.propertyData.apartment) .. " " .. property.property_id, property_id)
             if confirmRaid == "confirm" then

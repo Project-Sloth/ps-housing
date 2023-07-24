@@ -96,11 +96,11 @@ Framework.qb = {
                         canInteract = function()
                             local PlayerData = QBCore.Functions.GetPlayerData()
                             local job = PlayerData.job
-                            local jobName = job.name
+                            local jobType = job.type
                             local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                             local onDuty = job.onduty
 
-                            return jobName == Config.PoliceJobName and gradeAllowed and onDuty
+                            return jobType == Config.PoliceJobType and gradeAllowed and onDuty
                         end,
                     },
                 },
@@ -281,11 +281,11 @@ Framework.ox = {
                     canInteract = function()
                         local PlayerData = QBCore.Functions.GetPlayerData()
                         local job = PlayerData.job
-                        local jobName = job.name
+                        local jobType = job.type
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == "police" and onDuty and gradeAllowed
+                        return jobName == Config.PoliceJobType and onDuty and gradeAllowed
                     end,
                 },
             },

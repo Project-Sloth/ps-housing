@@ -24,7 +24,7 @@ function Debug(...)
     end
 end
 
-Config.PoliceJobName = "police"
+Config.PoliceJobType = "leo"
 
 Config.MinGradeToRaid = 3 -- Minimum grade to raid a property
 
