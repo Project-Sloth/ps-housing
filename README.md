@@ -261,7 +261,6 @@ end)
 ```
 ensure ox_lib
 ensure bl-realtor
-ensure ps-core
 ensure ps-housing
 ensure fivem-freecam
 ```
