@@ -17,7 +17,7 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 ![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/fadc1cab-ceea-462a-8b37-f7fec10f415b)
 
 # Usage
-- Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
+- Players can decorate their houses and apartments with a full selection of furnite and decorations (included a wide variety of custom housing props)
 - Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
   - When a player first spawns after enabling ps-housing, they will have to choose an apartment. Once they spawn in the stashitems from their previous qb-apartment will be migrated to their new apartment stash.
 - Allows players to purchase and list houses for sale through `bl-realtor` and the realtor job
@@ -43,7 +43,7 @@ All properties must be manually configured for sale by the realtor job, giving y
 ## Furnish and decorate a property
 Once inside the property, the player can furnish and decorate the property to their liking. They can also invite other players to their property, and give them access to the property. Open the furnite store by pressing `Z`. 
 
-This will open a furniture store complete with all of the props. Select an item from the catalog and place it into the property. You can use the placement gizmo to position the item to your liking as well as use the UI tools for fine tune control over the placement. Once you are happy with the positioning, make sure you press `Add to Cart` before moving on. Continue to add as many items as you want to your cart. Once you are done, go to the `Checkout` and purchase the items. 
+This will open a furnite store complete with all of the props. Select an item from the catalog and place it into the property. You can use the placement gizmo to position the item to your liking as well as use the UI tools for fine tune control over the placement. Once you are happy with the positioning, make sure you press `Add to Cart` before moving on. Continue to add as many items as you want to your cart. Once you are done, go to the `Checkout` and purchase the items. 
 
 > Note: The place on ground button sometimes does not work properly depending on where the native detects the ground to be.
 
