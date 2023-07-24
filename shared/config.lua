@@ -10,6 +10,7 @@ Config = {}
 Config.Target = "ox" -- "ox" or "qb"
 Config.Notify = "ox" -- "ox" or "qb"
 Config.Radial = "ox" -- "ox" or "qb"
+Config.Inventory = "ox" -- "ox" or "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
@@ -541,8 +542,7 @@ Config.FurnitureTypes = {
 
         Framework[Config.Target].AddTargetEntity(entity, "Storage", function()
             local stashConfig = Config.Shells[shell].stash
-            TriggerServerEvent("inventory:server:OpenInventory", "stash", stash, stashConfig)
-            TriggerEvent("inventory:client:SetCurrentStash", stash)
+            Framework[Config.Inventory]:OpenInventory(stash, stashConfig)
         end)
 
         local property = Property.Get(property_id)
