@@ -242,7 +242,7 @@ function Property:LeaveShell()
         self.exitTarget = nil
     end
 
-    self:CreateBlip()
+    self:RemoveBlip()
 
     self:RemoveMenus()
 
