@@ -265,6 +265,7 @@ Framework.ox = {
             options = {
                 {
                     label = "Enter Property",
+                    icon = "fas fa-door-open",
                     onSelect = enter,
                     canInteract = function()
                         local property = Property.Get(property_id)
@@ -273,6 +274,7 @@ Framework.ox = {
                 },
                 {
                     label = "Showcase Property",
+                    icon = "fas fa-eye",
                     onSelect = showcase,
                     canInteract = function()
                         -- local property = Property.Get(property_id)
@@ -287,6 +289,7 @@ Framework.ox = {
                 },
                 {
                     label = "Property Info",
+                    icon = "fas fa-circle-info",
                     onSelect = showData,
                     canInteract = function()
                         local PlayerData = QBCore.Functions.GetPlayerData()
@@ -298,6 +301,7 @@ Framework.ox = {
                 },
                 {
                     label = "Ring Doorbell",
+                    icon = "fas fa-bell",
                     onSelect = enter,
                     canInteract = function()
                         local property = Property.Get(property_id)
@@ -306,6 +310,7 @@ Framework.ox = {
                 },
                 {
                     label = "Raid Property",
+                    icon = "fas fa-building-shield",
                     onSelect = raid,
                     canInteract = function()
                         local PlayerData = QBCore.Functions.GetPlayerData()
@@ -333,6 +338,7 @@ Framework.ox = {
                 {
                     label = "Enter Apartment",
                     onSelect = enter,
+                    icon = "fas fa-door-open",
                     canInteract = function()
                         local apartments = ApartmentsTable[apartment].apartments
                         return hasApartment(apartments)
@@ -341,10 +347,12 @@ Framework.ox = {
                 {
                     label = "See all apartments",
                     onSelect = seeAll,
+                    icon = "fas fa-circle-info",
                 },
                 {
                     label = "Raid Apartment",
                     onSelect = seeAllToRaid,
+                    icon = "fas fa-building-shield",
                     canInteract = function()
                         local PlayerData = QBCore.Functions.GetPlayerData()
                         local job = PlayerData.job
@@ -372,11 +380,13 @@ Framework.ox = {
                     name = "leave",
                     label = "Leave Property",
                     onSelect = leave,
+                    icon = "fas fa-right-from-bracket",
                 },
                 {
                     name = "doorbell",
                     label = "Check Door",
                     onSelect = checkDoor,
+                    icon = "fas fa-bell",
                 },
             },
         })
