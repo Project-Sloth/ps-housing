@@ -516,7 +516,11 @@ end
 function Property:CreateBlip()
     local door_data = self.propertyData.door_data
     local blip = AddBlipForCoord(door_data.x, door_data.y, door_data.z)
-    SetBlipSprite(blip, 40)
+    if self.propertyData.garage_data.x ~= nil then
+        SetBlipSprite(blip, 492)
+    else
+        SetBlipSprite(blip, 40)
+    end
     SetBlipScale(blip, 0.8)
     SetBlipColour(blip, 2)
     SetBlipAsShortRange(blip, true)
