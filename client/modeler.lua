@@ -327,6 +327,7 @@ Modeler = {
     -- maybe should do it all at once when the user leaves the menu????
     UpdateFurniture = function (self, item)
         local newPos = GetEntityCoords(item.entity)
+        local newRot = GetEntityRotation(item.entity)
 
         local offsetPos = {
                 x = math.floor((newPos.x - self.shellPos.x) * 10000) / 10000,
@@ -339,7 +340,7 @@ Modeler = {
             label = item.label,
             object = item.object,
             position = offsetPos,
-            rotation = item.rotation,
+            rotation = newRot,
             type = item.type,
         }
 
