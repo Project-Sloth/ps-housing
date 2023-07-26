@@ -434,7 +434,7 @@ Modeler = {
             return
         end
 
-        -- seperate loop to get total price so it doesnt have to do all that math for no reason
+        -- separate loop to get total price so it doesnt have to do all that math for no reason
         for _, v in pairs(self.Cart) do
             totalPrice = totalPrice + v.price
         end
