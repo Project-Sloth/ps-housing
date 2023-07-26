@@ -64,7 +64,6 @@ onMount(() => {
 					class="bg-[color:var(--color-tertiary)] text-[color:var(--color-text)] text-[2rem] px-[1rem] py-[0.5rem] w-full hover:cursor-pointer"
 					on:click={() => {
 						showModal = false
-            $CART = []
 					}}
 				>
 					No
