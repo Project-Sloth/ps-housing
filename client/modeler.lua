@@ -430,7 +430,7 @@ Modeler = {
 
 	-- If the cart is empty, return notify
         if not next(self.Cart) then
-            lib.notify({title= "Your cart is empty", type = "error"})
+	    Framework[Config.Notify].Notify("Your cart is empty", "error")
             return
         end
 
@@ -441,7 +441,7 @@ Modeler = {
 
         local PlayerData = QBCore.Functions.GetPlayerData()
         if PlayerData.money.cash < totalPrice and PlayerData.money.bank < totalPrice then
-            lib.notify({title= "You don't have enough money!", type = "error"})
+	    Framework[Config.Notify].Notify("You don't have enough money!", "error")
             return
         end
 
