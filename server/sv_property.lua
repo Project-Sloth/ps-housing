@@ -694,7 +694,7 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizen
 
     if not property.propertyData.owner == citizenid then
         -- hacker ban or something
-        TriggerClientEvent("ox_lib:notify", src, {title="You are not the owner of this property!", type="error"})
+        Framework[Config.Notify].Notify(src, "You are not the owner of this property!", "error")
         return
     end
 
