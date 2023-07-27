@@ -423,8 +423,8 @@ function Property:DeleteProperty(data)
 
     Framework[Config.Notify].Notify(realtorSrc, "Property with id: " .. self.property_id .." has been removed.", "info")
     
-    self = nil
     Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
+    self = nil
 end
 
 function Property.Get(property_id)
