@@ -430,16 +430,19 @@ function Property:OpenDoorbellMenu()
 end
 
 function Property:LoadFurniture(furniture)
-    local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, furniture.position.x, furniture.position.y,
-        furniture.position.z)
+    local coords = GetOffsetFromEntityInWorldCoords(self.shellObj, furniture.position.x, furniture.position.y, furniture.position.z)
     local hash = furniture.object
 
     lib.requestModel(hash)
     local entity = CreateObjectNoOffset(hash, coords.x, coords.y, coords.z, false, true, false)
     SetModelAsNoLongerNeeded(hash)
     SetEntityRotation(entity, furniture.rotation.x, furniture.rotation.y, furniture.rotation.z, 2, true)
-    if not Config.DynamicDoors then FreezeEntityPosition(entity, true) end
 
+    if furniture.type == 'door' and Config.EnableDynamicDoors then
+        Debug("Object: "..furniture.label.." wont be frozen")
+    else
+        FreezeEntityPosition(entity, true)
+    end
 
     if furniture.type and Config.FurnitureTypes[furniture.type] then
         Config.FurnitureTypes[furniture.type](entity, self.property_id, self.propertyData.shell)
