@@ -544,7 +544,7 @@ Config.FurnitureTypes = {
     ["storage"] = function(entity, property_id, shell, furniture, count)
         local stash = string.format("property_%s", property_id) -- if you changed this you will fuck things up
 
-        Framework[Config.Target].AddTargetEntity(entity, "Storage", function()
+        Framework[Config.Target].AddTargetEntity(entity, "Storage", "fas fa-box-open", function()
             local stashConfig = Config.Shells[shell].stash
             Framework[Config.Inventory].OpenInventory(stash, stashConfig)
         end)
@@ -554,7 +554,7 @@ Config.FurnitureTypes = {
     end,
 
     ["clothing"] = function(entity, property_id, shell, furniture, count)
-        Framework[Config.Target].AddTargetEntity(entity, "Clothing", function()
+        Framework[Config.Target].AddTargetEntity(entity, "Clothing", "fas fa-shirt", function()
             local heading = GetEntityHeading(cache.ped)
             SetEntityHeading(cache.ped, heading - 180.0)
             TriggerEvent("qb-clothing:client:openOutfitMenu")
