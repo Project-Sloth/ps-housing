@@ -438,7 +438,7 @@ function Property:LoadFurniture(furniture)
     local entity = CreateObjectNoOffset(hash, coords.x, coords.y, coords.z, false, true, false)
     SetModelAsNoLongerNeeded(hash)
     SetEntityRotation(entity, furniture.rotation.x, furniture.rotation.y, furniture.rotation.z, 2, true)
-    FreezeEntityPosition(entity, true)
+    if not Config.DynamicDoors then FreezeEntityPosition(entity, true) end
 
 
     if furniture.type and Config.FurnitureTypes[furniture.type] then

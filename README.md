@@ -47,6 +47,18 @@ This will open a furniture store complete with all of the props. Select an item 
 
 > Note: The place on ground button sometimes does not work properly depending on where the native detects the ground to be.
 
+## Dynamic Doors Preview & Setup
+
+https://github.com/complexza/ps-housing/assets/74205343/1af960a4-66ac-4d93-abc7-8eddd9802976
+
+https://github.com/complexza/ps-housing/assets/74205343/d6ca08d3-70ae-4c1e-970e-bddac9143ba2
+
+### Setup
+- You will need to set the `Config.EnableDynanicDoors = true`
+- You will have to add this convar into your server.cfg `setr game_enableDynamicDoorCreation "true"`
+
+> Note: The convar has to be in your server.cfg inorder for the doors to be dynamic!
+
 # Important
 
 * Players need to place their [stash](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#LL426C96-L426C96) and [wardrobe](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L427) or else they wont have one. Check [Config](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L422) for more information.
