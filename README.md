@@ -49,9 +49,9 @@ This will open a furniture store complete with all of the props. Select an item 
 
 ## Dynamic Doors Preview & Setup
 
-https://github.com/complexza/ps-housing/assets/74205343/1af960a4-66ac-4d93-abc7-8eddd9802976
+https://github.com/complexza/ps-housing/assets/74205343/fef28197-8e95-4b5f-aba8-b3e5409456d8
 
-https://github.com/complexza/ps-housing/assets/74205343/d6ca08d3-70ae-4c1e-970e-bddac9143ba2
+https://github.com/complexza/ps-housing/assets/74205343/196bb25e-75b9-42f6-b1c3-fe86ad477544
 
 ### Setup
 - You will need to set the `Config.EnableDynanicDoors = true`
