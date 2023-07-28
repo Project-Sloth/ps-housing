@@ -476,7 +476,7 @@ RegisterNetEvent("ps-housing:server:showcaseProperty", function(property_id)
     local jobName = job.name
     local onDuty = job.onduty
 
-    if jobName == "realtor" and onDuty then
+    if jobName == Config.RealtorJobName and onDuty then
         local showcase = lib.callback.await('ps-housing:cb:showcase', src)
         if showcase == "confirm" then
             property:PlayerEnter(src)
@@ -502,7 +502,7 @@ RegisterNetEvent('ps-housing:server:raidProperty', function (property_id)
     local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
     local onDuty = job.onduty
 
-    if jobName == "police" and onDuty and gradeAllowed then
+    if jobName == PoliceJobs[jobName] and onDuty and gradeAllowed then
         if not property.raiding then
             local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, (property.propertyData.street or property.propertyData.apartment) .. " " .. property.property_id, property_id)
             if confirmRaid == "confirm" then
@@ -762,7 +762,7 @@ lib.callback.register('ps-housing:cb:getPropertyInfo', function (source, propert
     local jobName = job.name
     local onDuty = job.onduty
 
-    if  not jobName == "realtor" and not onDuty then return end
+    if  not jobName == Config.RealtorJobName and not onDuty then return end
 
     local data = {}
 
