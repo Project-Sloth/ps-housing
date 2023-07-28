@@ -84,7 +84,7 @@ Framework.qb = {
                             local job = PlayerData.job
                             local jobName = job.name
                             local onDuty = job.onduty
-                            return jobName == "realtor" and onDuty
+                            return jobName == Config.RealtorJobName and onDuty
                         end,
                     },
                     {
@@ -96,7 +96,7 @@ Framework.qb = {
                             local job = PlayerData.job
                             local jobName = job.name
                             local onDuty = job.onduty
-                            return jobName == "realtor" and onDuty
+                            return jobName == Config.RealtorJobName and onDuty
                         end,
                     },
                     {
@@ -285,7 +285,7 @@ Framework.ox = {
                         local job = PlayerData.job
                         local jobName = job.name
 
-                        return jobName == "realtor"
+                        return jobName == Config.RealtorJobName
                     end,
                 },
                 {
@@ -297,7 +297,7 @@ Framework.ox = {
                         local job = PlayerData.job
                         local jobName = job.name
                         local onDuty = job.onduty
-                        return jobName == "realtor" and onDuty
+                        return jobName == Config.RealtorJobName and onDuty
                     end,
                 },
                 {
@@ -320,7 +320,7 @@ Framework.ox = {
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == "police" and onDuty and gradeAllowed
+                        return jobName == PoliceJobs[jobName] and onDuty and gradeAllowed
                     end,
                 },
             },
@@ -361,7 +361,7 @@ Framework.ox = {
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == "police" and onDuty and gradeAllowed
+                        return jobName == PoliceJobs[jobName] and onDuty and gradeAllowed
                     end,
                 },
             },
