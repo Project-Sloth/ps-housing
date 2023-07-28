@@ -196,7 +196,7 @@ function Property:UnregisterGarageZone()
 
     TriggerEvent("qb-garages:client:removeHouseGarage", self.property_id)
 
-    self.garageZone:destroy()
+    self.garageZone:remove()
     self.garageZone = nil
 end
 
