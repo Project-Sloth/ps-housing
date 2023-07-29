@@ -47,14 +47,18 @@ This will open a furniture store complete with all of the props. Select an item 
 
 > Note: The place on ground button sometimes does not work properly depending on where the native detects the ground to be.
 
-## Dynamic Doors Preview & Setup
+## Dynamic Doors
+
+Dynamic Doors will turn placed doors into actual working doors, Instead of them being static. (See videos below)
+
+### Preview
 
 https://github.com/complexza/ps-housing/assets/74205343/fef28197-8e95-4b5f-aba8-b3e5409456d8
 
 https://github.com/complexza/ps-housing/assets/74205343/196bb25e-75b9-42f6-b1c3-fe86ad477544
 
 ### Setup
-- You will need to set the `Config.EnableDynanicDoors = true`
+- You will need to set the `Config.EnableDynamicDoors = true`
 - You will have to add this convar into your server.cfg `setr game_enableDynamicDoorCreation "true"`
 
 > Note: The convar has to be in your server.cfg in order for the doors to be dynamic!
