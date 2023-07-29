@@ -58,7 +58,7 @@ https://github.com/complexza/ps-housing/assets/74205343/fef28197-8e95-4b5f-aba8-
 https://github.com/complexza/ps-housing/assets/74205343/196bb25e-75b9-42f6-b1c3-fe86ad477544
 
 ### Setup
-- You will need to set the `Config.EnableDynamicDoors = true`
+- You will need to set the `Config.DynamicDoors = true`
 - You will have to add this convar into your server.cfg `setr game_enableDynamicDoorCreation "true"`
 
 > Note: The convar has to be in your server.cfg in order for the doors to be dynamic!
