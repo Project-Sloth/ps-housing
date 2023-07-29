@@ -24,7 +24,7 @@ function Debug(...)
     end
 end
 
--- Enables Dynamic Doors as Furniture
+-- Enables Dynamic Doors
 Config.DynamicDoors = false
 
 Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid properties!

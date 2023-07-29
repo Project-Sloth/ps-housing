@@ -438,7 +438,7 @@ function Property:LoadFurniture(furniture)
     SetModelAsNoLongerNeeded(hash)
     SetEntityRotation(entity, furniture.rotation.x, furniture.rotation.y, furniture.rotation.z, 2, true)
 
-    if furniture.type == 'door' and Config.EnableDynamicDoors then
+    if furniture.type == 'door' and Config.DynamicDoors then
         Debug("Object: "..furniture.label.." wont be frozen")
     else
         FreezeEntityPosition(entity, true)
