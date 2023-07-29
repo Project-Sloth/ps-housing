@@ -163,7 +163,7 @@ Framework.qb = {
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == PoliceJobs[jobName] and gradeAllowed and onDuty
+                        return PoliceJobs[jobName] and gradeAllowed and onDuty
                     end,
                 },
             }
@@ -320,7 +320,7 @@ Framework.ox = {
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == PoliceJobs[jobName] and onDuty and gradeAllowed
+                        return PoliceJobs[jobName] and onDuty and gradeAllowed
                     end,
                 },
             },
@@ -361,7 +361,7 @@ Framework.ox = {
                         local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
                         local onDuty = job.onduty
 
-                        return jobName == PoliceJobs[jobName] and onDuty and gradeAllowed
+                        return PoliceJobs[jobName] and onDuty and gradeAllowed
                     end,
                 },
             },
