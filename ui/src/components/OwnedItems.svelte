@@ -34,6 +34,7 @@
 						class="bg-[color:var(--color-tertiary)] text-[2rem] w-[4rem] h-[4rem] text-center aspect-square"
 						on:click={() => {
 							SendNUI('selectOwnedItem', item)
+							console.log(item.type)
 						}}
 					>
 						<i class="fa-solid fa-magnifying-glass" />
@@ -41,16 +42,16 @@
 					<div class="flex flex-col gap-2 w-full">
 						<h1 class="text-[2rem]">{item.label}</h1>
 					</div>
-                    {#if !item.type}
-                        <button
-                            class="bg-[color:var(--color-tertiary)] text-[2rem] py-4 h-full text-center aspect-square"
-                            on:click={() => {
-                                SendNUI('removeOwnedItem', item)
-                            }}
-                        >
-                            <i class="fa-solid fa-xmark" />
-                        </button>
-                    {/if}
+                    {#if item.type != 'storage' && item.type != 'clothing'}
+						<button
+							class="bg-[color:var(--color-tertiary)] text-[2rem] py-4 h-full text-center aspect-square"
+							on:click={() => {
+								SendNUI('removeOwnedItem', item)
+							}}
+						>
+							<i class="fa-solid fa-xmark" />
+						</button>
+					{/if}
 				</div>
 			{/each}
 		</div>
