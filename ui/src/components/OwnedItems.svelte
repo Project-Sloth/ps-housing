@@ -34,7 +34,6 @@
 						class="bg-[color:var(--color-tertiary)] text-[2rem] w-[4rem] h-[4rem] text-center aspect-square"
 						on:click={() => {
 							SendNUI('selectOwnedItem', item)
-							console.log(item.type)
 						}}
 					>
 						<i class="fa-solid fa-magnifying-glass" />
