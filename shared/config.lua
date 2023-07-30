@@ -37,6 +37,8 @@ Config.MinGradeToRaid = 3  -- Minimum grade to raid a property
 
 Config.RaidTimer = 5-- 5 minutes
 
+Config.RealtorJobName = "realtor" -- Set your Real Estate job here
+
 -- Realtor Commisions based on job grade, the rest goes to the owner, if any.
 Config.Commissions = {
     [0] = 0.05, -- 5% commision for each sale
