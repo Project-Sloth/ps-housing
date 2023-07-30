@@ -1261,6 +1261,21 @@ Config.Furnitures = {
     },
 
     {
+        category = "Walls",
+        items = {
+            { ["object"] = "ps_wall_aqua", ["price"] = 1000, ["label"] = "Aqua Wall" },
+            { ["object"] = "ps_wall_black", ["price"] = 1000, ["label"] = "Black Wall" },
+            { ["object"] = "ps_wall_green", ["price"] = 1000, ["label"] = "Green Wall" },
+            { ["object"] = "ps_wall_grey", ["price"] = 1000, ["label"] = "Grey Wall" },
+            { ["object"] = "ps_wall_purple", ["price"] = 1000, ["label"] = "Purple Wall" },
+            { ["object"] = "ps_wall_red", ["price"] = 1000, ["label"] = "Red Wall" },
+            { ["object"] = "ps_wall_white", ["price"] = 1000, ["label"] = "White Wall" },
+            { ["object"] = "ps_wall_yellow", ["price"] = 1000, ["label"] = "Yellow Wall" },
+            { ["object"] = "ps_wall_wall", ["price"] = 1000, ["label"] = "Brick Wall" },
+        }
+    },
+
+    {
         category = "Misc",
         items = {
             { ["object"] = "v_corp_facebeanbag", ["price"] = 100, ["label"] = "Bean Bag 1" },
