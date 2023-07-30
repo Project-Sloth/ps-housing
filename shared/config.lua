@@ -1256,7 +1256,6 @@ Config.Furnitures = {
             { ["object"] = "prop_cs6_03_door_r", ["price"] = 300, ["type"] = "door", ["label"] = "Antique Wooden Door" },
             { ["object"] = "prop_grumandoor_r", ["price"] = 300, ["type"] = "door", ["label"] = "Golden Snake Door" },
             { ["object"] = "prop_motel_door_09", ["price"] = 300, ["type"] = "door", ["label"] = "Motel Door" },
-            { ["object"] = "v_61_hlw_mesh_doorbroken", ["price"] = 300, ["type"] = "door", ["label"] = "Broken White Door" },
             { ["object"] = "prop_fnclink_03gate5", ["price"] = 300, ["type"] = "door", ["label"] = "Chainlink Fence" },
         }
     },
