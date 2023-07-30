@@ -160,7 +160,7 @@ end
 function Property:RegisterGarageZone()
     if not next(self.propertyData.garage_data) then return end
 
-    if not (self.has_access or self.owner) or not self.owner then
+    if not (self.has_access or self.owner) then
         return
     end
 
