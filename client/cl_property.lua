@@ -1,3 +1,5 @@
+currentPropertyId = nil
+
 Property = {
     property_id = nil,
     propertyData = nil,
@@ -213,6 +215,8 @@ function Property:EnterShell()
 
     self:GiveMenus()
 
+    currentPropertyId = self.property_id
+    
     Wait(250)
     DoScreenFadeIn(250)
 end
@@ -249,6 +253,9 @@ function Property:LeaveShell()
     self.doorbellPool = {}
 
     self.inProperty = false
+
+    currentPropertyId = nil
+    
     Wait(250)
     DoScreenFadeIn(250)
 end
@@ -269,6 +276,19 @@ function Property:GiveMenus()
             "ps-housing:client:openFurnitureMenu",
             { propertyId = self.property_id }
         )
+        
+        if Config.Doorlock == "qb" then 
+            Framework[Config.Radial].AddRadialOption(
+                "new_doorlock",
+                "Add Doorlock",
+                "door-open",
+                function()
+                end,
+                "qb-doorlock:client:addNewDoorPS"
+            )
+        else
+            --SOON <3
+        end
     end
 
     if self.owner then
@@ -289,6 +309,7 @@ function Property:RemoveMenus()
     if not self.inProperty then return end
 
     Framework[Config.Radial].RemoveRadialOption("furniture_menu")
+    Framework[Config.Radial].RemoveRadialOption("new_doorlock")
 
     if self.owner then
         Framework[Config.Radial].RemoveRadialOption("access_menu")
