@@ -265,6 +265,154 @@ end)
 
 10. Install the dependencies below.
 
+11. (OPTIONAL) If you want to use [qb-doorlock](https://github.com/qbcore-framework/qb-doorlock) to lock doors inside your shell then add the following code into `qb-doorlock > client > main.lua > around line 812` under `RegisterKeyMapping('remotetriggerdoor', Lang:t("general.keymapping_remotetriggerdoor"), 'keyboard', 'H')`
+```lua
+function generateRandomString(length)
+    local characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    local randomString = ""
+
+    for i = 1, length do
+        local randomIndex = math.random(1, #characters)
+        randomString = randomString .. string.sub(characters, randomIndex, randomIndex)
+    end
+
+    return randomString
+end
+
+RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
+	canContinue = false
+	hideNUI()
+	if not Config.SaveDoorDialog then doorData = {} end
+	local dialog = exports['qb-input']:ShowInput({
+		header = "Add a new doorlock to your shell!",
+		submitText = Lang:t("general.submit_text"),
+		inputs = {
+			{
+				text = Lang:t("general.doortype_title"),
+				name = "doortype",
+				type = "select",
+				options = {
+					{ value = "door", text = Lang:t("general.doortype_door") },
+					{ value = "double", text = Lang:t("general.doortype_double") }
+				},
+				default = Config.SaveDoorDialog and doorData.doortype,
+			}
+		}
+	})
+	if not dialog or not next(dialog) then canContinue = true return end
+	doorData = dialog
+
+	local propertyId = exports['ps-housing']:GetPropertyId()
+	local randomchars = generateRandomString("4")
+	local uniqueid = "propertyid_" ..propertyId.. "_door_" ..randomchars
+	doorData.configfile = "PS ( " ..PlayerData.citizenid.. " )"
+	doorData.dooridentifier = uniqueid
+	doorData.doorlabel = uniqueid
+	doorData.cid = PlayerData.citizenid
+	doorData.locked = 'true'
+	doorData.distance = "2"
+
+	local identifier = doorData.configfile..' - '..doorData.dooridentifier
+	if Config.DoorList[identifier] then
+		QBCore.Functions.Notify((Lang:t("error.door_identifier_exists")):format(identifier), 'error')
+		canContinue = true
+		return
+	end
+
+	if doorData.configfile == '' then doorData.configfile = false end
+	if doorData.job == '' then doorData.job = false end
+	if doorData.gang == '' then doorData.gang = false end
+	if doorData.cid == '' then doorData.cid = false end
+	if doorData.item == '' then doorData.item = false end
+	if doorData.doorlabel == '' then doorData.doorlabel = nil end
+	if doorData.pickable ~= 'true' then doorData.pickable = nil end
+	if doorData.cantunlock ~= 'true' then doorData.cantunlock = nil end
+	if doorData.hidelabel ~= 'true' then doorData.hidelabel = nil end
+
+	doorData.locked = 'true'
+	doorData.distance = tonumber(doorData.distance)
+	if doorData.doortype == 'door' or doorData.doortype == 'sliding' or doorData.doortype == 'garage' then
+		local heading, result, entityHit
+		local entity, coords, model= 0, 0, 0
+		QBCore.Functions.Notify("Point any Weapon at the Door. Press [E] to confirm it.", 'primary', 30000)
+		while true do
+			if IsPlayerFreeAiming(PlayerId()) then
+				result, entityHit = raycastWeapon()
+				if result and entityHit ~= entity then
+					SetEntityDrawOutline(entity, false)
+					SetEntityDrawOutline(entityHit, true)
+					entity = entityHit
+					coords = GetEntityCoords(entity)
+					model = GetEntityModel(entity)
+					heading = GetEntityHeading(entity)
+				end
+				if entity and IsControlPressed(0, 38) then break end
+			end
+			Wait(0)
+		end
+		SetEntityDrawOutline(entity, false)
+		if not model or model == 0 then QBCore.Functions.Notify(Lang:t("error.door_not_found"), 'error') canContinue = true return end
+		result = DoorSystemFindExistingDoor(coords.x, coords.y, coords.z, model)
+		if result then QBCore.Functions.Notify(Lang:t("error.door_registered"), 'error') canContinue = true return end
+		doorData.doorHash = 'door_'..doorData.dooridentifier
+		AddDoorToSystem(doorData.doorHash, model, coords, false, false, false)
+		DoorSystemSetDoorState(doorData.doorHash, 4, false, false)
+		coords = GetEntityCoords(entity)
+		heading = GetEntityHeading(entity)
+		RemoveDoorFromSystem(doorData.doorHash)
+		doorData.entity = entity
+		doorData.coords = coords
+		doorData.model = model
+		doorData.heading = heading
+		TriggerServerEvent('qb-doorlock:server:saveNewDoor', doorData, false)
+		canContinue = true
+	else
+		local result, entityHit
+		local entity, coords, heading, model = {0, 0}, {0, 0}, {0, 0}, {0, 0}
+		for i = 1, 2 do
+			QBCore.Functions.Notify("Point any Weapon at the Door. Press [E] to confirm it.", 'primary', 30000)
+			while true do
+				if IsPlayerFreeAiming(PlayerId()) then
+					result, entityHit = raycastWeapon()
+					if result and entityHit ~= entity[i] then
+						SetEntityDrawOutline(entity[i], false)
+						SetEntityDrawOutline(entityHit, true)
+						entity[i] = entityHit
+						coords[i] = GetEntityCoords(entity[i])
+						model[i] = GetEntityModel(entity[i])
+						heading[i] = GetEntityHeading(entity[i])
+					end
+					if entity[i] and IsControlPressed(0, 38) then break end
+				end
+				Wait(0)
+			end
+			Wait(200)
+		end
+		SetEntityDrawOutline(entity[1], false)
+		SetEntityDrawOutline(entity[2], false)
+		if not model[1] or model[1] == 0 or not model[2] or model[2] == 0 then QBCore.Functions.Notify(Lang:t("error.door_not_found"), 'error') return end
+		if entity[1] == entity[2] then QBCore.Functions.Notify(Lang:t("error.same_entity"), 'error') canContinue = true return end
+		doorData.doorHash = {}
+		for i = 1, 2 do
+			result = DoorSystemFindExistingDoor(coords[i].x, coords[i].y, coords[i].z, model[i])
+			if result then QBCore.Functions.Notify(Lang:t("error.door_registered"), 'error') canContinue = true return end
+			doorData.doorHash[i] = 'door_'..doorData.dooridentifier..'_'..i
+			AddDoorToSystem(doorData.doorHash[i], model[i], coords[i], false, false, false)
+            DoorSystemSetDoorState(doorData.doorHash[i], 4, false, false)
+            coords[i] = GetEntityCoords(entity[i])
+            heading[i] = GetEntityHeading(entity[i])
+            RemoveDoorFromSystem(doorData.doorHash[i])
+		end
+		doorData.entity = entity
+		doorData.coords = coords
+		doorData.model = model
+		doorData.heading = heading
+		TriggerServerEvent('qb-doorlock:server:saveNewDoor', doorData, true)
+		canContinue = true
+	end
+end)
+```
+
 # Dependency
 1. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 2. [five-freecam](https://github.com/Deltanic/fivem-freecam)
