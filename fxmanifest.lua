@@ -39,3 +39,6 @@ files {
 
 this_is_a_map 'yes'
 data_file 'DLC_ITYP_REQUEST' 'starter_shells_k4mb1.ytyp'
+
+file 'stream/**.ytyp'
+data_file 'DLC_ITYP_REQUEST' 'stream/**.ytyp'
