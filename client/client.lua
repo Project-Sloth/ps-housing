@@ -82,6 +82,10 @@ exports('GetProperty', function(property_id)
     return Property.Get(property_id)
 end)
 
+exports("GetPropertyId", function()
+    return currentPropertyId
+end)
+
 exports('GetApartments', function()
     return ApartmentsTable
 end)
