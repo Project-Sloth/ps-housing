@@ -4,6 +4,7 @@ Property = {
     property_id = nil,
     propertyData = nil,
 
+    shell = nil,
     shellData = nil,
     inProperty = false,
     shellObj = nil,
@@ -77,13 +78,10 @@ end
 function Property:CreateShell()
     local coords = self:GetDoorCoords()
 
-    local shellHash = self.shellData.hash
-    lib.requestModel(shellHash)
+    coords = vec3(coords.x, coords.y, coords.z - 25.0)
+    self.shell = Shell:CreatePropertyShell(self.propertyData.shell, coords)
 
-    self.shellObj = CreateObjectNoOffset(shellHash, coords.x, coords.y, coords.z - 25.0, false, false, false)
-
-    SetModelAsNoLongerNeeded(shellHash)
-    FreezeEntityPosition(self.shellObj, true)
+    self.shellObj = self.shell.entity
 
     local doorOffset = self.shellData.doorOffset
     local offset = GetOffsetFromEntityInWorldCoords(self.shellObj, doorOffset.x, doorOffset.y, doorOffset.z)
@@ -235,12 +233,8 @@ function Property:LeaveShell()
     self:UnloadFurnitures()
     self.propertyData.furnitures = {}
 
-
-    if self.shellObj then
-        DeleteEntity(self.shellObj)
-        self.shellObj = nil
-    end
-
+    self.shell:DespawnShell()
+    self.shell = nil
     if self.exitTarget then
         Framework[Config.Target].RemoveTargetZone(self.exitTarget)
         self.exitTarget = nil
