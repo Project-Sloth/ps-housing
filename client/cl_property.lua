@@ -77,7 +77,7 @@ function Property:CreateShell()
     local coords = self:GetDoorCoords()
 
     coords = vec3(coords.x, coords.y, coords.z - 25.0)
-    self.shell = Shell:CreatePropertyShell(self.propertyData.shell, coords, self.shellData.doorOffset.h)
+    self.shell = Shell:CreatePropertyShell(self.propertyData.shell, coords)
 
     self.shellObj = self.shell.entity
 
