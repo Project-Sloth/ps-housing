@@ -10,6 +10,7 @@ MySQL.ready(function()
         end
         for _, v in pairs(result) do
             local id = tostring(v.property_id)
+            local furnitures = string.gsub(tostring(v.furnitures), "null,", "") -- Remove nulls for properties that were shagged before the fix went in
             local propertyData = {
                 property_id = tostring(id),
                 owner = v.owner_citizenid,
@@ -18,7 +19,7 @@ MySQL.ready(function()
                 description = v.description,
                 has_access = json.decode(v.has_access),
                 extra_imgs = json.decode(v.extra_imgs),
-                furnitures = json.decode(v.furnitures),
+                furnitures = json.decode(furnitures),
                 for_sale = v.for_sale,
                 price = v.price,
                 shell = v.shell,

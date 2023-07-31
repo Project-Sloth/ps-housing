@@ -489,11 +489,11 @@ function Property:UnloadFurniture(furniture, index)
     end
 
     if index and self.furnitureObjs?[index] then
-        self.furnitureObjs[index] = nil
+        table.remove(self.furnitureObjs, index)
     else 
         for i = 1, #self.furnitureObjs do
             if self.furnitureObjs[i].id == furniture.id then
-                self.furnitureObjs[i] = nil
+                table.remove(self.furnitureObjs, i)
                 break
             end
         end
