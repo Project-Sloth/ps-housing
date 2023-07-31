@@ -20,6 +20,7 @@ shared_script {
   }
 
 client_script {
+  'client/shell.lua',
   'client/apartment.lua',
   'client/cl_property.lua',
   'client/client.lua',
