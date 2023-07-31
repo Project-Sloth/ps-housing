@@ -34,7 +34,7 @@
 				on:click={() => {
 					SendNUI('hoverOut')
 
-                    if (furniture.type === 'clothing' || furniture.type === 'storage') {
+                    if (furniture.type && furniture.max) {
 
 						const itemsWithSameType = $OWNEDITEMS.filter(item => item.type === furniture.type);
 
