@@ -265,6 +265,17 @@ end)
 
 10. Install the dependencies below.
 
+## Logs System Setup
+
+1. Go to `qb-smallresources/server/logs.lua` and add this:
+```lua
+    ['pshousing'] = 'yourdiscordwebhookhere',
+```
+2. Create a webhook for the channel you want the logs to show up in.
+3. Replace the placeholder with your webhook link.
+
+> This system only supports qb-core for now.
+
 # Dependency
 1. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
 2. [five-freecam](https://github.com/Deltanic/fivem-freecam)

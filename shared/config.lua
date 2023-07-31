@@ -11,6 +11,7 @@ Config.Target = "ox" -- "ox" or "qb"
 Config.Notify = "ox" -- "ox" or "qb"
 Config.Radial = "ox" -- "ox" or "qb"
 Config.Inventory = "qb" -- "ox" or "qb"
+Config.Logs = "qb" -- "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
@@ -23,6 +24,9 @@ function Debug(...)
         print(...)
     end
 end
+
+-- Log System
+Config.EnableLogs = true
 
 -- Enables Dynamic Doors
 Config.DynamicDoors = false

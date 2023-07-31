@@ -29,6 +29,16 @@ if IsDuplicityVersion() then
         -- Used for ox_inventory compat
     end
 
+    function Framework.qb.SendLog(message)
+        if Config.EnableLogs then
+            TriggerEvent('qb-log:server:CreateLog', 'pshousing', 'Housing System', 'blue', message)
+        end
+    end
+    
+    function Framework.ox.SendLog(message)
+            -- noop
+    end
+
     return
 end
 
