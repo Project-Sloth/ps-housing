@@ -84,14 +84,15 @@ function Shell:CreateTempShell(shellName, position, rotation, leaveCb)
     local heading = self.shellData.doorOffset.h
 
     local function leave()
+        SetEntityCoordsNoOffset(PlayerPedId(), self.oldCoord.x, self.oldCoord.y, self.oldCoord.z, false, false, true)
+
         if leaveCb then
             leaveCb()
-        else
-            SetEntityCoordsNoOffset(PlayerPedId(), self.oldCoord.x, self.oldCoord.y, self.oldCoord.z, false, false, true)
         end
-
+        
         self:DespawnShell()
     end
+
 
     self.exitTarget = Framework[Config.Target].AddDoorZoneInsideTempShell(coords, size, heading, leave)
 
