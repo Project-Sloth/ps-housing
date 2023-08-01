@@ -208,6 +208,9 @@ function Property:EnterShell()
     self:CreateShell()
 
     self:LoadFurnitures()
+    if Config.QBWeed then
+        TriggerEvent('qb-weed:client:getHousePlants', self.property_id)
+    end
 
     self:GiveMenus()
 
@@ -228,6 +231,9 @@ function Property:LeaveShell()
 
     self:UnloadFurnitures()
     self.propertyData.furnitures = {}
+    if Config.QBWeed then
+        TriggerEvent('qb-weed:client:leaveHouse')
+    end
 
     self.shell:DespawnShell()
     self.shell = nil
