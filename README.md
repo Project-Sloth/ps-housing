@@ -303,14 +303,15 @@ RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
 	doorData = dialog
 
 	local propertyId = exports['ps-housing']:GetPropertyId()
-	local randomchars = generateRandomString("4")
-	local uniqueid = "propertyid_" ..propertyId.. "_door_" ..randomchars
+	local randomChars = generateRandomString("4")
+	local uniqueId = "propertyid_" ..propertyId.. "_door_" ..randomChars
+
 	doorData.configfile = "PS ( " ..PlayerData.citizenid.. " )"
-	doorData.dooridentifier = uniqueid
-	doorData.doorlabel = uniqueid
+	doorData.dooridentifier = uniqueId
+	doorData.doorlabel = uniqueId
 	doorData.cid = PlayerData.citizenid
 	doorData.locked = 'true'
-	doorData.distance = "2"
+	doorData.distance = 2
 
 	local identifier = doorData.configfile..' - '..doorData.dooridentifier
 	if Config.DoorList[identifier] then
@@ -319,21 +320,13 @@ RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
 		return
 	end
 
-	if doorData.configfile == '' then doorData.configfile = false end
-	if doorData.job == '' then doorData.job = false end
-	if doorData.gang == '' then doorData.gang = false end
-	if doorData.cid == '' then doorData.cid = false end
-	if doorData.item == '' then doorData.item = false end
-	if doorData.doorlabel == '' then doorData.doorlabel = nil end
 	if doorData.pickable ~= 'true' then doorData.pickable = nil end
 	if doorData.cantunlock ~= 'true' then doorData.cantunlock = nil end
 	if doorData.hidelabel ~= 'true' then doorData.hidelabel = nil end
 
-	doorData.locked = 'true'
-	doorData.distance = tonumber(doorData.distance)
 	if doorData.doortype == 'door' or doorData.doortype == 'sliding' or doorData.doortype == 'garage' then
 		local heading, result, entityHit
-		local entity, coords, model= 0, 0, 0
+		local entity, coords, model = 0, 0, 0
 		QBCore.Functions.Notify("Point any Weapon at the Door. Press [E] to confirm it.", 'primary', 30000)
 		while true do
 			if IsPlayerFreeAiming(PlayerId()) then
