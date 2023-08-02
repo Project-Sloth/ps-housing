@@ -137,6 +137,9 @@ RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     }
 
     Debug("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
+
+    Framework[Config.Logs].SendLog("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
+
     TriggerEvent("ps-housing:server:registerProperty", propertyData)
 end)
 

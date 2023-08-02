@@ -29,6 +29,16 @@ if IsDuplicityVersion() then
         -- Used for ox_inventory compat
     end
 
+    function Framework.qb.SendLog(message)
+        if Config.EnableLogs then
+            TriggerEvent('qb-log:server:CreateLog', 'pshousing', 'Housing System', 'blue', message)
+        end
+    end
+    
+    function Framework.ox.SendLog(message)
+            -- noop
+    end
+
     return
 end
 
@@ -194,6 +204,33 @@ Framework.qb = {
                         label = "Check Door",
                         action = checkDoor,
                         icon = "fas fa-bell",
+                    },
+                },
+            }
+        )
+
+        return "shellExit"
+    end,
+
+    AddDoorZoneInsideTempShell = function(coords, size, heading, leave)
+        exports["qb-target"]:AddBoxZone(
+            "shellExit",
+            vector3(coords.x, coords.y, coords.z),
+            size.x,
+            size.y,
+            {
+                name = "shellExit",
+                heading = heading,
+                debugPoly = Config.DebugMode,
+                minZ = coords.z - 2.0,
+                maxZ = coords.z + 1.0,
+            },
+            {
+                options = {
+                    {
+                        label = "Leave",
+                        action = leave,
+                        icon = "fas fa-right-from-bracket",
                     },
                 },
             }
@@ -392,6 +429,25 @@ Framework.ox = {
             },
         })
 
+        return handler
+    end,
+
+    AddDoorZoneInsideTempShell = function (coords, size, heading, leave)
+        local handler = exports.ox_target:addBoxZone({
+            coords = vector3(coords.x, coords.y, coords.z), --z = 3.0
+            size = vector3(size.y, size.x, size.z),
+            rotation = heading,
+            debug = Config.DebugMode,
+            options = {
+                {
+                    name = "leave",
+                    label = "Leave",
+                    onSelect = leave,
+                    icon = "fas fa-right-from-bracket",
+                },
+            },
+        })
+        print("made")
         return handler
     end,
 
