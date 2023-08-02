@@ -25,12 +25,14 @@ client_script {
   'client/cl_property.lua',
   'client/client.lua',
   'client/modeler.lua',
+  'client/migrate.lua'
 }
 
 server_script {
   '@oxmysql/lib/MySQL.lua',
   "server/sv_property.lua",
   "server/server.lua",
+  "server/migrate.lua"
   }
 
 files {
