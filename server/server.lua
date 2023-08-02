@@ -125,7 +125,7 @@ AddEventHandler("onResourceStart", function(resourceName) -- Used for when the r
             Wait(100)
         end
         TriggerClientEvent('ps-housing:client:liveRestart', -1, PropertiesTable)
-	end
+	end 
 end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
