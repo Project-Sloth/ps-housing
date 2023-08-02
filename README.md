@@ -362,8 +362,8 @@ RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
 	else
 		local result, entityHit
 		local entity, coords, heading, model = {0, 0}, {0, 0}, {0, 0}, {0, 0}
+		QBCore.Functions.Notify("Use this on Door's only!", 'error', 10000)
 		for i = 1, 2 do
-			QBCore.Functions.Notify("Use this on Door's only!", 'error', 10000)
 			while true do
 				exports['qb-core']:DrawText("Press [Right Click] at the Door. Press [E] to confirm it.",'left')
 				result, entityHit = GetEntityPlayerIsFreeAimingAt(PlayerId())
@@ -378,9 +378,12 @@ RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
 				if entity[i] and IsControlPressed(0, 38) then break end
 				Wait(0)
 			end
-			exports['qb-core']:HideText()
+			if entity[1] == entityHit then
+				QBCore.Functions.Notify("Set the next door!", 'primary', 4000)
+			end
 			Wait(200)
 		end
+		exports['qb-core']:HideText()
 		SetEntityDrawOutline(entity[1], false)
 		SetEntityDrawOutline(entity[2], false)
 		if not model[1] or model[1] == 0 or not model[2] or model[2] == 0 then QBCore.Functions.Notify(Lang:t("error.door_not_found"), 'error') return end
