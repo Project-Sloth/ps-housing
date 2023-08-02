@@ -16,7 +16,7 @@ RegisterNetEvent('ps-housing:client:removeProperty', function (property_id)
 	PropertiesTable[property_id] = nil
 end)
 
-function InitialiseProperties()
+function InitialiseProperties(properties)
     Debug("Initialising properties")
     PlayerData = QBCore.Functions.GetPlayerData()
 
@@ -24,8 +24,10 @@ function InitialiseProperties()
         ApartmentsTable[k] = Apartment:new(v)
     end
 
-    local properties = lib.callback.await('ps-housing:server:requestProperties')
-
+	if not properties then
+    	properties = lib.callback.await('ps-housing:server:requestProperties')
+	end
+	
     for k, v in pairs(properties) do
         createProperty(v.propertyData)
     end
@@ -45,20 +47,6 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
     PlayerData.job = job
-end)
-
-RegisterNetEvent('ps-housing:client:liveRestart', function(properties)
-    for k, v in pairs(Config.Apartments) do
-        ApartmentsTable[k] = Apartment:new(v)
-    end
-
-    for k, v in pairs(properties) do
-        createProperty(v.propertyData)
-    end
-
-    TriggerEvent("ps-housing:client:initialisedProperties")
-    PlayerData = QBCore.Functions.GetPlayerData()
-    Debug("Initialised properties")
 end)
 
 RegisterNetEvent('ps-housing:client:setupSpawnUI', function(cData)
