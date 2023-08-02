@@ -159,16 +159,8 @@ end
 
 function Property:RegisterGarageZone()
     if not next(self.propertyData.garage_data) then return end
-
-    if Config.AllowAccessToGarage then
-        if not (self.has_access or self.owner) then    
-            return
-        end 
-    else
-        if not (self.has_access or self.owner) or not self.owner then
-            return
-        end
-    end
+    
+    if not self.owner or not (self.has_access and Config.AllowAccessToGarage) then return end
 
     local garageData = self.propertyData.garage_data
     local garageName = string.format("property-%s-garage", self.property_id)
