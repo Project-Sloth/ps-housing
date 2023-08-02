@@ -67,6 +67,10 @@ function Shell:CreateTempShell(shellName, position, rotation, leaveCb)
     self.hash = self.shellData.hash
     self.position = position
     self.rotation = rotation
+    
+
+    DoScreenFadeOut(250)
+    Wait(250)
 
     self.oldCoord = GetEntityCoords(PlayerPedId())
 
@@ -84,6 +88,9 @@ function Shell:CreateTempShell(shellName, position, rotation, leaveCb)
     local heading = self.shellData.doorOffset.h
 
     local function leave()
+        DoScreenFadeOut(250)
+        Wait(250)
+
         SetEntityCoordsNoOffset(PlayerPedId(), self.oldCoord.x, self.oldCoord.y, self.oldCoord.z, false, false, true)
 
         if leaveCb then
@@ -91,10 +98,16 @@ function Shell:CreateTempShell(shellName, position, rotation, leaveCb)
         end
         
         self:DespawnShell()
+
+        Wait(250)
+        DoScreenFadeIn(250)
     end
 
 
     self.exitTarget = Framework[Config.Target].AddDoorZoneInsideTempShell(coords, size, heading, leave)
+
+    Wait(250)
+    DoScreenFadeIn(250)
 
     Shells[self.entity] = self
 
