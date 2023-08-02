@@ -15,6 +15,9 @@ Config.Inventory = "ox" -- "ox" or "qb"
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
 
+--If player is not the owner or they dont have access, or they do have access but its configured to only allow owner access
+Config.AllowGarageAccessToAllResidents = true
+
 -- Draw the poly for the property
 Config.DebugMode = true
 
