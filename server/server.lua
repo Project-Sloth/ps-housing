@@ -124,7 +124,7 @@ AddEventHandler("onResourceStart", function(resourceName) -- Used for when the r
         while not dbloaded do
             Wait(100)
         end
-        TriggerClientEvent('ps-housing:client:liveRestart', -1, PropertiesTable)
+        TriggerClientEvent('ps-housing:client:initialiseProperties', -1, PropertiesTable)
 	end 
 end)
 
