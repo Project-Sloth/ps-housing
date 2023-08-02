@@ -327,22 +327,22 @@ RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
 	if doorData.doortype == 'door' or doorData.doortype == 'sliding' or doorData.doortype == 'garage' then
 		local heading, result, entityHit
 		local entity, coords, model = 0, 0, 0
-		QBCore.Functions.Notify("Point any Weapon at the Door. Press [E] to confirm it.", 'primary', 30000)
+		QBCore.Functions.Notify("Use this on Door's only!", 'error', 10000)
 		while true do
-			if IsPlayerFreeAiming(PlayerId()) then
-				result, entityHit = raycastWeapon()
-				if result and entityHit ~= entity then
-					SetEntityDrawOutline(entity, false)
-					SetEntityDrawOutline(entityHit, true)
-					entity = entityHit
-					coords = GetEntityCoords(entity)
-					model = GetEntityModel(entity)
-					heading = GetEntityHeading(entity)
-				end
-				if entity and IsControlPressed(0, 38) then break end
+			exports['qb-core']:DrawText("Press [Right Click] at the Door. Press [E] to confirm it.",'left')
+			result, entityHit = GetEntityPlayerIsFreeAimingAt(PlayerId())
+			if result and entityHit ~= entity then
+				SetEntityDrawOutline(entity, false)
+				SetEntityDrawOutline(entityHit, true)
+				entity = entityHit
+				coords = GetEntityCoords(entity)
+				model = GetEntityModel(entity)
+				heading = GetEntityHeading(entity)
 			end
+			if entity and IsControlPressed(0, 38) then break end
 			Wait(0)
 		end
+		exports['qb-core']:HideText()
 		SetEntityDrawOutline(entity, false)
 		if not model or model == 0 then QBCore.Functions.Notify(Lang:t("error.door_not_found"), 'error') canContinue = true return end
 		result = DoorSystemFindExistingDoor(coords.x, coords.y, coords.z, model)
@@ -363,22 +363,22 @@ RegisterNetEvent('qb-doorlock:client:addNewDoorPS', function()
 		local result, entityHit
 		local entity, coords, heading, model = {0, 0}, {0, 0}, {0, 0}, {0, 0}
 		for i = 1, 2 do
-			QBCore.Functions.Notify("Point any Weapon at the Door. Press [E] to confirm it.", 'primary', 30000)
+			QBCore.Functions.Notify("Use this on Door's only!", 'error', 10000)
 			while true do
-				if IsPlayerFreeAiming(PlayerId()) then
-					result, entityHit = raycastWeapon()
-					if result and entityHit ~= entity[i] then
-						SetEntityDrawOutline(entity[i], false)
-						SetEntityDrawOutline(entityHit, true)
-						entity[i] = entityHit
-						coords[i] = GetEntityCoords(entity[i])
-						model[i] = GetEntityModel(entity[i])
-						heading[i] = GetEntityHeading(entity[i])
-					end
-					if entity[i] and IsControlPressed(0, 38) then break end
+				exports['qb-core']:DrawText("Press [Right Click] at the Door. Press [E] to confirm it.",'left')
+				result, entityHit = GetEntityPlayerIsFreeAimingAt(PlayerId())
+				if result and entityHit ~= entity[i] then
+					SetEntityDrawOutline(entity[i], false)
+					SetEntityDrawOutline(entityHit, true)
+					entity[i] = entityHit
+					coords[i] = GetEntityCoords(entity[i])
+					model[i] = GetEntityModel(entity[i])
+					heading[i] = GetEntityHeading(entity[i])
 				end
+				if entity[i] and IsControlPressed(0, 38) then break end
 				Wait(0)
 			end
+			exports['qb-core']:HideText()
 			Wait(200)
 		end
 		SetEntityDrawOutline(entity[1], false)
