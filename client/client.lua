@@ -1,4 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
+PlayerData = {}
 
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
@@ -17,6 +18,8 @@ end)
 
 function InitialiseProperties()
     Debug("Initialising properties")
+    PlayerData = QBCore.Functions.GetPlayerData()
+
     for k, v in pairs(Config.Apartments) do
         ApartmentsTable[k] = Apartment:new(v)
     end
@@ -38,6 +41,24 @@ AddEventHandler("onResourceStart", function(resourceName) -- Used for when the r
 	if (GetCurrentResourceName() == resourceName) then
         InitialiseProperties()
 	end
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
+    PlayerData.job = job
+end)
+
+RegisterNetEvent('ps-housing:client:liveRestart', function(properties)
+    for k, v in pairs(Config.Apartments) do
+        ApartmentsTable[k] = Apartment:new(v)
+    end
+
+    for k, v in pairs(properties) do
+        createProperty(v.propertyData)
+    end
+
+    TriggerEvent("ps-housing:client:initialisedProperties")
+    PlayerData = QBCore.Functions.GetPlayerData()
+    Debug("Initialised properties")
 end)
 
 RegisterNetEvent('ps-housing:client:setupSpawnUI', function(cData)
