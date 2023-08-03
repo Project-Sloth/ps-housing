@@ -428,24 +428,27 @@ end
 
 function Property:DeleteProperty(data)
     local realtorSrc = data.realtorSrc
+    local propertyid = self.property_id
+    local realtorName = GetPlayerName(realtorSrc)
 
     MySQL.Async.execute("DELETE FROM properties WHERE property_id = @property_id", {
-        ["@property_id"] = self.property_id
+        ["@property_id"] = propertyid
     }, function (rowsChanged)
         if rowsChanged > 0 then
-            Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(data.realtorSrc))
+            Debug("Deleted property with id: " .. propertyid, "by: " .. realtorName)
         end
     end)
 
-    TriggerClientEvent("ps-housing:client:removeProperty", -1, self.property_id)
+    TriggerClientEvent("ps-housing:client:removeProperty", -1, propertyid)
 
-    Framework[Config.Notify].Notify(realtorSrc, "Property with id: " .. self.property_id .." has been removed.", "info")
+    Framework[Config.Notify].Notify(realtorSrc, "Property with id: " .. propertyid .." has been removed.", "info")
 
-    Framework[Config.Logs].SendLog("**Property Deleted** with id: " .. self.property_id .. " by: " .. GetPlayerName(realtorSrc))
+    Framework[Config.Logs].SendLog("**Property Deleted** with id: " .. propertyid .. " by: " .. realtorName)
 
-    Debug("Deleted property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
-    PropertiesTable[self.property_id] = nil
+    PropertiesTable[propertyid] = nil
     self = nil
+
+    Debug("Deleted property with id: " .. propertyid, "by: " .. realtorName)
 end
 
 function Property.Get(property_id)
@@ -612,10 +615,10 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         return
     end
 
-    if price > PlayerData.money.bank then
-        Player.Functions.RemoveMoney('bank', price, "Bought furniture")
-    else
+    if price <= PlayerData.money.cash then
         Player.Functions.RemoveMoney('cash', price, "Bought furniture")
+    else
+        Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     end
 
     local numFurnitures = #property.propertyData.furnitures

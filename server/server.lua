@@ -119,6 +119,15 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     property[type](property, data)
 end)
 
+AddEventHandler("onResourceStart", function(resourceName) -- Used for when the resource is restarted while in game
+	if (GetCurrentResourceName() == resourceName) then
+        while not dbloaded do
+            Wait(100)
+        end
+        TriggerClientEvent('ps-housing:client:initialiseProperties', -1, PropertiesTable)
+	end 
+end)
+
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
     if not Config.StartingApartment then return end

@@ -32,8 +32,7 @@ function Property:new(propertyData)
     propertyData.furnitures = {}
     self.propertyData = propertyData
 
-    local Player = QBCore.Functions.GetPlayerData()
-    local citizenid = Player.citizenid
+    local citizenid = PlayerData.citizenid
 
     self.owner = propertyData.owner == citizenid
     self.has_access = lib.table.contains(self.propertyData.has_access, citizenid)
@@ -198,6 +197,7 @@ end
 
 function Property:EnterShell()
     DoScreenFadeOut(250)
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_open", 0.25)
     Wait(250)
 
     self.inProperty = true
@@ -217,6 +217,7 @@ function Property:LeaveShell()
     if not self.inProperty then return end
 
     DoScreenFadeOut(250)
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_open", 0.25)
     Wait(250)
 
     local coords = self:GetDoorCoords()
@@ -628,8 +629,7 @@ end
 function Property:UpdateOwner(newOwner)
     self.propertyData.owner = newOwner
 
-    local Player = QBCore.Functions.GetPlayerData()
-    local citizenid = Player.citizenid
+    local citizenid = PlayerData.citizenid
 
     self.owner = newOwner == citizenid
 
@@ -658,8 +658,7 @@ function Property:UpdateDoor(newDoor, newStreet, newRegion)
 end
 
 function Property:UpdateHas_access(newHas_access)
-    local Player = QBCore.Functions.GetPlayerData()
-    local citizenid = Player.citizenid
+    local citizenid = PlayerData.citizenid
     self.propertyData.has_access = newHas_access
     self.has_access = lib.table.contains(newHas_access, citizenid)
 
