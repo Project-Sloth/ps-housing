@@ -34,13 +34,13 @@
 				on:click={() => {
 					SendNUI('hoverOut')
 
-                    if (furniture.type && furniture.max) {
+                    if (furniture.type) {
 
 						const itemsWithSameType = $OWNEDITEMS.filter(item => item.type === furniture.type);
 
-						let furnitureTypeMax = furniture.max || 1;
+						let furnitureTypeMax = furniture.max;
 
-						if (itemsWithSameType.length >= furnitureTypeMax) {
+						if (furniture.max && itemsWithSameType.length >= furnitureTypeMax) {
 							SendNUI('showNotification', {
 								type: 'error',
 								message: `You can only have ${furnitureTypeMax} of this item!`,
