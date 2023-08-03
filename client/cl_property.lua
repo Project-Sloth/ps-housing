@@ -200,6 +200,7 @@ end
 
 function Property:EnterShell()
     DoScreenFadeOut(250)
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_open", 0.25)
     Wait(250)
 
     self.inProperty = true
@@ -219,6 +220,7 @@ function Property:LeaveShell()
     if not self.inProperty then return end
 
     DoScreenFadeOut(250)
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_open", 0.25)
     Wait(250)
 
     local coords = self:GetDoorCoords()
