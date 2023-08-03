@@ -57,7 +57,7 @@ RegisterNetEvent('migratehouses', function()
     local qbHouseLocations = MySQL.Sync.fetchAll("SELECT * FROM houselocations")
 
     local formattedHouses = {}
-    for k,v in pairs(qbHouses) do
+    for _,v in pairs(qbHouses) do
         formattedHouses[v.house] = v
     end
 
