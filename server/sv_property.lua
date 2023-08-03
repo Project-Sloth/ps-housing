@@ -615,10 +615,10 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         return
     end
 
-    if price > PlayerData.money.bank then
-        Player.Functions.RemoveMoney('bank', price, "Bought furniture")
-    else
+    if price <= PlayerData.money.cash then
         Player.Functions.RemoveMoney('cash', price, "Bought furniture")
+    else
+        Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     end
 
     local numFurnitures = #property.propertyData.furnitures
