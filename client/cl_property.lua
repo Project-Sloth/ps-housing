@@ -180,7 +180,7 @@ function Property:RegisterGarageZone()
     self.garageZone = lib.zones.box({
         coords = vec3(garageData.x, garageData.y, garageData.z),
         size = vector3(garageData.length + 5.0, garageData.width + 5.0, 3.5),
-        rotation = rotation = garageData.h,
+        rotation = garageData.h,
         debug = Config.DebugMode,
         onEnter = function()
             TriggerEvent('qb-garages:client:setHouseGarage', self.property_id, true)
