@@ -84,7 +84,11 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
         Wait(1000)
 
-        TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+        local appearance = MySQL.scalar.await("SELECT skin FROM playerskins WHERE citizenid = ?", {propertyData.owner})
+        if not appearance then
+            TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+            Debug("Player: "..propertyData.owner.." is creating a new character!")
+        end
 
         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
 
