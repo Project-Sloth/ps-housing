@@ -1,4 +1,4 @@
-RegisterCommand("ps-housing:client:migratehouses", function()
+RegisterCommand("migratehouses", function()
     TriggerServerEvent('ps-housing:server:migratehouses')
 end)
 
