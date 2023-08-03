@@ -632,7 +632,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
 
     Framework[Config.Notify].Notify(src, "You bought furniture for $" .. price, "success")
 
-    Framework[Config.Logs].SendLog("**Player ".. GetPlayerName(src) .. "** bought furniture for **$" .. price"**")
+    Framework[Config.Logs].SendLog("**Player ".. GetPlayerName(src) .. "** bought furniture for **$" .. price .. "**")
 
     Debug("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
 end)
