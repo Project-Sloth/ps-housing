@@ -40,7 +40,7 @@
 
 						let furnitureTypeMax = furniture.max;
 
-						if (furniture.max && itemsWithSameType.length >= furnitureTypeMax) {
+						if (itemsWithSameType.length >= furnitureTypeMax) {
 							SendNUI('showNotification', {
 								type: 'error',
 								message: `You can only have ${furnitureTypeMax} of this item!`,
