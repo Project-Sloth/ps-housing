@@ -63,6 +63,9 @@ https://github.com/complexza/ps-housing/assets/74205343/196bb25e-75b9-42f6-b1c3-
 
 > Note: The convar has to be in your server.cfg in order for the doors to be dynamic!
 
+### Shell Support
+* [K4MB1](https://github.com/Project-Sloth/ps-housing/wiki/K4MB1-Shells-Support-&-Offsets)
+
 # Important
 
 * Players need to place their [stash](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#LL426C96-L426C96) and [wardrobe](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L427) or else they wont have one. Check [Config](https://github.com/Project-Sloth/ps-housing/blob/7efd2009050b9a20969877cf69b284352a9309bf/shared/config.lua#L422) for more information.
