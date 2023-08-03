@@ -38,7 +38,7 @@
 
 						const itemsWithSameType = $OWNEDITEMS.filter(item => item.type === furniture.type);
 
-						let furnitureTypeMax = furniture.max || 1;
+						let furnitureTypeMax = furniture.max;
 
 						if (itemsWithSameType.length >= furnitureTypeMax) {
 							SendNUI('showNotification', {
