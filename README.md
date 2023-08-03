@@ -53,9 +53,9 @@ Dynamic Doors will turn placed doors into actual working doors, Instead of them 
 
 ### Preview
 
-https://github.com/complexza/ps-housing/assets/74205343/fef28197-8e95-4b5f-aba8-b3e5409456d8
+https://github.com/complexza/ps-housing/assets/74205343/72cfc135-2f78-42b3-a540-45f02567b6d7
 
-https://github.com/complexza/ps-housing/assets/74205343/196bb25e-75b9-42f6-b1c3-fe86ad477544
+https://github.com/complexza/ps-housing/assets/74205343/0ff26e7f-1341-45fc-8fc6-d65421dec0b2
 
 ### Setup
 - You will need to set the `Config.DynamicDoors = true`
