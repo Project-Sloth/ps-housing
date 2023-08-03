@@ -24,7 +24,7 @@ local Shells = {
     [15] = `shell_warehouse1`
 }
 
-RegisterCommand("migrateapartments", function()
+RegisterCommand("ps-housing:server:migrateapartments", function()
 
     local properties = {}
 
@@ -50,7 +50,7 @@ RegisterCommand("migrateapartments", function()
     end)
 end, true)
 
-RegisterNetEvent('migratehouses', function()
+RegisterNetEvent('ps-housing:server:migratehouses', function()
     if not source or source == 0 then return end
     local src = source
     local qbHouses = MySQL.Sync.fetchAll("SELECT * FROM player_houses")
