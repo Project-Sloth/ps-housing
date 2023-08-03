@@ -24,7 +24,7 @@ local Shells = {
     [15] = `shell_warehouse1`
 }
 
-RegisterCommand("ps-housing:server:migrateapartments", function()
+RegisterCommand("migrateapartments", function()
 
     local properties = {}
 
