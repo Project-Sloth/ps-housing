@@ -265,6 +265,13 @@ end)
 
 10. Install the dependencies below.
 
+## Migrating houses and apartments from qb-houses and qb-apartments
+
+1. From a client run the `migratehouses` command to automatically convert all houses from qb-houses. It will print a message to the console once complete.
+   **The `migratehouses` command MUST be run from a client in order to retrieve street and region data for each house**
+
+2. From a client or server console run the `migrateapartments` command to automatically convert all apartments from qb-apartments. It will print a message to the console once complete.
+
 ## Logs System Setup
 
 1. Go to `qb-smallresources/server/logs.lua` and add this:
