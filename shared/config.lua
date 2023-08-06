@@ -51,6 +51,9 @@ Config.Commissions = {
     [3] = 0.20,
 }
 
+-- Choose how much money the Player looses after selling the Property. (Default: 0.25 = 25%)
+Config.SellToState = 0.25
+
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
 
