@@ -226,6 +226,65 @@ function Property:UpdateShell(data)
     Debug("Changed Shell of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 
+RegisterNetEvent('ps-housing:server:sellToPlayer', function (data)
+    local property = Property.Get(data.property_id)
+    if not property then return end
+    local type = "UpdateOwner"
+    local data = {
+        targetSrc = data.targetSrc,
+        realtorSrc = QBCore.Functions.GetPlayerByCitizenId(data.realtor).PlayerData.source,
+    }
+
+    property[type](property, data)
+end)
+
+RegisterNetEvent('ps-housing:server:sellToState', function (data)
+    local property = Property.Get(data.property_id)
+    if not property then return end
+    local type = "sellToState"
+    local data = {
+        realtorSrc = QBCore.Functions.GetPlayerByCitizenId(data.realtor).PlayerData.source,
+    }
+
+    property[type](property, data)
+end)
+
+function Property:sellToState(data)
+
+    local owner = data.realtorSrc
+    local currentOwner = QBCore.Functions.GetPlayer(owner)
+
+    self.propertyData.for_sale = 1
+
+    local statetax = math.floor(self.propertyData.price * Config.SellToState)
+    local totalAfterCommission = self.propertyData.price - statetax
+
+    if currentOwner ~= nil then
+        Framework[Config.Notify].Notify(owner, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id, "success")
+        currentOwner.Functions.AddMoney('bank', totalAfterCommission, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id)
+    elseif currentOwner then
+        MySQL.Async.execute('UPDATE `players` SET `bank` = `bank` + @price WHERE `citizenid` = @citizenid', {
+            ['@citizenid'] = currentOwner.PlayerData.citizenid,
+            ['@price'] = totalAfterCommission
+        })
+    end
+
+    self.propertyData.owner = nil
+
+    MySQL.update("UPDATE properties SET owner_citizenid = @owner_citizenid, for_sale = @for_sale WHERE property_id = @property_id", {
+        ["@owner_citizenid"] = null,
+        ["@for_sale"] = 1,
+        ["@property_id"] = self.property_id
+    })
+
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateForSale", self.property_id, 1)
+    TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateOwner", self.property_id, nil)
+    
+    Framework[Config.Logs].SendLog("**Property Sold To State** of property with id: " .. self.property_id .. " by: " .. GetPlayerName(owner))
+
+    Debug("Sold Property To State: " .. self.property_id, "by: " .. GetPlayerName(owner))
+end
+
 function Property:UpdateOwner(data)
     local targetSrc = data.targetSrc
     local realtorSrc = data.realtorSrc
