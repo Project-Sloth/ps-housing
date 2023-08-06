@@ -543,7 +543,7 @@ function Property:SellHouseMenu()
 
     menu.options[#menu.options + 1] = {
         title = "Sell to Player",
-        icon = 'fas fa-user',
+        icon = 'fas fa-person-circle-exclamation',
         description = "This sells your Property to a Player.",
         onSelect = function()
             self:ConfirmPropertySalePlayer()
