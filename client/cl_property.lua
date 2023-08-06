@@ -97,11 +97,16 @@ function Property:RegisterDoorZone(offset)
         self:OpenDoorbellMenu()
     end
 
+    local function sellHouse()
+        self:SellHouseMenu()
+    end
+
     local coords = offset
     local size = vector3(1.0, self.shellData.doorOffset.width, 3.0)
     local heading = self.shellData.doorOffset.h
-
-    self.exitTarget = Framework[Config.Target].AddDoorZoneInside(coords, size, heading, leave, checkDoor)
+    local propertyId = self.property_id
+    
+    self.exitTarget = Framework[Config.Target].AddDoorZoneInside(coords, size, heading, propertyId, leave, checkDoor, sellHouse)
 end
 
 function Property:RegisterPropertyEntrance()
@@ -419,6 +424,79 @@ function Property:OpenDoorbellMenu()
             end,
         }
     end
+
+    lib.registerContext(menu)
+    lib.showContext(id)
+end
+
+function Property:ChoosePlayerId()
+    if not self.inProperty then return end
+
+    local input = lib.inputDialog('Choose Player ID', {
+        {type = 'number', label = 'Player ID', required = true, icon = 'exclamation'},
+      })
+
+    if not input then return end
+
+    local data = {
+        property_id = self.property_id,
+        targetSrc = input[1],
+        realtor = self.propertyData.owner
+    }
+
+    TriggerServerEvent("ps-housing:server:sellToPlayer", data)
+end
+
+function Property:sellToState()
+    if not self.inProperty then return end
+
+    local data = {
+        property_id = self.property_id,
+        realtor = self.propertyData.owner
+    }
+
+    TriggerServerEvent("ps-housing:server:sellToState", data)
+    Framework[Config.Notify].Notify("You got 20 Seconds to load all your shit!", "primary")
+    Wait(15000)
+    Framework[Config.Notify].Notify("5 Seconds!", "primary")
+    Wait(1000)
+    Framework[Config.Notify].Notify("4 Seconds!", "primary")
+    Wait(1000)
+    Framework[Config.Notify].Notify("3 Seconds!", "primary")
+    Wait(1000)
+    Framework[Config.Notify].Notify("2 Seconds!", "primary")
+    Wait(1000)
+    Framework[Config.Notify].Notify("1 Seconds!", "primary")
+    Wait(1000)
+    self:LeaveShell()
+end
+
+function Property:SellHouseMenu()
+    if not self.inProperty then return end
+    if not self.owner then  return  end
+
+    local id = string.format("property-%s-sellhouse", self.property_id)
+    local menu = {
+        id = id,
+        title = "Choose type of sell",
+        options = {},
+    }
+
+    menu.options[#menu.options + 1] = {
+        title = "Sell to Player",
+        description = "This sells your Property to a Player.",
+        onSelect = function()
+            self:ChoosePlayerId()
+        end,
+    }
+
+    menu.options[#menu.options + 1] = {
+        title = "Sell to State",
+        description = "This sells your Property to the State. (-25% Sell Price)",
+        onSelect = function()
+            self:sellToState()
+        end,
+    }
 
     lib.registerContext(menu)
     lib.showContext(id)
