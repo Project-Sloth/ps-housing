@@ -176,7 +176,8 @@ Framework.qb = {
         })
     end,
 
-    AddDoorZoneInside = function(coords, size, heading, leave, checkDoor)
+    AddDoorZoneInside = function(coords, size, heading, propertyId, leave, checkDoor, sellHouse)
+        local property_id = propertyId
         exports["qb-target"]:AddBoxZone(
             "shellExit",
             vector3(coords.x, coords.y, coords.z),
@@ -201,6 +202,15 @@ Framework.qb = {
                         action = checkDoor,
                         icon = "fas fa-bell",
                     },
+                    {
+                        label = "Sell House",
+                        action = sellHouse,
+                        canInteract = function()
+                            local property = Property.Get(property_id)
+                            return property.owner
+                        end,
+                        icon = "fas fa-dollar-sign",
+                    }
                 },
             }
         )
@@ -399,7 +409,8 @@ Framework.ox = {
         return handler
     end,
 
-    AddDoorZoneInside = function (coords, size, heading, leave, checkDoor)
+    AddDoorZoneInside = function (coords, size, heading, propertyId, leave, checkDoor, sellHouse)
+        local property_id = propertyId
         local handler = exports.ox_target:addBoxZone({
             coords = vector3(coords.x, coords.y, coords.z), --z = 3.0
             size = vector3(size.y, size.x, size.z),
@@ -418,6 +429,15 @@ Framework.ox = {
                     onSelect = checkDoor,
                     icon = "fas fa-bell",
                 },
+                {
+                    label = "Sell House",
+                    action = sellHouse,
+                    canInteract = function()
+                        local property = Property.Get(property_id)
+                        return property.owner
+                    end,
+                    icon = "fas fa-dollar-sign",
+                }
             },
         })
 
