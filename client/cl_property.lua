@@ -559,15 +559,6 @@ function Property:SellHouseMenu()
         end,
     }
 
-    menu.options[#menu.options + 1] = {
-        title = "Close Menu",
-        icon = 'fas fa-x',
-        iconColor = "red",
-        onSelect = function()
-            
-        end,
-    }
-
     lib.registerContext(menu)
     lib.showContext(id)
 end
