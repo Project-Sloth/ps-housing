@@ -447,6 +447,64 @@ function Property:ChoosePlayerId()
     TriggerServerEvent("ps-housing:server:sellToPlayer", data)
 end
 
+function Property:ConfirmPropertySaleState()
+    if not self.inProperty then return end
+
+    lib.registerContext({
+        id = 'confirm_property_sale',
+        title = 'Sell the House?',
+        options = {
+          {
+            title = 'CONFIRM SALE',
+            icon = 'check',
+            iconColor = "green",
+            onSelect = function()
+                self:sellToState()
+            end,
+          },
+          {
+            title = 'CANCEL SALE',
+            icon = 'fas fa-x',
+            iconColor = "red",
+            onSelect = function()
+                self:SellHouseMenu()
+            end,
+          }
+        }
+    })
+
+    lib.showContext('confirm_property_sale')
+end
+
+function Property:ConfirmPropertySalePlayer()
+    if not self.inProperty then return end
+
+    lib.registerContext({
+        id = 'confirm_property_sale2',
+        title = 'Sell the House?',
+        options = {
+          {
+            title = 'CONFIRM SALE',
+            icon = 'check',
+            iconColor = "green",
+            onSelect = function()
+                self:ChoosePlayerId()
+            end,
+          },
+          {
+            title = 'CANCEL SALE',
+            icon = 'fas fa-x',
+            iconColor = "red",
+            onSelect = function()
+                self:SellHouseMenu()
+            end,
+          }
+        }
+    })
+
+    lib.showContext('confirm_property_sale2')
+end
+
 function Property:sellToState()
     if not self.inProperty then return end
 
@@ -475,6 +533,7 @@ function Property:SellHouseMenu()
     if not self.inProperty then return end
     if not self.owner then  return  end
 
+    local StateComission = math.floor(Config.SellToState * 100)
     local id = string.format("property-%s-sellhouse", self.property_id)
     local menu = {
         id = id,
@@ -484,17 +543,28 @@ function Property:SellHouseMenu()
 
     menu.options[#menu.options + 1] = {
         title = "Sell to Player",
+        icon = 'fas fa-user',
         description = "This sells your Property to a Player.",
         onSelect = function()
-            self:ChoosePlayerId()
+            self:ConfirmPropertySalePlayer()
         end,
     }
 
     menu.options[#menu.options + 1] = {
         title = "Sell to State",
-        description = "This sells your Property to the State. (-25% Sell Price)",
+        icon = 'fas fa-building-circle-exclamation',
+        description = "This sells your Property to the State. (-" ..StateComission.. "% Sell Price)",
         onSelect = function()
-            self:sellToState()
+            self:ConfirmPropertySaleState()
+        end,
+    }
+
+    menu.options[#menu.options + 1] = {
+        title = "Close Menu",
+        icon = 'fas fa-x',
+        iconColor = "red",
+        onSelect = function()
+            
         end,
     }
 
