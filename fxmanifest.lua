@@ -16,7 +16,7 @@ dependency 'fivem-freecam'
 shared_script {
   '@ox_lib/init.lua',
   "shared/config.lua",
-  "shared/framework.lua",
+  "shared/**/*.lua",
   }
 
 client_script {
