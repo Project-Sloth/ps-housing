@@ -99,6 +99,10 @@ exports('GetApartment', function(apartment)
     return Apartment.Get(apartment)
 end)
 
+exports("GetApartmentId", function()
+    return currentApartmentId
+end)
+
 exports('GetShells', function()
     return Config.Shells
 end)
