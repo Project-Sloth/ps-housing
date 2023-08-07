@@ -1,5 +1,7 @@
 -- TBH I should have learnt how lua inheritance worked instead of making a new class but oh well. Maybe next time
 
+currentApartmentId = nil
+
 Apartment = {
     apartmentData = {},
     apartments = {},
@@ -47,6 +49,10 @@ function Apartment:EnterApartment()
         local property = PropertiesTable[propertyId]
         if property.owner then
             TriggerServerEvent('ps-housing:server:enterProperty', propertyId)
+            
+            currentApartmentId = propertyId
+            Debug("currentApartmentId is ( ID: " ..currentApartmentId.. " )")
+
             return
         end
     end
