@@ -35,9 +35,6 @@ Config.EnableLogs = true
 -- Enables Dynamic Doors
 Config.DynamicDoors = false
 
--- If you set it to true, anyone you allow access to your property will also be able to access your garage.
-Config.AllowAccessToGarage = false
-
 Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid properties!
     "police",
     -- "police2",
