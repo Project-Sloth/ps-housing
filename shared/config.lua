@@ -54,6 +54,9 @@ Config.Commissions = {
 -- Choose how much money the Player looses after selling the Property. (Default: 0.25 = 25%)
 Config.SellToState = 0.25
 
+-- Choose how long the Player can be in the Property after selling. (Default: 20 seconds)
+Config.LeaveShellTimer = 20 -- in seconds
+
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
 
