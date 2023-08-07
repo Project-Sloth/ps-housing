@@ -203,8 +203,9 @@ function Property:UnregisterGarageZone()
 end
 
 function Property:EnterShell()
-    DoScreenFadeOut(250)
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_open", 0.25)
+    
+    DoScreenFadeOut(250)
     Wait(250)
 
     self.inProperty = true
@@ -216,15 +217,18 @@ function Property:EnterShell()
 
     self:GiveMenus()
 
-    Wait(250)
+    Wait(750)
     DoScreenFadeIn(250)
+    
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_close", 0.15)
 end
 
 function Property:LeaveShell()
     if not self.inProperty then return end
 
-    DoScreenFadeOut(250)
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_open", 0.25)
+    
+    DoScreenFadeOut(250)
     Wait(250)
 
     local coords = self:GetDoorCoords()
@@ -249,8 +253,14 @@ function Property:LeaveShell()
     self.doorbellPool = {}
 
     self.inProperty = false
-    Wait(250)
+
+    currentApartmentId = nil
+    Debug("currentApartmentId is nil again")
+
+    Wait(750)
     DoScreenFadeIn(250)
+
+    TriggerServerEvent("InteractSound_SV:PlayOnSource", "houses_door_close", 0.15)
 end
 
 function Property:GiveMenus()
@@ -531,6 +541,11 @@ function Property:SellHouseMenu()
     if not self.inProperty then return end
     if not self.owner then  return  end
 
+    if apartmentId ~= nil then
+        Framework[Config.Notify].Notify("Blocked.", "error") 
+        return 
+    end
+    
     local StateComission = math.floor(Config.SellToState * 100)
     local id = string.format("property-%s-sellhouse", self.property_id)
     local menu = {
