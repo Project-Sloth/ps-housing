@@ -431,7 +431,7 @@ Framework.ox = {
                 },
                 {
                     label = "Sell House",
-                    action = sellHouse,
+                    onSelect = sellHouse,
                     canInteract = function()
                         local property = Property.Get(property_id)
                         return property.owner
