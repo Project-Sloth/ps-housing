@@ -88,6 +88,7 @@ function Property:AddToDoorbellPoolTemp(src)
         local targetSrc = tonumber(src)
 
         Framework[Config.Notify].Notify(targetSrc, "Someone is at the door.", "info")
+        TriggerEvent("InteractSound_SV:PlayOnSource", "doorbell", 0.1)
         TriggerClientEvent("ps-housing:client:updateDoorbellPool", targetSrc, self.property_id, self.playersDoorbell)
     end
 
