@@ -514,19 +514,17 @@ function Property:sellToState()
     }
 
     TriggerServerEvent("ps-housing:server:sellToState", data)
-    Framework[Config.Notify].Notify("You got 20 Seconds to load all your shit!", "primary")
-    Wait(15000)
-    Framework[Config.Notify].Notify("5 Seconds!", "primary")
-    Wait(1000)
-    Framework[Config.Notify].Notify("4 Seconds!", "primary")
-    Wait(1000)
-    Framework[Config.Notify].Notify("3 Seconds!", "primary")
-    Wait(1000)
-    Framework[Config.Notify].Notify("2 Seconds!", "primary")
-    Wait(1000)
-    Framework[Config.Notify].Notify("1 Seconds!", "primary")
-    Wait(1000)
-    self:LeaveShell()
+
+    CreateThread(function ()
+        local time = Config.LeaveShellTimer
+        while self.inProperty and time > 0 do
+            Framework[Config.Notify].Notify("You got " ..time.. " Seconds to load all your shit!", "primary")
+            Wait(5000)
+            time = time - 5
+        end
+        Framework[Config.Notify].Notify("You got kicked out of the Property!", "error")
+        self:LeaveShell()
+    end)
 end
 
 function Property:SellHouseMenu()
