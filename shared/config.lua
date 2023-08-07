@@ -561,6 +561,7 @@ Config.FurnitureTypes = {
         Framework[Config.Target].AddTargetEntity(entity, "Storage", "fas fa-box-open", function()
             local stashConfig = Config.Shells[shell].stash
             Framework[Config.Inventory].OpenInventory(stash, stashConfig)
+	    TriggerServerEvent("InteractSound_SV:PlayOnSource", "StashOpen", 0.25)
         end)
 
         local property = Property.Get(property_id)
@@ -572,6 +573,7 @@ Config.FurnitureTypes = {
             local heading = GetEntityHeading(cache.ped)
             SetEntityHeading(cache.ped, heading - 180.0)
             TriggerEvent("qb-clothing:client:openOutfitMenu")
+	    TriggerServerEvent("InteractSound_SV:PlayOnSource", "Clothes1", 0.25)
         end)
 
         local property = Property.Get(property_id)
