@@ -547,8 +547,12 @@ RegisterNetEvent('ps-housing:server:raidProperty', function(property_id)
                 -- Remove the "stormram" item from the officer's inventory
                 if stormRamIndex then
                     table.remove(PlayerData.items, stormRamIndex)
-                    TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["police_stormram"], "remove")
-                    TriggerEvent("inventory:server:RemoveItem", src, "police_stormram", 1)
+                    if Config.Inventory == 'ox' then
+                        exports.ox_inventory:RemoveItem(src, 'police_stormram', 1)
+                    else
+                        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["police_stormram"], "remove")
+                        TriggerEvent("inventory:server:RemoveItem", src, "police_stormram", 1)
+                    end
                 end
             end
         else
