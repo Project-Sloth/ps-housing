@@ -268,6 +268,14 @@ end)
 
 10. Install the dependencies below.
 
+## Item Limits System
+
+1. Choose an item you want to limit under `Config.Furniture` in under `shared/config.lua`
+2. Add `["max"] = 3` or the number of your choice to the item (see example below)
+```lua
+{ ["object"] = "v_res_r_figcat", ["price"] = 300, ["max"] = 2, ["label"] = "Fig Cat" },
+```
+
 ## Logs System Setup
 
 1. Go to `qb-smallresources/server/logs.lua` and add this:

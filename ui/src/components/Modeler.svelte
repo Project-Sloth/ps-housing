@@ -264,6 +264,20 @@
 		<button
 			class="absolute text-[2rem] hover:brightness-110 top-1/2 -translate-y-1/2 right-[1rem] w-fit gap-[1rem] px-8 py-4  h-fit bg-[color:var(--color-secondary)] flex flex-row items-center justify-between"
 			on:click={() => {
+				if ($CURRENTFURNITURE.max) {
+					const itemsWithSameType = $CART.filter(item => item.object === $CURRENTFURNITURE.object);
+
+					const furnitureTypeMax = $CURRENTFURNITURE.max;
+
+					if (itemsWithSameType.length >= furnitureTypeMax) {
+						SendNUI('showNotification', {
+							type: 'error',
+							message: `You can only have ${furnitureTypeMax} of this item!`,
+						})
+						return;
+					}
+				}
+
 				SendNUI('addToCart', $CURRENTFURNITURE)
 				$CURRENTFURNITURE = null
 			}}
