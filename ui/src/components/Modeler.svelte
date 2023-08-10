@@ -267,7 +267,7 @@
 				if ($CURRENTFURNITURE.max) {
 					const itemsWithSameType = $CART.filter(item => item.object === $CURRENTFURNITURE.object);
 
-					let furnitureTypeMax = $CURRENTFURNITURE.max;
+					const furnitureTypeMax = $CURRENTFURNITURE.max;
 
 					if (itemsWithSameType.length >= furnitureTypeMax) {
 						SendNUI('showNotification', {
