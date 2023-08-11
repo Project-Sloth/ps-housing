@@ -84,10 +84,14 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
         Wait(1000)
 
-        local appearance = MySQL.query.await("SELECT skin FROM playerskins WHERE citizenid = ?", {propertyData.owner})
-        if not appearance then
+        local query = "SELECT skin FROM playerskins WHERE citizenid = ?"
+        local result = MySQL.Sync.fetchAll(query, {propertyData.owner})
+
+        if result and result[1] then
+            Debug("Player: " .. propertyData.owner .. " skin already exists!")
+        else
             TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
-            Debug("Player: "..propertyData.owner.." is creating a new character!")
+            Debug("Player: " .. propertyData.owner .. " is creating a new character!")
         end
 
         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
