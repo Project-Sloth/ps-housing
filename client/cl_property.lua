@@ -468,12 +468,11 @@ function Property:LoadFurnitures()
 end
 
 function Property:UnloadFurniture(furniture, index)
-    local entity = furniture.entity
-
+    local entity = furniture?.entity
     if not entity then 
         for i = 1, #self.furnitureObjs do
-            if self.furnitureObjs[i].id == furniture.id then
-                entity = self.furnitureObjs[i].entity
+            if self.furnitureObjs[i]?.id and furniture?.id and self.furnitureObjs[i].id == furniture.id then
+                entity = self.furnitureObjs[i]?.entity
                 break
             end
         end
@@ -490,11 +489,11 @@ function Property:UnloadFurniture(furniture, index)
     end
 
     if index and self.furnitureObjs?[index] then
-        self.furnitureObjs[index] = nil
+        table.remove(self.furnitureObjs, index)
     else 
         for i = 1, #self.furnitureObjs do
-            if self.furnitureObjs[i].id == furniture.id then
-                self.furnitureObjs[i] = nil
+            if self.furnitureObjs[i]?.id and furniture?.id and self.furnitureObjs[i].id == furniture.id then
+                table.remove(self.furnitureObjs, i)
                 break
             end
         end
