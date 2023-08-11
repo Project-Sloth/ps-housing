@@ -10,17 +10,18 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 ![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/655d9bb6-6c6d-4676-b4e0-f4368f3325a9)
 ![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/fc632975-c2f6-41fb-89cd-a984679f1a41)
 
-# Preview [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
-![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/0fd5aa8b-7305-4239-b6fd-f82b682b83c7)
-![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/8e702104-92f2-4696-a59e-e3ea89b975b5)
-![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/f1a4ddfd-b091-4062-a994-e8181974ee49)
-![image](https://github.com/Byte-Labs-Project/bl-realtor/assets/82112471/fadc1cab-ceea-462a-8b37-f7fec10f415b)
+# Preview [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
+![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/24e4018a-cb97-42b0-81df-3b0236c7e2dc)
+![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/4d8ece54-ace1-4ffc-b8fb-90274bc94e72)
+![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/188d259c-4c0f-4c91-905c-bf9b826cc518)
+![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/9e033984-45f2-449d-ba6c-bb8742ac08bd)
+![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/0dd078b8-a941-4316-b9e1-26c696023139)
 
 # Usage
 - Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
 - Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
   - When a player first spawns after enabling ps-housing, they will have to choose an apartment. Once they spawn in the stashitems from their previous qb-apartment will be migrated to their new apartment stash.
-- Allows players to purchase and list houses for sale through `bl-realtor` and the realtor job
+- Allows players to purchase and list houses for sale through `ps-realtor` and the realtor job
 - Houses come with personal garages
 - Houses and apartments come with personal wardrobes and stashes
 - Players can share keys to their houses and apartments with other players
@@ -262,7 +263,7 @@ end)
 
 7. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
 
-8. Ensure bl-realtor above ps-housing.
+8. Ensure ps-realtor above ps-housing.
 
 9. In your server.cfg, add `ensure ox_lib` above all other resources
 
@@ -288,18 +289,18 @@ end)
 > This system only supports qb-core for now.
 
 # Dependency
-1. [bl-realtor](https://github.com/Byte-Labs-Project/bl-realtor)
+1. [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
 2. [five-freecam](https://github.com/Deltanic/fivem-freecam)
 3. [ox_lib](https://github.com/overextended/ox_lib/releases) - Use the latest release. If you do not use the latest release, MAKE SURE TO BUILD THE UI. Find their docs [here](https://overextended.dev/ox_lib#building-the-ui) on how to build the UI.
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 
 ## For reference your server.cfg should be ensured like below:
-* We highly recommend making a folder named [ps-housing] and add `bl-realtor`, `fivem-freecam`, `ox_lib`, `ps-core`, `ps-housing` inside the folder.
+* We highly recommend making a folder named [ps-housing] and add `ps-realtor`, `fivem-freecam`, `ox_lib`, `ps-core`, `ps-housing` inside the folder.
   
 ```
 ensure ox_lib
 ensure ps-housing
-ensure bl-realtor
+ensure ps-realtor
 ensure fivem-freecam
 ```
 
