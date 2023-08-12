@@ -73,7 +73,7 @@ RegisterNetEvent('ps-housing:server:migratehouses', function()
             end
 
             local houseCoords = json.decode(house.coords)
-            local clientData = lib.callback.await("getclientdata", src, {coords = houseCoords.enter})
+            local clientData = lib.callback.await("ps-housing:client:getclientdata", src, {coords = houseCoords.enter})
 
             local door = {
                 x = math.floor(houseCoords.enter.x * 10000) / 10000,
