@@ -472,15 +472,15 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://i.postimgs.cc/HLbdwtRd/angle1.webp",
+                url = "https://i.imgur.com/ddg9zHU.jpeg",
                 label = "Angle 1",
             },
             {
-                url = "https://i.postimgs.cc/C1YYmqpD/angle2.webp",
+                url = "https://i.imgur.com/4rvkeme.jpeg",
                 label = "Angle 2",
             },
             {
-                url = "https://i.postimgs.cc/26wYJSCt/entry.webp",
+                url = "https://i.imgur.com/4QAcZBp.jpeg",
                 label = "Entrance",
             },
         },

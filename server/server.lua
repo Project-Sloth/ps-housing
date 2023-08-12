@@ -84,7 +84,15 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
 
         Wait(1000)
 
-        TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+        local query = "SELECT skin FROM playerskins WHERE citizenid = ?"
+        local result = MySQL.Sync.fetchAll(query, {propertyData.owner})
+
+        if result and result[1] then
+            Debug("Player: " .. propertyData.owner .. " skin already exists!")
+        else
+            TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+            Debug("Player: " .. propertyData.owner .. " is creating a new character!")
+        end
 
         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
 
@@ -117,6 +125,15 @@ AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, 
     if not property then return end
 
     property[type](property, data)
+end)
+
+AddEventHandler("onResourceStart", function(resourceName) -- Used for when the resource is restarted while in game
+	if (GetCurrentResourceName() == resourceName) then
+        while not dbloaded do
+            Wait(100)
+        end
+        TriggerClientEvent('ps-housing:client:initialiseProperties', -1, PropertiesTable)
+	end 
 end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
