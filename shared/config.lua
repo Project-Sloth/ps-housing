@@ -17,7 +17,7 @@ Config.Logs = "qb" -- "qb"
 Config.AccessCanEditFurniture = true
 
 -- Draw the poly for the property
-Config.DebugMode = true
+Config.DebugMode = false
 
 function Debug(...)
     if Config.DebugMode then
@@ -97,7 +97,7 @@ Config.Apartments = {
         door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                url = "https://cdn.discordapp.com/attachments/1108364246342963322/1140163262315495494/tinsel.webp",
                 label = "Outside",
             },
         },
