@@ -475,12 +475,26 @@ Modeler = {
     end,
 
     HoverIn = function (self, data)
-        self:HoverOut()
-        local object = data.object
-        if object == nil then return end
+        if self.HoverObject then
+            local tries = 0
+            while DoesEntityExist(self.HoverObject) do
+                SetEntityAsMissionEntity(self.HoverObject, true, true)
+                DeleteEntity(self.HoverObject)
+                Wait(50)
+                tries = tries + 1
+                if tries > 25 then
+                    break
+                end
+            end
 
+            self.HoverObject = nil
+        end
+
+        local object = data.object and joaat(data.object) or nil
+        if object == nil then return end
         lib.requestModel(object)
-        self.HoverObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
+        if self.HoverObject then return end
+        self.HoverObject = CreateObject(object, 0.0, 0.0, 0.0, false, false, false)
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
         local camRot = Freecam:GetRotation()
 
@@ -499,8 +513,19 @@ Modeler = {
 
     HoverOut = function (self)
         if self.HoverObject == nil then return end
-        DeleteEntity(self.HoverObject)
-        self.HoverObject = nil
+        if self.HoverObject and self.HoverObject ~= 0 then
+            local tries = 0
+            while DoesEntityExist(self.HoverObject) do
+                SetEntityAsMissionEntity(self.HoverObject, true, true)
+                DeleteEntity(self.HoverObject)
+                Wait(50)
+                tries = tries + 1
+                if tries > 25 then
+                    break
+                end
+            end
+            self.HoverObject = nil
+        end
         self.IsHovering = false
     end,
 
