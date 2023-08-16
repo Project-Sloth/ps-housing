@@ -269,6 +269,23 @@ end)
 
 10. Install the dependencies below.
 
+## Resolving the "Foreign key constraint is incorrectly formed" Issue
+
+If you come across an error such as `Foreign key constraint is incorrectly formed` while importing the `properties.sql` into your database, follow these steps to fix it.
+
+1. Open your database in HeidiSQL.
+2. Right-click on your database name and select "Edit."
+3. Locate the database collation setting take a note of it. 
+4. You will need to format the `properties.sql` file to match your database collation.
+
+If your database collation is set to `utf8mb4_general_ci`, modify the `properties.sql` file using a text editor like VSCode or in HeidiSQL's query tab. Change the last line to the following:
+
+```sql
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+```
+
+This adjustment ensures that your SQL file's character set and collation match that of your database, effectively resolving the issue.
+
 ## Item Limits System
 
 1. Choose an item you want to limit under `Config.Furniture` in under `shared/config.lua`
