@@ -519,34 +519,30 @@ RegisterNetEvent('ps-housing:server:raidProperty', function(property_id)
         return 
     end
 
-    local PlayerData = GetPlayerData(src)
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local PlayerData = Player.PlayerData
     local job = PlayerData.job
     local jobName = job.name
     local gradeAllowed = tonumber(job.grade.level) >= Config.MinGradeToRaid
     local onDuty = job.onduty
 
     -- Check if the police officer has the "stormram" item
-    local hasStormRam = false
-    local stormRamIndex = nil
-    for index, item in pairs(PlayerData.items) do
-        if item.name == "police_stormram" then
-            hasStormRam = true
-            stormRamIndex = index
-            break
-        end
-    end
+    local hasStormRam = (Config.Inventory == "ox" and exports.ox_inventory:Search(src, "count", "police_stormram") > 0) or Player.Functions.GetItemByName("police_stormram")
 
-    if jobName == "police" and onDuty and gradeAllowed and hasStormRam then
+    if PoliceJobs[jobName] and onDuty and gradeAllowed and hasStormRam then
         if not property.raiding then
             local confirmRaid = lib.callback.await('ps-housing:cb:confirmRaid', src, (property.propertyData.street or property.propertyData.apartment) .. " " .. property.property_id, property_id)
             if confirmRaid == "confirm" then
                 property:StartRaid(src)
                 property:PlayerEnter(src)
                 Framework[Config.Notify].Notify(src, "Raid started", "success")
-                
+
                 -- Remove the "stormram" item from the officer's inventory
-                if stormRamIndex then
-                    table.remove(PlayerData.items, stormRamIndex)
+                if Config.Inventory == 'ox' then
+                    exports.ox_inventory:RemoveItem(src, 'police_stormram', 1)
+                else
+                    Player.Functions.RemoveItem("police_stormram", 1)
                     TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items["police_stormram"], "remove")
                     TriggerEvent("inventory:server:RemoveItem", src, "police_stormram", 1)
                 end
@@ -555,7 +551,7 @@ RegisterNetEvent('ps-housing:server:raidProperty', function(property_id)
             Framework[Config.Notify].Notify(src, "Raid in progress", "success")
             property:PlayerEnter(src)
         end
-    elseif jobName == "police" and onDuty and gradeAllowed and not hasStormRam then
+    elseif PoliceJobs[jobName] and onDuty and gradeAllowed and not hasStormRam then
         Framework[Config.Notify].Notify(src, "You need a stormram to enter", "error")
     end
 end)
