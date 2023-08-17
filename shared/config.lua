@@ -39,7 +39,9 @@ Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid 
 
 Config.MinGradeToRaid = 3  -- Minimum grade to raid a property
 
-Config.RaidTimer = 5-- 5 minutes
+Config.RaidTimer = 5  -- 5 minutes
+
+Config.RaidItem = "police_stormram"  -- The item required to raid a property
 
 Config.RealtorJobName = "realestate" -- Set your Real Estate job here
 
