@@ -543,7 +543,7 @@ RegisterNetEvent('ps-housing:server:raidProperty', function(property_id)
 
                     -- Remove the "stormram" item from the officer's inventory
                     if Config.Inventory == 'ox' then
-                        exports.ox_inventory:RemoveItem(src, 'police_stormram', 1)
+                        exports.ox_inventory:RemoveItem(src, raidItem, 1)
                     else
                         Player.Functions.RemoveItem(raidItem, 1)
                         TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items[raidItem], "remove")
