@@ -43,7 +43,8 @@ Config.RaidTimer = 5  -- 5 minutes
 
 Config.RaidItem = "police_stormram"  -- The item required to raid a property
 
-Config.ConsumeRaidItem = false          -- Whether or not to consume the raid item upon successful entry
+-- If you are using ox_inventory, it is encouraged to use the consume property within data/items.lua and keeping this config option false
+Config.ConsumeRaidItem = false          -- Whether or not to consume the raid item upon successful entry.
 
 Config.RealtorJobName = "realestate" -- Set your Real Estate job here
 
