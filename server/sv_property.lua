@@ -231,12 +231,26 @@ function Property:UpdateOwner(data)
     local realtorSrc = data.realtorSrc
 
     if not realtorSrc then Debug("No Realtor Src found") return end
-    if not targetSrc then Debug("No Target Src found") return end
+    if not targetSrc or string.len(targetSrc) <= 0 then 
+        local realtor = QBCore.Functions.GetPlayer(tonumber(realtorSrc))
+
+        Debug("No Target Source found / Owner being removed.")
+
+        MySQL.update("UPDATE properties SET owner_citizenid = NULL, for_sale = 0, has_access = json_array()  WHERE property_id = @property_id", {["@property_id"] = self.property_id})
+
+        self.propertyData.owner = nil
+        self.propertyData.furnitures = {} -- to be fetched on enter
+
+        TriggerClientEvent("ps-housing:client:updateProperty", -1, "UpdateOwner", self.property_id, null)
+
+        Framework[Config.Logs].SendLog("**House Owner Removed** by: **"..realtor.PlayerData.charinfo.firstname.." "..realtor.PlayerData.charinfo.lastname.."** from "..self.property_id.."!")
+
+        Framework[Config.Notify].Notify(realtorSrc, "You have removed the Owner from this house.", "success")
+        return 
+    end
 
     local previousOwner = self.propertyData.owner
-
     local targetPlayer  = QBCore.Functions.GetPlayer(tonumber(targetSrc))
-
     local PlayerData = targetPlayer.PlayerData
     local bank = PlayerData.money.bank
     local citizenid = PlayerData.citizenid
