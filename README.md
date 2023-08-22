@@ -295,6 +295,11 @@ end)
 
 > This system only supports qb-core for now.
 
+## Add new Shells
+
+1. Copy the files from the shell into the `ps-housing/stream` folder.
+2. Add the new shell into the Config.Shells in `ps-housing/shared/config.lua`.
+
 # Dependency
 1. [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
 2. [five-freecam](https://github.com/Deltanic/fivem-freecam)
@@ -310,9 +315,6 @@ ensure ps-housing
 ensure ps-realtor
 ensure fivem-freecam
 ```
-
-# To Do
-- Remake Realtor UI
 
 # Notes
 - If a player is in their apartment/house and an admin does a "Bring to me" function, they will not see the player nor will the player see anyone else. This is because the player is still in their own unique routing bucket. **Workaround**: To fix this, the player must go back into their apartment and leave on their own. 
