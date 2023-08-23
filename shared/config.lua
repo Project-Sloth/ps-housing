@@ -39,7 +39,9 @@ Config.PoliceJobNames = {  -- add multiple police jobs that are allowed to raid 
 
 Config.MinGradeToRaid = 3  -- Minimum grade to raid a property
 
-Config.RaidTimer = 5-- 5 minutes
+Config.RaidTimer = 5  -- 5 minutes
+
+Config.RaidItem = "police_stormram"  -- The item required to raid a property
 
 Config.RealtorJobName = "realestate" -- Set your Real Estate job here
 
@@ -61,7 +63,7 @@ Config.Apartments = {
         door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106153553283784704/integrity.webp",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566754983972954/986BKLz.jpg",
                 label = "Outside",
             },
         },
@@ -73,7 +75,7 @@ Config.Apartments = {
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1102801782452785162/1106154069426458665/integrity_1.webp",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566767864684665/FKTQq4b.jpg",
                 label = "Outside",
             },
         },
@@ -85,7 +87,7 @@ Config.Apartments = {
         door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://media.discordapp.net/attachments/1081260007129092146/1125035016905298021/morningwood.webp?width=1280&height=671",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566730363412582/amZDmz7.jpg",
                 label = "Outside",
             },
         },
@@ -109,7 +111,7 @@ Config.Apartments = {
         door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://media.discordapp.net/attachments/1081260007129092146/1125035016221638686/fantasticplaza.webp?width=1281&height=671",
+                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566742589800629/SgK60IR.jpg",
                 label = "Outside",
             },
         },
