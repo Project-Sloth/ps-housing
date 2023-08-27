@@ -112,7 +112,7 @@ lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
     else
         local src = source
         local Player = QBCore.Functions.GetPlayer(src)
-        local result = MySQL.query.await('SELECT * FROM apartments WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { Player.PlayerData.citizenid })
+        local result = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { Player.PlayerData.citizenid })
         if result[1] ~= nil then
             return result[1]
         end
