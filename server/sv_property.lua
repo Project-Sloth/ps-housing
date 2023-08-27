@@ -541,13 +541,15 @@ RegisterNetEvent('ps-housing:server:raidProperty', function(property_id)
                     property:PlayerEnter(src)
                     Framework[Config.Notify].Notify(src, "Raid started", "success")
 
-                    -- Remove the "stormram" item from the officer's inventory
-                    if Config.Inventory == 'ox' then
-                        exports.ox_inventory:RemoveItem(src, raidItem, 1)
-                    else
-                        Player.Functions.RemoveItem(raidItem, 1)
-                        TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items[raidItem], "remove")
-                        TriggerEvent("inventory:server:RemoveItem", src, raidItem, 1)
+                    if Config.ConsumeRaidItem then
+                        -- Remove the "stormram" item from the officer's inventory
+                        if Config.Inventory == 'ox' then
+                            exports.ox_inventory:RemoveItem(src, raidItem, 1)
+                        else
+                            Player.Functions.RemoveItem(raidItem, 1)
+                            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items[raidItem], "remove")
+                            TriggerEvent("inventory:server:RemoveItem", src, raidItem, 1)
+                        end
                     end
                 end
             else
