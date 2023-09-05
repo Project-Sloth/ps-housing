@@ -74,6 +74,8 @@ https://github.com/complexza/ps-housing/assets/74205343/0ff26e7f-1341-45fc-8fc6-
 * This entire README is meant for compatibility with default QBCore scripts. If you have different scripts, you'll need to adjust them for compatibility yourself. Refrain from asking us how to circumvent paid scripts that can't be adjusted for ps-housing support. Instead, request their support for ps-housing - this script is fully open source for that reason. Any inquiries related to this be ignored. 
 
 # Installation
+## Kamaryn has created an amazing setup video located [here.](https://www.youtube.com/watch?v=6YKkl20BevE)
+
 ## PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
 
 1. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
