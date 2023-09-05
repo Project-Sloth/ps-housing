@@ -318,7 +318,7 @@ This adjustment ensures that `properties.sql` file's character set and collation
 
 # Dependency
 1. [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
-2. [five-freecam](https://github.com/Deltanic/fivem-freecam)
+2. [fivem-freecam](https://github.com/Deltanic/fivem-freecam)
 3. [ox_lib](https://github.com/overextended/ox_lib/releases) - Use the latest release. If you do not use the latest release, MAKE SURE TO BUILD THE UI. Find their docs [here](https://overextended.dev/ox_lib#building-the-ui) on how to build the UI.
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 
