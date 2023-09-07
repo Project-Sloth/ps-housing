@@ -495,10 +495,8 @@ Modeler = {
         if object == nil then return end
         lib.requestModel(object)
         if self.HoverObject then return end
-        Debug("Hovering in: ", object)
         if data.type == "door" then isDoor = true end
         self.HoverObject = CreateObject(object, 0.0, 0.0, 0.0, false, false, isDoor)
-        Debug("Hover Object Spawned: ", self.HoverObject)
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
         local camRot = Freecam:GetRotation()
         SetEntityCoords(self.HoverObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
