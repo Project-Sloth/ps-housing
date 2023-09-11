@@ -78,7 +78,7 @@ https://github.com/complexza/ps-housing/assets/74205343/0ff26e7f-1341-45fc-8fc6-
 
 ## PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
 
-1. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
+1. Find the following events in `qb-multicharacter` and change events to: 
 
 `qb-multicharacter > server > main.lua`
 ```lua
@@ -107,15 +107,34 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
         repeat
             Wait(10)
         until hasDonePreloading[src]
-        print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
-        QBCore.Commands.Refresh(src)
-        TriggerClientEvent("qb-multicharacter:client:closeNUI", src)
-        newData.citizenid = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
-        TriggerClientEvent('ps-housing:client:setupSpawnUI', src, newData)
-        GiveStarterItems(src)
+        if Config.StartingApartment then
+            print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
+            QBCore.Commands.Refresh(src)
+            TriggerClientEvent("qb-multicharacter:client:closeNUI", src)
+            newData.citizenid = QBCore.Functions.GetPlayer(src).PlayerData.citizenid
+            TriggerClientEvent('ps-housing:client:setupSpawnUI', src, newData)
+            GiveStarterItems(src)
+        else
+            print('^2[qb-core]^7 '..GetPlayerName(src)..' has succesfully loaded!')
+            QBCore.Commands.Refresh(src)
+            TriggerClientEvent("qb-multicharacter:client:closeNUIdefault", src)
+            GiveStarterItems(src)
+        end
     end
 end)
 ```
+1.1 Replace the following:
+`qb-multicharacter > fxmanifest.lua > shared_scripts`
+```lua
+shared_scripts {
+    '@qb-core/shared/locale.lua',
+    '@ps-housing/shared/config.lua',
+    'locales/en.lua',
+    'locales/*.lua',
+    'config.lua'
+}
+```
+
 2. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
 `qb-spawn > client.lua > line 51 > 'qb-spawn:client:setupSpawns' event`
