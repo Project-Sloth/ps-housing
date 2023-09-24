@@ -342,6 +342,7 @@ Modeler = {
             position = offsetPos,
             rotation = newRot,
             type = item.type,
+            movedObject = true
         }
 
         TriggerServerEvent("ps-housing:server:updateFurniture", self.property_id, newFurniture)

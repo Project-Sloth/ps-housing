@@ -135,10 +135,23 @@ function Property:StartRaid()
 end
 
 function Property:UpdateFurnitures(furnitures)
-    self.propertyData.furnitures = furnitures
+    local newfurnitures = {}
+
+    for i = 1, #furnitures do
+        newfurnitures[i] = {
+            id = furnitures[i].id,
+            label = furnitures[i].label,
+            object = furnitures[i].object,
+            position = furnitures[i].position,
+            rotation = furnitures[i].rotation,
+            type = furnitures[i].type
+        }
+    end
+
+    self.propertyData.furnitures = newfurnitures
 
     MySQL.update("UPDATE properties SET furnitures = @furnitures WHERE property_id = @property_id", {
-        ["@furnitures"] = json.encode(furnitures),
+        ["@furnitures"] = json.encode(newfurnitures),
         ["@property_id"] = self.property_id
     })
 
