@@ -1,8 +1,8 @@
 Property = {
     property_id = nil,
     propertyData = nil,
-    playersInside = {},   -- src
-    playersDoorbell = {}, -- src
+    playersInside = nil,   -- src
+    playersDoorbell = nil, -- src
 
     raiding = false,
 }
@@ -13,6 +13,9 @@ function Property:new(propertyData)
 
     self.property_id = tostring(propertyData.property_id)
     self.propertyData = propertyData
+
+    self.playersInside = {}
+    self.playersDoorbell = {}
 
     local stashName = string.format("property_%s", propertyData.property_id)
     local stashConfig = Config.Shells[propertyData.shell].stash
