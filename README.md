@@ -78,7 +78,7 @@ https://github.com/complexza/ps-housing/assets/74205343/0ff26e7f-1341-45fc-8fc6-
 
 ## PAY ATTENTION TO EACH STEP. DO NOT SKIP ANY. 
 
-1. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
+### 1. Find the following events in `qb-multicharacter` and change in server/main.lua event to: 
 
 `qb-multicharacter > server > main.lua`
 ```lua
@@ -116,7 +116,7 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     end
 end)
 ```
-2. Find the following events in `qb-spawn` and change in client/client.lua event to: 
+### 2. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
 `qb-spawn > client.lua > line 51 > 'qb-spawn:client:setupSpawns' event`
 ```lua
@@ -238,7 +238,7 @@ QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb
 end)
 ```
 
-3. Find the following events in `qb-garages` and change: 
+### 3. Find the following events in `qb-garages` and change: 
 `qb-garages > server > main.lua > around line 120` on event `qb-garage:server:checkOwnership`
 
 Replace 
@@ -250,28 +250,28 @@ With
 local hasHouseKey = exports['ps-housing']:IsOwner(src, house)
 ```
 
-`qb-garages > client > main.lua > around line 451` under event `qb-garages:client:addHouseGarage`
+`qb-garages > client > main.lua > around line 451` add under event `qb-garages:client:addHouseGarage`
 ```lua
 RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
     Config.HouseGarages[house] = nil
 end)
 ```
 
-4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
+### 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 
-5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
+### 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 
-6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
+### 6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
 
-7. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
+### 7. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
 
-8. Ensure ps-realtor above ps-housing.
+### 8. Ensure ps-realtor above ps-housing.
 
-9. In your server.cfg, add `ensure ox_lib` above all other resources
+### 9. In your server.cfg, add `ensure ox_lib` above all other resources
 
-10. Install the dependencies below.
+### 10. Install the dependencies below.
 
-## Migrating houses and apartments from qb-houses and qb-apartments
+# Migrating houses and apartments from qb-houses and qb-apartments
 
 1. From a client run the `migratehouses` command to automatically convert all houses from qb-houses. It will print a message to the console once complete.
    **The `migratehouses` command MUST be run from a client in order to retrieve street and region data for each house**
