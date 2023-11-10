@@ -257,6 +257,25 @@ RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
 end)
 ```
 
+### For qb-garages v2: 
+`qb-garages > server > main.lua > around line 118` on event `qb-garages:server:canDeposit`
+
+Replace 
+```lua
+if type == 'house' and not exports['qb-houses']:hasKey(Player.PlayerData.license, Player.PlayerData.citizenid, Config.HouseGarages[garage].label) then
+```
+With
+```lua
+if type == 'house' and not exports['ps-housing']:IsOwner(source, garage) then
+```
+
+`qb-garages > client > main.lua > around line 392` add under event `qb-garages:client:addHouseGarage`
+```lua
+RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
+    Config.Garages[house] = nil
+end)
+```
+
 ### 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 
 ### 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
