@@ -219,10 +219,12 @@ Modeler = {
             objectPos = GetEntityCoords(curObject)
             objectRot = GetEntityRotation(curObject)
         else 
+            local hash = GetHashKey(object)
+            if not IsModelInCdimage(hash) then return end
             self:StopPlacement()
-            lib.requestModel(object)
+            lib.requestModel(hash)
 
-            curObject = CreateObject(GetHashKey(object), 0.0, 0.0, 0.0, false, true, false)
+            curObject = CreateObject(hash, 0.0, 0.0, 0.0, false, true, false)
             SetEntityCoords(curObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
 
             objectRot = GetEntityRotation(curObject)
@@ -326,8 +328,19 @@ Modeler = {
     -- everytime "Stop Placement" is pressed on an owned object, it will update the furniture 
     -- maybe should do it all at once when the user leaves the menu????
     UpdateFurniture = function (self, item)
+        DeleteEntity(item.entity)
+
+        local hash = GetHashKey(item.object)
+        lib.requestModel(hash)
+
+        if not IsModelInCdimage(hash) then return end
+
         local newPos = GetEntityCoords(item.entity)
         local newRot = GetEntityRotation(item.entity)
+
+        item.entity = CreateObject(GetHashKey(item.object), newPos.x, newPos.y, newPos.z, false, true, false)
+        SetEntityRotation(item.entity, newRot.x, newRot.y, newRot.z)
+        FreezeEntityPosition(item.entity, true)
 
         local offsetPos = {
                 x = math.floor((newPos.x - self.shellPos.x) * 10000) / 10000,
@@ -492,13 +505,19 @@ Modeler = {
         end
 
         local isDoor = false
-        local object = data.object and joaat(data.object) or nil
+        local object = data.object or nil
         if object == nil then return end
-        lib.requestModel(object)
+
+        local hash = GetHashKey(object)
+        if not IsModelInCdimage(hash) then return end
+        lib.requestModel(hash)
         if self.HoverObject then return end
         if data.type == "door" then isDoor = true end
-        self.HoverObject = CreateObject(object, 0.0, 0.0, 0.0, false, false, isDoor)
+
+        self.HoverObject = CreateObject(hash, 0.0, 0.0, 0.0, false, false, isDoor)
+
         Modeler.CurrentCameraLookAt =  Freecam:GetTarget(self.HoverDistance)
+
         local camRot = Freecam:GetRotation()
         SetEntityCoords(self.HoverObject, self.CurrentCameraLookAt.x, self.CurrentCameraLookAt.y, self.CurrentCameraLookAt.z)
         FreezeEntityPosition(self.HoverObject, true)
