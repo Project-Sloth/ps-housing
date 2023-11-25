@@ -534,9 +534,12 @@ function Property:RemoveBlip()
 end
 
 function Property:RemoveProperty()
-    local targetName = string.format("%s_%s", self.propertyData.street, self.property_id)
-
-    Framework[Config.Target].RemoveTargetZone(targetName)
+    if Config.Target == "ox" then
+        Framework[Config.Target].RemoveTargetZone(self.entranceTarget)
+    else
+        local targetName = string.format("%s_%s", self.propertyData.street, self.property_id)
+        Framework[Config.Target].RemoveTargetZone(targetName)
+    end
 
     self:RemoveBlip()
 
