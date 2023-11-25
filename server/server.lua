@@ -138,8 +138,8 @@ end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
-    if not Config.StartingApartment then return end
     local citizenid = GetCitizenid(src)
+    if not Config.StartingApartment then return end
     local PlayerData = GetPlayerData(src)
 
     local apartment = Config.Apartments[aptLabel]
@@ -158,6 +158,23 @@ RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     Framework[Config.Logs].SendLog("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
 
     TriggerEvent("ps-housing:server:registerProperty", propertyData)
+end)
+
+-- we show the character creator if they spawn without starting appartment and doesn't have skin set
+RegisterNetEvent("QBCore:Server:OnPlayerLoaded", function()
+    if Config.StartingApartment then return end
+
+    local src = source
+    local citizenid = GetCitizenid(src)
+    local query = "SELECT skin FROM playerskins WHERE citizenid = ?"
+    local result = MySQL.Sync.fetchAll(query, {citizenid})
+
+    if result and result[1] then
+        Debug("Player: " .. citizenid .. " skin already exists!")
+    else
+        TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+        Debug("Player: " .. citizenid .. " is creating a new character!")
+    end
 end)
 
 -- Creates apartment stash
