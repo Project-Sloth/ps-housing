@@ -41,7 +41,7 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
     return PropertiesTable
 end)
 
-AddEventHandler("ps-housing:server:registerProperty", function (propertyData) -- triggered by realtor job
+AddEventHandler("ps-housing:server:registerProperty", function (propertyData, preventEnter) -- triggered by realtor job
     local propertyData = propertyData
 
     propertyData.owner = propertyData.owner or nil
@@ -75,7 +75,7 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData) --
     
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
-    if propertyData.apartment then
+    if propertyData.apartment and not preventEnter then
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
         local src = player.PlayerData.source
 
@@ -138,8 +138,8 @@ end)
 
 RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     local src = source
-    if not Config.StartingApartment then return end
     local citizenid = GetCitizenid(src)
+    if not Config.StartingApartment then return end
     local PlayerData = GetPlayerData(src)
 
     local apartment = Config.Apartments[aptLabel]
@@ -158,6 +158,23 @@ RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
     Framework[Config.Logs].SendLog("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
 
     TriggerEvent("ps-housing:server:registerProperty", propertyData)
+end)
+
+-- we show the character creator if they spawn without starting appartment and doesn't have skin set
+RegisterNetEvent("QBCore:Server:OnPlayerLoaded", function()
+    if Config.StartingApartment then return end
+
+    local src = source
+    local citizenid = GetCitizenid(src)
+    local query = "SELECT skin FROM playerskins WHERE citizenid = ?"
+    local result = MySQL.Sync.fetchAll(query, {citizenid})
+
+    if result and result[1] then
+        Debug("Player: " .. citizenid .. " skin already exists!")
+    else
+        TriggerClientEvent("qb-clothes:client:CreateFirstCharacter", src)
+        Debug("Player: " .. citizenid .. " is creating a new character!")
+    end
 end)
 
 -- Creates apartment stash
@@ -202,11 +219,37 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
                 Framework[Config.Notify].Notify(targetSrc, "This person is already in this apartment", "error")
 
                 return
-            elseif #propertyData.apartment > 1 then
+            elseif propertyData.apartment and #propertyData.apartment > 1 then
                 property_id = propertyData.property_id
                 break
             end
         end
+    end
+
+    if property_id == nil then
+        local newApartment = Config.Apartments[apartment]
+        if not newApartment then return end
+
+        local citizenid = GetCitizenid(targetSrc, realtorSrc)
+        local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid).PlayerData
+        local propertyData = {
+            owner = targetCitizenid,
+            description = string.format("This is %s's apartment in %s", targetToAdd.charinfo.firstname .. " " .. targetToAdd.charinfo.lastname, apartment.label),
+            for_sale = 0,
+            shell = newApartment.shell,
+            apartment = newApartment.label,
+        }
+
+        Debug("Creating new apartment for " .. GetPlayerName(targetSrc) .. " in " .. newApartment.label)
+
+        Framework[Config.Logs].SendLog("Creating new apartment for " .. GetPlayerName(targetSrc) .. " in " .. newApartment.label)
+
+        Framework[Config.Notify].Notify(targetSrc, "Your apartment is now at "..apartment, "success")
+        Framework[Config.Notify].Notify(realtorSrc, "You have added ".. targetToAdd.charinfo.firstname .. " " .. targetToAdd.charinfo.lastname .. " to apartment "..apartment, "success")
+
+        TriggerEvent("ps-housing:server:registerProperty", propertyData, true)
+
+        return
     end
 
     local property = Property.Get(property_id)
