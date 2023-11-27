@@ -311,6 +311,7 @@ If you come across an error such as `Foreign key constraint is incorrectly forme
 2. Right-click on your database name and select "Edit."
 3. Locate the database collation setting take a note of it. 
 4. You will need to format the `properties.sql` file to match your database collation.
+5. Ensure that the collation of your `citizenid` column in your `players` table is `utf8mb4_general_ci` and not `utf8mb4_unicode_ci`
 
 If your database collation is set to `utf8mb4_general_ci`, modify the last line of the `properties.sql` file using VSCode or in HeidiSQL's query tab to the following:
 
