@@ -237,8 +237,6 @@ function Property:LeaveShell()
         self.exitTarget = nil
     end
 
-    self:RemoveBlip()
-
     self:RemoveMenus()
 
     self.doorbellPool = {}
