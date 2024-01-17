@@ -296,6 +296,17 @@ end)
 3. [ox_lib](https://github.com/overextended/ox_lib/releases) - Use the latest release. If you do not use the latest release, MAKE SURE TO BUILD THE UI. Find their docs [here](https://overextended.dev/ox_lib#building-the-ui) on how to build the UI.
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 
+## For reference your server.cfg should be ensured like below:
+* We highly recommend making a folder named [ps-housing] and add `ps-realtor`, `fivem-freecam`, `ox_lib`, `ps-core`, `ps-housing` inside the folder.
+  
+```
+ensure ox_lib
+ensure ps-housing
+ensure ps-realtor
+ensure fivem-freecam
+```
+## End of Installation 
+
 # Migrating houses and apartments from qb-houses and qb-apartments
 
 1. From a client run the `migratehouses` command to automatically convert all houses from qb-houses. It will print a message to the console once complete.
@@ -343,16 +354,6 @@ This adjustment ensures that `properties.sql` file's character set and collation
 
 1. Copy the files from the shell into the `ps-housing/stream` folder.
 2. Add the new shell into the Config.Shells in `ps-housing/shared/config.lua`.
-
-## For reference your server.cfg should be ensured like below:
-* We highly recommend making a folder named [ps-housing] and add `ps-realtor`, `fivem-freecam`, `ox_lib`, `ps-core`, `ps-housing` inside the folder.
-  
-```
-ensure ox_lib
-ensure ps-housing
-ensure ps-realtor
-ensure fivem-freecam
-```
 
 # Notes
 - If a player is in their apartment/house and an admin does a "Bring to me" function, they will not see the player nor will the player see anyone else. This is because the player is still in their own unique routing bucket. **Workaround**: To fix this, the player must go back into their apartment and leave on their own. 
