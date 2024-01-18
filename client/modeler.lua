@@ -328,15 +328,14 @@ Modeler = {
     -- everytime "Stop Placement" is pressed on an owned object, it will update the furniture 
     -- maybe should do it all at once when the user leaves the menu????
     UpdateFurniture = function (self, item)
+        local newPos = GetEntityCoords(item.entity)
+        local newRot = GetEntityRotation(item.entity)
         DeleteEntity(item.entity)
 
         local hash = GetHashKey(item.object)
         lib.requestModel(hash)
 
         if not IsModelInCdimage(hash) then return end
-
-        local newPos = GetEntityCoords(item.entity)
-        local newRot = GetEntityRotation(item.entity)
 
         item.entity = CreateObject(GetHashKey(item.object), newPos.x, newPos.y, newPos.z, false, true, false)
         SetEntityRotation(item.entity, newRot.x, newRot.y, newRot.z)
