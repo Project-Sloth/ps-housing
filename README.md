@@ -116,6 +116,31 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
     end
 end)
 ```
+
+`qb-multicharacter > client > main.lua`
+```lua
+RegisterNetEvent('qb-multicharacter:client:spawnLastLocation', function(coords, cData)
+    local ped = PlayerPedId()
+    SetEntityCoords(ped, coords.x, coords.y, coords.z)
+    SetEntityHeading(ped, coords.w)
+    FreezeEntityPosition(ped, false)
+    SetEntityVisible(ped, true)
+
+    TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+    TriggerEvent('QBCore:Client:OnPlayerLoaded')
+
+    --If the player was in a house previously, spawn back in
+    local insideMeta = QBCore.Functions.GetPlayerData().metadata["inside"]
+    if insideMeta.property_id ~= nil then
+        local property_id = insideMeta.property_id
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
+    end
+
+    --Finish fade in and etc.
+    Wait(2000)
+    DoScreenFadeIn(250)
+end)
+```
 ### 2. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
 `qb-spawn > client.lua > line 51 > 'qb-spawn:client:setupSpawns' event`
