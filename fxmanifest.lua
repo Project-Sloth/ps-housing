@@ -51,6 +51,5 @@ data_file 'DLC_ITYP_REQUEST' 'x64c:/levels/gta5/interiors/int_props/int_resident
 data_file 'DLC_ITYP_REQUEST' 'x64c:/levels/gta5/interiors/int_props/int_retail.rpf/int_retail.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'x64c:/levels/gta5/interiors/int_props/int_services.rpf/int_services.ytyp'
 
-
 file 'stream/**.ytyp'
 data_file 'DLC_ITYP_REQUEST' 'stream/**.ytyp'
