@@ -350,10 +350,8 @@ This adjustment ensures that `properties.sql` file's character set and collation
 
 > This system only supports qb-core for now.
 
-## Add new Shells
-
-1. Copy the files from the shell into the `ps-housing/stream` folder.
-2. Add the new shell into the Config.Shells in `ps-housing/shared/config.lua`.
+## Adding New Shells
+* Follow the [ps-housing wiki](https://github.com/Project-Sloth/ps-housing/wiki) information.
 
 # Notes
 - If a player is in their apartment/house and an admin does a "Bring to me" function, they will not see the player nor will the player see anyone else. This is because the player is still in their own unique routing bucket. **Workaround**: To fix this, the player must go back into their apartment and leave on their own. 
