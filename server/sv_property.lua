@@ -51,6 +51,7 @@ function Property:PlayerEnter(src)
 
     local bucket = tonumber(self.property_id) -- because the property_id is a string
     SetPlayerRoutingBucket(src, bucket)
+    Player(src).state:set('instance', bucket, true)
 end
 
 function Property:PlayerLeave(src)
@@ -70,6 +71,7 @@ function Property:PlayerLeave(src)
     end
 
     SetPlayerRoutingBucket(src, 0)
+    Player(src).state:set('instance', 0, true)
 end
 
 function Property:CheckForAccess(citizenid)

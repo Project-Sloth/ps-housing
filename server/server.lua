@@ -200,6 +200,7 @@ end)
 RegisterNetEvent('qb-apartments:returnBucket', function()
     local src = source
     SetPlayerRoutingBucket(src, 0)
+    Player(src).state:set('instance', 0, true)
 end)
 
 AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
