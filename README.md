@@ -85,13 +85,20 @@ https://github.com/complexza/ps-housing/assets/74205343/0ff26e7f-1341-45fc-8fc6-
 RegisterNetEvent('qb-multicharacter:server:loadUserData', function(cData)
     local src = source
     if QBCore.Player.Login(src, cData.citizenid) then
+        local Player = QBCore.Functions.GetPlayer(src)
+        local Name = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
         repeat
             Wait(10)
         until hasDonePreloading[src]
-        print('^2[qb-core]^7 '..GetPlayerName(src)..' (Citizen ID: '..cData.citizenid..') has succesfully loaded!')
+        print('[' .. GetPlayerName(src) .. '] - ^2' .. Name .. '^7 (Citizen ID: ' .. cData.citizenid .. ') has succesfully loaded!')
         QBCore.Commands.Refresh(src)
-        TriggerClientEvent('ps-housing:client:setupSpawnUI', src, cData)
-        TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(src) .. "** (<@"..(QBCore.Functions.GetIdentifier(src, 'discord'):gsub("discord:", "") or "unknown").."> |  ||"  ..(QBCore.Functions.GetIdentifier(src, 'ip') or 'undefined') ..  "|| | " ..(QBCore.Functions.GetIdentifier(src, 'license') or 'undefined') .." | " ..cData.citizenid.." | "..src..") loaded..")
+        if Config.SkipSelection then
+            local coords = json.decode(cData.position)
+            TriggerClientEvent('qb-multicharacter:client:spawnLastLocation', src, coords, cData)
+        else
+            TriggerClientEvent('ps-housing:client:setupSpawnUI', src, cData)
+        end
+        TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**" .. GetPlayerName(src) .. "** - " .. Name .. " (<@" .. (QBCore.Functions.GetIdentifier(src, 'discord'):gsub("discord:", "") or "unknown") .. "> | ||" .. (QBCore.Functions.GetIdentifier(src, 'ip') or 'undefined') .. "|| | " .. (QBCore.Functions.GetIdentifier(src, 'license') or 'undefined') .. " | " .. cData.citizenid .. " | " .. src .. ") loaded..")
     end
 end)
 ```
@@ -115,8 +122,42 @@ RegisterNetEvent('qb-multicharacter:server:createCharacter', function(data)
         GiveStarterItems(src)
     end
 end)
+
 ```
-### 2. Find the following events in `qb-spawn` and change in client/client.lua event to: 
+### 2. Find the following event in `qb-multicharacter` and change in client/main.lua event to: 
+`qb-multicharacter > client > main.lua`
+
+```lua
+RegisterNetEvent('qb-multicharacter:client:spawnLastLocation', function(coords, cData)
+    local result = lib.callback.await('ps-housing:cb:GetOwnedApartment', source, cData.citizenid)
+    if result then
+        TriggerEvent("apartments:client:SetHomeBlip", result.type)
+    end
+    local ped = PlayerPedId()
+    SetEntityCoords(ped, coords.x, coords.y, coords.z)
+    SetEntityHeading(ped, coords.w)
+    FreezeEntityPosition(ped, false)
+    SetEntityVisible(ped, true)
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    local insideMeta = PlayerData.metadata["inside"]
+    DoScreenFadeOut(500)
+    if insideMeta.propertyId then
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.propertyId))
+    else
+        SetEntityCoords(ped, coords.x, coords.y, coords.z)
+        SetEntityHeading(ped, coords.w)
+        FreezeEntityPosition(ped, false)
+        SetEntityVisible(ped, true)
+    end
+    TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+    TriggerEvent('QBCore:Client:OnPlayerLoaded')
+    Wait(2000)
+    DoScreenFadeIn(250)
+end)
+```
+
+
+### 3. Find the following events in `qb-spawn` and change in client/client.lua event to: 
 
 `qb-spawn > client.lua > line 51 > 'qb-spawn:client:setupSpawns' event`
 ```lua
@@ -238,7 +279,7 @@ QBCore.Functions.CreateCallback('qb-spawn:server:getOwnedHouses', function(_, cb
 end)
 ```
 
-### 3. Find the following events in `qb-garages` and change: 
+### 4. Find the following events in `qb-garages` and change: 
 `qb-garages > server > main.lua > around line 120` on event `qb-garage:server:checkOwnership`
 
 Replace 
@@ -276,19 +317,19 @@ RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
 end)
 ```
 
-### 4. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
+### 5. Run the `properties.sql` file, but be cautious. If a table named `properties` already exists in your database, this operation will drop it, resulting in the loss of all its data.
 
-### 5. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
+### 6. Delete default [qb-apartments](https://github.com/qbcore-framework/qb-apartments)
 
-### 6. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
+### 7. Delete default [qb-houses](https://github.com/qbcore-framework/qb-houses)
 
-### 7. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
+### 8. Delete `qb-apartments/config.lua` references in `qb-spawn`, `qb-multicharacter` and `qb-phone` fxmanifest.lua (and any other scripts that may reference it).
 
-### 8. Ensure ps-realtor above ps-housing.
+### 9. Ensure ps-realtor above ps-housing.
 
-### 9. In your server.cfg, add `ensure ox_lib` above all other resources
+### 10. In your server.cfg, add `ensure ox_lib` above all other resources
 
-### 10. Install the dependencies below.
+### 11. Install the dependencies below.
 
 # Dependencies
 1. [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
