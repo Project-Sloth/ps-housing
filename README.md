@@ -129,10 +129,6 @@ end)
 
 ```lua
 RegisterNetEvent('qb-multicharacter:client:spawnLastLocation', function(coords, cData)
-    local result = lib.callback.await('ps-housing:cb:GetOwnedApartment', source, cData.citizenid)
-    if result then
-        TriggerEvent("apartments:client:SetHomeBlip", result.type)
-    end
     local ped = PlayerPedId()
     SetEntityCoords(ped, coords.x, coords.y, coords.z)
     SetEntityHeading(ped, coords.w)
@@ -338,27 +334,14 @@ end)
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target) - Change in [Config](https://github.com/Project-Sloth/ps-housing/blob/3c0f197b6d639f13235598393c84aac8d23d5f7a/shared/config.lua#L8), default is qb-target.
 
 ## For reference your server.cfg should be ensured like below:
-
-* We highly recommend making a folder named [ps-housing] and add `ps-realtor`, `fivem-freecam`, `ps-core`, `ps-housing` inside the folder.
+* We highly recommend making a folder named [ps-housing] and add `ps-realtor`, `fivem-freecam`, `ox_lib`, `ps-core`, `ps-housing` inside the folder.
   
 ```
+ensure ox_lib
 ensure ps-housing
 ensure ps-realtor
 ensure fivem-freecam
 ```
-* `ox_lib` **must run before** `qb-multicharacter`, so your server.cfg should be like :
-
-
-```lua
-ensure ox_lib
--- ...
-ensure [qb] -- with qb-multicharacter
--- ...
-ensure [ps-housing]
--- ...
-```
-
-
 ## End of Installation 
 
 # Migrating houses and apartments from qb-houses and qb-apartments
