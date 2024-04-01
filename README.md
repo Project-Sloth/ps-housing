@@ -129,6 +129,10 @@ end)
 
 ```lua
 RegisterNetEvent('qb-multicharacter:client:spawnLastLocation', function(coords, cData)
+    local result = lib.callback.await('ps-housing:cb:GetOwnedApartment', source, cData.citizenid)
+    if result then
+        TriggerEvent("apartments:client:SetHomeBlip", result.type)
+    end
     local ped = PlayerPedId()
     SetEntityCoords(ped, coords.x, coords.y, coords.z)
     SetEntityHeading(ped, coords.w)
