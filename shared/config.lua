@@ -73,7 +73,7 @@ Config.Apartments = {
         door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566754983972954/986BKLz.jpg",
+                url = "https://users-cdn.versescripts.net/68fe5fd70ca9bd96640da4c31fdb573f.png",
                 label = "Outside",
             },
         },
@@ -85,7 +85,7 @@ Config.Apartments = {
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566767864684665/FKTQq4b.jpg",
+                url = "https://users-cdn.versescripts.net/af4ec0dfd72f9cad377a5091f8ffa806.png",
                 label = "Outside",
             },
         },
@@ -97,7 +97,7 @@ Config.Apartments = {
         door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566730363412582/amZDmz7.jpg",
+                url = "https://users-cdn.versescripts.net/9e0dd2dee0d75fe153c75901b94898de.png",
                 label = "Outside",
             },
         },
@@ -109,7 +109,7 @@ Config.Apartments = {
         door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1108364246342963322/1140163262315495494/tinsel.webp",
+                url = "https://users-cdn.versescripts.net/a8b2127e4300c4fb1d220203670397e0.png",
                 label = "Outside",
             },
         },
@@ -121,7 +121,7 @@ Config.Apartments = {
         door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://cdn.discordapp.com/attachments/1143566042153631784/1143566742589800629/SgK60IR.jpg",
+                url = "https://users-cdn.versescripts.net/0675556b7608ec8b55cf2a63d08071f3.png",
                 label = "Outside",
             },
         },
