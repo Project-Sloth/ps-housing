@@ -291,7 +291,7 @@ function Property:UpdateOwner(data)
     local totalAfterCommission = self.propertyData.price - commission
 
     if Config.QBManagement then
-        exports['qb-banking']:AddMoney(Config.RealtorJobName, totalAfterCommission)
+        exports['qb-banking']:AddMoney(realtor.PlayerData.job.name, totalAfterCommission)
     else
         if prevPlayer ~= nil then
             Framework[Config.Notify].Notify(prevPlayer.PlayerData.source, "Sold Property: " .. self.propertyData.street .. " " .. self.property_id, "success")
@@ -522,7 +522,7 @@ RegisterNetEvent("ps-housing:server:showcaseProperty", function(property_id)
     local jobName = job.name
     local onDuty = job.onduty
 
-    if jobName == Config.RealtorJobName and onDuty then
+    if RealtorJobs[jobName] and onDuty then
         local showcase = lib.callback.await('ps-housing:cb:showcase', src)
         if showcase == "confirm" then
             property:PlayerEnter(src)
@@ -842,7 +842,7 @@ lib.callback.register('ps-housing:cb:getPropertyInfo', function (source, propert
     local jobName = job.name
     local onDuty = job.onduty
 
-    if  not jobName == Config.RealtorJobName and not onDuty then return end
+    if RealtorJobs[jobName] and not onDuty then return end
 
     local data = {}
 

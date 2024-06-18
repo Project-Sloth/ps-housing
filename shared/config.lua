@@ -46,7 +46,12 @@ Config.RaidItem = "police_stormram"  -- The item required to raid a property
 -- If you are using ox_inventory, it is encouraged to use the consume property within data/items.lua and keeping this config option false
 Config.ConsumeRaidItem = false          -- Whether or not to consume the raid item upon successful entry.
 
-Config.RealtorJobName = "realestate" -- Set your Real Estate job here
+-- Set your Real Estate jobs here
+Config.RealtorJobNames = { -- add multiple realestate jobs that are allowed to sell properties!
+    "realestate",
+    -- "realestate2",
+    -- "realestate3",
+}
 
 -- If you are utilizing qb-banking and wish for the funds to be deposited directly into the Realestate bank account, set this value to true. 
 -- In case you are using an alternative Boss Menu, replace the qb-banking export with the appropriate script export or event.
