@@ -1,10 +1,15 @@
 Framework = {}
 
 PoliceJobs = {}
+RealtorJobs = {}
 
 -- Convert config table to usable keys
 for i = 1, #Config.PoliceJobNames do
     PoliceJobs[Config.PoliceJobNames[i]] = true
+end
+
+for i = 1, #Config.RealtorJobNames do
+    RealtorJobs[Config.RealtorJobNames[i]] = true
 end
 
 if IsDuplicityVersion() then
@@ -93,7 +98,7 @@ Framework.qb = {
                             local job = PlayerData.job
                             local jobName = job.name
                             local onDuty = job.onduty
-                            return jobName == Config.RealtorJobName and onDuty
+                            return RealtorJobs[jobName] and onDuty
                         end,
                     },
                     {
@@ -104,7 +109,7 @@ Framework.qb = {
                             local job = PlayerData.job
                             local jobName = job.name
                             local onDuty = job.onduty
-                            return jobName == Config.RealtorJobName and onDuty
+                            return RealtorJobs[jobName] and onDuty
                         end,
                     },
                     {
@@ -317,7 +322,7 @@ Framework.ox = {
                         local job = PlayerData.job
                         local jobName = job.name
 
-                        return jobName == Config.RealtorJobName
+                        return RealtorJobs[jobName]
                     end,
                 },
                 {
@@ -328,7 +333,7 @@ Framework.ox = {
                         local job = PlayerData.job
                         local jobName = job.name
                         local onDuty = job.onduty
-                        return jobName == Config.RealtorJobName and onDuty
+                        return RealtorJobs[jobName] and onDuty
                     end,
                 },
                 {
