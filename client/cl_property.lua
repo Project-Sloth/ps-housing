@@ -122,7 +122,7 @@ function Property:RegisterPropertyEntrance()
     end
 
     local function showData()
-        local data = lib.callback.await("ps-housing:cb:getPropertyInfo", source, self.property_id)
+        local data = lib.callback.await("ps-housing:cb:getPropertyInfo", false, self.property_id)
         if not data then return end
 
         local content = "**Owner:** " .. data.owner .. "  \n" .. "**Description:** " .. data.description .. "  \n" .. "**Street:** " .. data.street .. "  \n" .. "**Region:** " .. data.region .. "  \n" .. "**Shell:** " .. data.shell .. "  \n" .. "**For Sale:** " .. (data.for_sale and "Yes" or "No")
@@ -336,7 +336,7 @@ function Property:GiveAccessMenu()
         options = {},
     }
 
-    local players = lib.callback.await("ps-housing:cb:getPlayersInProperty", source, self.property_id) or {}
+    local players = lib.callback.await("ps-housing:cb:getPlayersInProperty", false, self.property_id) or {}
 
     if #players > 0 then
         for i = 1, #players do
@@ -369,7 +369,7 @@ function Property:RevokeAccessMenu()
         options = {},
     }
 
-    local playersWithAccess = lib.callback.await("ps-housing:cb:getPlayersWithAccess", source, self.property_id) or {}
+    local playersWithAccess = lib.callback.await("ps-housing:cb:getPlayersWithAccess", false, self.property_id) or {}
 
     -- only stores names and citizenids in a table so if their offline you can still remove them
     if #playersWithAccess > 0 then
@@ -457,7 +457,7 @@ function Property:LoadFurniture(furniture)
 end
 
 function Property:LoadFurnitures()
-    self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', source, self.property_id) or {}
+    self.propertyData.furnitures = lib.callback.await('ps-housing:cb:getFurnitures', false, self.property_id) or {}
     
     for i = 1, #self.propertyData.furnitures do
         local furniture = self.propertyData.furnitures[i]
