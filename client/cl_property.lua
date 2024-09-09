@@ -949,7 +949,7 @@ RegisterNetEvent("ps-housing:client:createOxDoors", function(data)
 
         door.name = not isArray and name
 
-        local payload = isArray and { doors = door, name = name } or door
+        local payload = isArray and { doors = door, name = name, maxDistance = 2.5} or door
 
         TriggerServerEvent('ox_doorlock:editDoorlock', false, payload)
     end
