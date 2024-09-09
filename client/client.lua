@@ -1,5 +1,6 @@
 QBCore = exports['qb-core']:GetCoreObject()
 PlayerData = {}
+local loaded = false
 
 local function createProperty(property)
 	PropertiesTable[property.property_id] = Property:new(property)
@@ -17,6 +18,7 @@ RegisterNetEvent('ps-housing:client:removeProperty', function (property_id)
 end)
 
 function InitialiseProperties(properties)
+    if loaded then return end
     Debug("Initialising properties")
     PlayerData = QBCore.Functions.GetPlayerData()
 
@@ -35,15 +37,29 @@ function InitialiseProperties(properties)
     TriggerEvent("ps-housing:client:initialisedProperties")
 
     Debug("Initialised properties")
+    loaded = true
 end
 AddEventHandler("QBCore:Client:OnPlayerLoaded", InitialiseProperties)
 RegisterNetEvent('ps-housing:client:initialiseProperties', InitialiseProperties)
 
-AddEventHandler("onResourceStart", function(resourceName) -- Used for when the resource is restarted while in game
-	if (GetCurrentResourceName() == resourceName) then
-        InitialiseProperties()
-	end
-end)
+-- AddEventHandler("onResourceStart", function(resourceName) -- Used for when the resource is restarted while in game
+-- 	if (GetCurrentResourceName() == resourceName) then
+--         InitialiseProperties()
+-- 	end
+-- end)
+
+if GetResourceState('qbx_properties') == 'started' then
+    local data = {}
+    for k, v in pairs(Config.Apartments) do
+        data[#data +1] = {
+            label = v.label,
+            description = 'Luxury Apartments!',
+            enter = vec3(v.door.x, v.door.y, v.door.z),
+            id = k
+        }
+    end
+    TriggerEvent('ps-housing:setApartments', data)
+end
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
     PlayerData.job = job
@@ -55,7 +71,6 @@ RegisterNetEvent('ps-housing:client:setupSpawnUI', function(cData)
     if result then
         TriggerEvent('qb-spawn:client:setupSpawns', cData, false, nil)
         TriggerEvent('qb-spawn:client:openUI', true)
-        -- TriggerEvent("apartments:client:SetHomeBlip", result.type)
     else
         if Config.StartingApartment then
             TriggerEvent('qb-spawn:client:setupSpawns', cData, true, Config.Apartments)

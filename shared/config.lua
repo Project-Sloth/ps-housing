@@ -7,17 +7,17 @@ exports('GetApartments', function() return ApartmentsTable end)
 Config = {}
 
 -- If you're not utilizing ox_lib, it's time to question your approach.
-Config.Target = "ox" -- "ox" or "qb"
-Config.Notify = "ox" -- "ox" or "qb"
-Config.Radial = "ox" -- "ox" or "qb"
-Config.Inventory = "qb" -- "ox" or "qb"
+Config.Target = "qb" -- "ox" or "qb"
+Config.Notify = "qb" -- "ox" or "qb"
+Config.Radial = "qb" -- "ox" or "qb"
+Config.Inventory = "ox" -- "ox" or "qb"
 Config.Logs = "qb" -- "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
 Config.AccessCanEditFurniture = true
 
 -- Draw the poly for the property
-Config.DebugMode = false
+Config.DebugMode = true
 
 function Debug(...)
     if Config.DebugMode then
@@ -78,7 +78,7 @@ Config.Apartments = {
         door = { x = 269.73, y = -640.75, z = 42.02, h = 249.07, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://users-cdn.versescripts.net/68fe5fd70ca9bd96640da4c31fdb573f.png",
+                url = "https://files.fivemerr.com/images/e5a352a3-afb1-4452-ab52-e239e53d901a.png",
                 label = "Outside",
             },
         },
@@ -90,7 +90,7 @@ Config.Apartments = {
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://users-cdn.versescripts.net/af4ec0dfd72f9cad377a5091f8ffa806.png",
+                url = "https://files.fivemerr.com/images/aa88b5df-c4c8-4706-beb0-8d8197e0ccff.png",
                 label = "Outside",
             },
         },
@@ -102,7 +102,7 @@ Config.Apartments = {
         door = { x = -1288.52, y = -430.51, z = 35.15, h = 124.81, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://users-cdn.versescripts.net/9e0dd2dee0d75fe153c75901b94898de.png",
+                url = "https://files.fivemerr.com/images/c53dbc10-d161-4b34-a095-316949588f33.png",
                 label = "Outside",
             },
         },
@@ -114,7 +114,7 @@ Config.Apartments = {
         door = { x = -619.29, y = 37.69, z = 43.59, h = 181.03, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://users-cdn.versescripts.net/a8b2127e4300c4fb1d220203670397e0.png",
+                url = "https://files.fivemerr.com/images/0663c90e-2e90-426d-80ea-a780727b4a76.png",
                 label = "Outside",
             },
         },
@@ -126,16 +126,59 @@ Config.Apartments = {
         door = { x = 291.517, y = -1078.674, z = 29.405, h = 270.75, length = 1, width = 2 },
         imgs = {
             {
-                url = "https://users-cdn.versescripts.net/0675556b7608ec8b55cf2a63d08071f3.png",
+                url = "https://files.fivemerr.com/images/d618a25e-2f88-47c5-b065-515cbd34cb3f.png",
                 label = "Outside",
             },
         },
         shell = "Apartment Furnished",
-    }
+    },
+
+    ---ipl
+    ['Modern 1 Apartment'] = {
+        label = 'Modern 1 Apartment',
+        door = { x = -771.18, y = 319.64, z = 85.66, h = 351.95, length = 1, width = 2 },
+        imgs = {
+            {
+                url = "https://files.fivemerr.com/images/d618a25e-2f88-47c5-b065-515cbd34cb3f.png",
+                label = "Outside",
+            },
+        },
+        interior = vector3(-786.8663, 315.7642, 217.6385),
+        thickness = 7.5,
+        zone = {
+            vector3(-787.3, 317.37, 219.5),
+            vector3(-787.29, 314.34, 219.5),
+            vector3(-780.56, 314.15, 219.5),
+            vector3(-780.54, 343.62, 219.5),
+            vector3(-793.98, 343.54, 219.5),
+            vector3(-793.33, 333.82, 219.5),
+            vector3(-794.68, 339.83, 219.5),
+            vector3(-800.69, 339.94, 219.5),
+            vector3(-807.54, 334.88, 219.5),
+            vector3(-807.29, 331.75, 219.5),
+            vector3(-799.8, 321.23, 219.5)
+        },
+        shell = "mlo",
+    },
 }
 
 -- Shells provided by K4MB1 https://www.k4mb1maps.com/
 Config.Shells = {
+    ["mlo"] = {
+        label = "Mlo",
+        doorOffset = { x = -0.5, y = -2.3, z = 0.0, h = 90.0, width = 1.5 },
+        stash = {
+            maxweight = 100000,
+            slots = 12,
+        },
+        imgs = {
+            {
+                url = "https://files.fivemerr.com/images/e39bd4a6-bc3f-41e7-876e-cc03d77f953b.jpg",
+                label = "Motel",
+            },
+        }
+    },
+
     ["Standard Motel"] = {
         label = "Standard Motel",
         hash = `standardmotel_shell`,
@@ -146,7 +189,7 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/eaf77207-da0e-4bd1-be03-324ba0e2ffdc.webp",
+                url = "https://files.fivemerr.com/images/fb1f1038-2b38-4cee-b031-e0bca4c108ed.webp",
                 label = "Motel",
             },
         }
@@ -162,11 +205,11 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/e21b7997-c86e-435a-9140-a319c65e5ad8.webp",
+                url = "https://files.fivemerr.com/images/33d4b3e2-9c5a-43d8-a43e-f111f25a62df.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://files.fivemerr.com/images/27a59fc9-2739-4a0d-a1a2-020a5e849389.webp",
+                url = "https://files.fivemerr.com/images/7dc8efd9-d2c7-4878-a7d7-74d69e47cc96.webp",
                 label = "Angle 2",
             },
         }
@@ -182,27 +225,27 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/36e5d763-a00f-44a7-a114-82d054073320.webp",
+                url = "https://files.fivemerr.com/images/884a835f-9d5d-4121-8576-b23c51f48a00.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://files.fivemerr.com/images/263234eb-479e-4b6e-9aeb-6640c25f7672.webp",
+                url = "https://files.fivemerr.com/images/3381c0b8-1e57-4aa7-bb61-5b1202523db9.webp",
                 label = "Bedroom",
             },
             {
-                url = "https://files.fivemerr.com/images/eacbe324-d2d6-4312-8fae-15eff63ad1fc.webp",
+                url = "https://files.fivemerr.com/images/5b5b66a5-50f5-437c-9fb8-ebb5a7ecec11.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/62051872-d44d-4bd0-ba0f-f8a4607a9e3d.webp",
+                url = "https://files.fivemerr.com/images/5e07d5e9-c069-4db1-a677-d2d0a02def70.webp",
                 label = "Kitchen and Dining",
             },
             {
-                url = "https://files.fivemerr.com/images/4ffd2c5c-78ad-454e-bc58-e66cd94c5b35.webp",
+                url = "https://files.fivemerr.com/images/41998ae1-e2f0-4e8a-b9e3-4613e46b3356.webp",
                 label = "Living Room Angle 1",
             },
             {
-                url = "https://files.fivemerr.com/images/1a628bcc-ded2-4902-97f2-b6e6862d2d65.webp",
+                url = "https://files.fivemerr.com/images/b60325be-e75c-4985-89f2-6e2dfe65951c.webp",
                 label = "Living Room Angle 2",
             },
         },
@@ -250,15 +293,15 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/febe4d12-7432-4da6-ad6a-1957c74f8024.webp",
+                url = "https://files.fivemerr.com/images/6e111f0d-a663-4baf-9f64-e38e8c2c6cf8.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/a74b3377-81ca-4df3-9bd0-e4f0828f78bf.webp",
+                url = "https://files.fivemerr.com/images/5202fb7b-c178-4a30-8113-2b5d7bd45ea8.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://files.fivemerr.com/images/66eb8b85-e0c7-4065-b230-32410772260a.webp",
+                url = "https://files.fivemerr.com/images/f3676be4-49c5-4b4a-9c56-e5ceb228329c.webp",
                 label = "Living Room",
             },
         },
@@ -274,11 +317,11 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/6c6fda4c-1f03-4ccb-b9e0-22ba358e6821.webp",
+                url = "https://files.fivemerr.com/images/dad29136-63f4-486a-8b0c-73bf6717ac10.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/c5aecca6-7831-497a-ad3e-dcf06f7db4f6.webp",
+                url = "https://files.fivemerr.com/images/b94621eb-1c3d-4cd6-b849-bd74fe94b601.webp",
                 label = "Garage",
             },
         },
@@ -294,11 +337,11 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/d8987d5a-af22-4927-aae0-3c69f75038d3.webp",
+                url = "https://files.fivemerr.com/images/b6894303-56a5-4ed6-9c3c-3108563b32b5.webp",
                 label = "Entance",
             },
             {
-                url = "https://files.fivemerr.com/images/b1f584b8-0570-4400-b868-30cd2d7fd17f.webp",
+                url = "https://files.fivemerr.com/images/938945b9-fa86-4b88-8264-870c8d25b780.webp",
                 label = "Office",
             },
         },
@@ -314,11 +357,11 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/454ae047-3948-41aa-bea2-e276ed99aec6.webp",
+                url = "https://files.fivemerr.com/images/4b071bca-fd50-4d41-ba83-f9080c2da0be.webp",
                 label = "Room 1",
             },
             {
-                url = "https://files.fivemerr.com/images/bbd41423-2782-4597-9320-d45590abe327.webp",
+                url = "https://files.fivemerr.com/images/ef1ccd1f-85b8-4681-abdd-c798b73eb1e2.webp",
                 label = "Room 2",
             },
         },
@@ -334,11 +377,11 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/4f39ffc7-6de4-435a-a1a3-b0e9493c43fd.webp",
+                url = "https://files.fivemerr.com/images/35d75b18-aa4f-4226-9b42-8e8ceb723946.webp",
                 label = "Angle 1",
             },
             {
-                url = "https://files.fivemerr.com/images/a6c7e4ed-ff81-4b30-adca-89d51f5ee64e.webp",
+                url = "https://files.fivemerr.com/images/b25f0c5d-9c6a-43e4-b082-eac8d1730f98.webp",
                 label = "Angle 2",
             },
         },
@@ -354,7 +397,7 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/6c7cdceb-7106-4559-97e6-bcc58e24ce9b.webp",
+                url = "https://files.fivemerr.com/images/29930411-18a3-4e39-bb4b-80bb5ca9c233.webp",
                 label = "Container",
             },
         },
@@ -370,39 +413,39 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/b9813f35-ce5d-4ebd-a4b2-d538628dcd20.webp",
+                url = "https://files.fivemerr.com/images/5b3fc4b4-fbc7-4020-bb63-50d5bd5ae1ca.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://files.fivemerr.com/images/eadb895d-9186-4b08-b50d-6c4e08fef952.webp",
+                url = "https://files.fivemerr.com/images/a7537dd9-94d7-47ad-bd74-ae3c7fc728d3.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/5320e158-010e-4ac3-9e93-3fe08b150486.webp",
+                url = "https://files.fivemerr.com/images/75f3cc72-ace3-40af-836f-40112fde2ba8.webp",
                 label = "Floor 2",
             },
             {
-                url = "https://files.fivemerr.com/images/95a36c06-a00a-4d84-aa3d-439f51e99d8f.webp",
+                url = "https://files.fivemerr.com/images/348e6af7-f247-49a0-a4d4-e99995f20d7f.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://files.fivemerr.com/images/74f9a597-1643-48e3-a215-b347a01a74de.webp",
+                url = "https://files.fivemerr.com/images/9e8689a9-5860-41b5-b5f1-df9f68cfaea2.webp",
                 label = "Living Room",
             },
             {
-                url = "https://files.fivemerr.com/images/572734b6-e68c-46c1-9693-86e20e393a10.webp",
+                url = "https://files.fivemerr.com/images/e4cb286e-acb2-42a4-b41a-e31b0482d7a7.webp",
                 label = "Room 1",
             },
             {
-                url = "https://files.fivemerr.com/images/a64ddbfe-c374-465c-89c1-363588ab25e0.webp",
+                url = "https://files.fivemerr.com/images/b3c0eeec-b5e7-4f41-a82b-f4bdf954c1a7.webp",
                 label = "Room 2",
             },
             {
-                url = "https://files.fivemerr.com/images/ec212d2b-107c-4da7-aea2-d61139cc6bef.webp",
+                url = "https://files.fivemerr.com/images/0f327cda-e432-4fd3-9002-973544f3b46a.webp",
                 label = "Room 3",
             },
             {
-                url = "https://files.fivemerr.com/images/fdd207a7-ec15-44b2-9dde-347aaa7cfd67.webp",
+                url = "https://files.fivemerr.com/images/5e2e0778-2709-4bb0-a17d-ac6154fdbd77.webp",
                 label = "Room 3 Dresser",
             },
         },
@@ -418,31 +461,31 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/d0557708-bb57-4dea-b8c7-8ec34c8391a4.webp",
+                url = "https://files.fivemerr.com/images/5b3fc4b4-fbc7-4020-bb63-50d5bd5ae1ca.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://files.fivemerr.com/images/81b849bb-c722-42f3-865b-a5c20da6d1be.webp",
+                url = "https://files.fivemerr.com/images/71df6160-68b0-4233-a8df-abc0b76401a0.webp",
                 label = "Dining Room",
             },
             {
-                url = "https://files.fivemerr.com/images/c795a770-fb95-4838-9d12-182ebfefc681.webp",
+                url = "https://files.fivemerr.com/images/5830cc1b-fd3b-4ff5-8e7b-4a9c81725daf.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/a095ee16-c074-41a3-9c6a-d56fb8ce3a47.webp",
+                url = "https://files.fivemerr.com/images/7be14444-b37c-4ad1-b215-e126525f23b0.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://files.fivemerr.com/images/ad22df64-4d64-4fde-b0ba-5dcaa0659d97.webp",
+                url = "https://files.fivemerr.com/images/f7e3d82b-26d3-4550-acdb-a5d6f2aacdce.webp",
                 label = "Living Room",
             },
             {
-                url = "https://files.fivemerr.com/images/fc96a826-048a-4dda-a825-2fa43b8f7179.webp",
+                url = "https://files.fivemerr.com/images/b0d64302-f411-40fd-9d08-b2c19473960b.webp",
                 label = "Room 1",
             },
             {
-                url = "https://files.fivemerr.com/images/e7292195-e518-49e7-9ba8-284b8f2dcc30.webp",
+                url = "https://files.fivemerr.com/images/5b3fc4b4-fbc7-4020-bb63-50d5bd5ae1ca.webp",
                 label = "Room 2",
             },
         },
@@ -458,23 +501,23 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/eb936202-0bf2-468b-809a-625ccba14698.webp",
+                url = "https://files.fivemerr.com/images/5f9b5a4a-d607-4fef-954e-aab0c25457d6.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/9e8ac33b-d71d-4ed9-81cc-e1b407d86e76.webp",
+                url = "https://files.fivemerr.com/images/31be06b1-d092-41e4-bd90-b23ca06fdf51.webp",
                 label = "Hallway",
             },
             {
-                url = "https://files.fivemerr.com/images/b5fe556f-efa7-4048-a0f3-8e604d885fb4.webp",
+                url = "https://files.fivemerr.com/images/a498685d-31bc-487c-83be-d479529dc36e.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://files.fivemerr.com/images/e9728ca8-24c5-4915-9329-3fccb59450dd.webp",
+                url = "https://files.fivemerr.com/images/87cbc4d9-e3aa-4709-9504-26a56816b3d9.webp",
                 label = "Main Area",
             },
             {
-                url = "https://files.fivemerr.com/images/31fbd065-6789-4106-a667-7a73c557486b.webp",
+                url = "https://files.fivemerr.com/images/2bc3d6b6-3d22-4865-82dd-594c2d48fad9.webp",
                 label = "Room",
             },
         },
@@ -490,15 +533,15 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/d9501f26-81d1-46d6-81cd-56a0345a3c1b.jpeg",
+                url = "https://files.fivemerr.com/images/c43c554f-8bc4-4028-9d6e-599aff60c4e8.jpeg",
                 label = "Angle 1",
             },
             {
-                url = "https://files.fivemerr.com/images/480bc73e-977e-417a-b70b-78fc337dec69.jpeg",
+                url = "https://files.fivemerr.com/images/a2cf4128-2d3a-4aa4-a19b-186edc7813c5.jpeg",
                 label = "Angle 2",
             },
             {
-                url = "https://files.fivemerr.com/images/e8bec3f0-0d87-4ccd-9ff1-6b6a1141c097.jpeg",
+                url = "https://files.fivemerr.com/images/5a669e54-2080-45fd-bf8c-0dd9075e3258.jpeg",
                 label = "Entrance",
             },
         },
@@ -514,27 +557,27 @@ Config.Shells = {
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/e709bb71-7d05-476c-81d8-c42ef53025f5.webp",
+                url = "https://files.fivemerr.com/images/cfc6d14e-d198-427a-a45c-fa1e0b1a8121.webp",
                 label = "Bathroom",
             },
             {
-                url = "https://files.fivemerr.com/images/516ec833-2c14-49a2-8f5d-13c6d3cd2651.webp",
+                url = "https://files.fivemerr.com/images/30f5c5b2-8591-4fef-9ebf-2095c508605b.webp",
                 label = "Entrance",
             },
             {
-                url = "https://files.fivemerr.com/images/186a0e06-4e57-4bd6-9ff7-c05ae2557638.webp",
+                url = "https://files.fivemerr.com/images/9babd5ff-7421-4a38-9b86-4900b3c0901f.webp",
                 label = "Kitchen",
             },
             {
-                url = "https://files.fivemerr.com/images/5c1461f0-bcef-4f23-828b-a78ffca86c0c.webp",
+                url = "https://files.fivemerr.com/images/d2dda0ca-aa9d-4826-9cd0-be6e1ee37f6b.webp",
                 label = "Living Room",
             },
             {
-                url = "https://files.fivemerr.com/images/a74b278c-ece9-4287-9d60-6b7deb752463.webp",
+                url = "https://files.fivemerr.com/images/9309b115-3266-48af-952d-cdcb39573b3e.webp",
                 label = "Room 1",
             },
             {
-                url = "https://files.fivemerr.com/images/3e2c7ae3-3166-47a7-9991-9ab749f7ff29.webp",
+                url = "https://files.fivemerr.com/images/2c5625ed-af05-49f3-a7ca-256fef131988.webp",
                 label = "Room 2",
             },
         },
@@ -545,41 +588,42 @@ Config.Shells = {
         hash = `shell_trailer`,
         doorOffset = { x = -1.27, y = -2.08, z = -0.48, h = 358.84, width = 2.0  },
         stash = {
-            maxweight = 10000, 
+            maxweight = 10000,
             slots = 12,
         },
         imgs = {
             {
-                url = "https://files.fivemerr.com/images/9c55b4d8-d529-4d7e-b3c3-9c6abe8e3cca.webp",
+                url = "https://files.fivemerr.com/images/a52b4053-ffb5-430c-a578-1aa09ebea723.webp",
                 label = "Entrance and Kitchen",
             },
             {
-                url = "https://files.fivemerr.com/images/4677d95d-d6b1-4577-ab8a-6d08f6401445.webp",
+                url = "https://files.fivemerr.com/images/603bc770-1a8f-43a1-b8d2-d15f9af87f59.webp",
                 label = "Main",
             },
             {
-                url = "https://files.fivemerr.com/images/5c0eac55-d394-49b2-b2de-e9d31d9bb7c8.webp",
+                url = "https://files.fivemerr.com/images/222716c0-9a27-4269-8c5b-698c218ec2d9.webp",
                 label = "Room",
             },
         },
     },
 }
 
-
 Config.FurnitureTypes = {
-    ["storage"] = function(entity, property_id, shell, furniture, count)
-        local stash = string.format("property_%s", property_id) -- if you changed this you will fuck things up
+    ["storage"] = function(entity, property_id, shell, id)
+        local stash = ("property_%s"):format(property_id)
+        id = type(id) == "boolean" and stash or stash..id
 
         Framework[Config.Target].AddTargetEntity(entity, "Storage", "fas fa-box-open", function()
             local stashConfig = Config.Shells[shell].stash
-            Framework[Config.Inventory].OpenInventory(stash, stashConfig)
+            Framework[Config.Inventory].OpenInventory('property_'..property_id, stashConfig, property_id)
         end)
 
         local property = Property.Get(property_id)
-        property.storageTarget = entity
+        property.storageTarget = property.storageTarget or {}
+        property.storageTarget[entity] = id
     end,
 
-    ["clothing"] = function(entity, property_id, shell, furniture, count)
+    ["clothing"] = function(entity, property_id)
         Framework[Config.Target].AddTargetEntity(entity, "Clothing", "fas fa-shirt", function()
             local heading = GetEntityHeading(cache.ped)
             SetEntityHeading(cache.ped, heading - 180.0)
@@ -595,8 +639,8 @@ Config.Furnitures = {
     {
         category = "Prerequisites",
         items = {
-            { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage", ["max"] = 1 },
-            { ["object"] = "v_res_tre_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing", ["max"] = 1 },
+            { ["object"] = "v_res_tre_storagebox", ["price"] = 0, ["label"] = "Storage Unit", ["type"] = "storage", ["max"] = 2 },
+            { ["object"] = "v_res_tre_wardrobe", ["price"] = 0, ["label"] = "Wardrobe", ["type"] = "clothing", ["max"] = 2 },
         }
     },
 

@@ -24,7 +24,7 @@ function Apartment:RegisterPropertyEntrance()
     local targetName = string.format("%s_apartment",self.apartmentData.label)
 
     -- not sure why but referencing self directy runs it when registering the zones
-    local function enterApartment() 
+    local function enterApartment()
         self:EnterApartment()
     end
 
