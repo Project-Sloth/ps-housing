@@ -10,13 +10,6 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 ![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/655d9bb6-6c6d-4676-b4e0-f4368f3325a9)
 ![image](https://github.com/Project-Sloth/ps-housing/assets/82112471/fc632975-c2f6-41fb-89cd-a984679f1a41)
 
-# Preview [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
-![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/24e4018a-cb97-42b0-81df-3b0236c7e2dc)
-![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/4d8ece54-ace1-4ffc-b8fb-90274bc94e72)
-![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/188d259c-4c0f-4c91-905c-bf9b826cc518)
-![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/9e033984-45f2-449d-ba6c-bb8742ac08bd)
-![image](https://github.com/Project-Sloth/ps-realtor/assets/82112471/0dd078b8-a941-4316-b9e1-26c696023139)
-
 # Usage
 - Players can decorate their houses and apartments with a full selection of furniture and decorations (included a wide variety of custom housing props)
 - Provides support for housing and apartments and is a full replacement for qb-apartments and qb-housing
