@@ -322,3 +322,4 @@ Since the `properties_decorations` table depends on the `properties` table, you'
 2. [fivem-freecam](https://github.com/Deltanic/fivem-freecam)
 3. [ox_lib](https://github.com/overextended/ox_lib/releases)
 4. [ox_target](https://github.com/overextended/ox_target)
+5. [ox_doorlock](https://github.com/overextended/ox_doorlock)
