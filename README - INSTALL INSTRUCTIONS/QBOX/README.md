@@ -1,5 +1,11 @@
-# qbx_core Resource Edits
-Search for `createCharacter` in client/character.lua and replace with
+
+# QBX Core
+
+## `client/character.lua`
+
+### Step 1: Update `createCharacter`
+
+Search for `createCharacter` in `client/character.lua` and replace it with the following code:
 
 ```lua
 local function createCharacter(cid)
@@ -11,7 +17,7 @@ local function createCharacter(cid)
 
     if not dialog then return false end
 
-    for input = 1, 3 do -- Run through first 3 inputs, aka first name, last name and nationality
+    for input = 1, 3 do -- Run through first 3 inputs: first name, last name, and nationality
         if not checkStrings(dialog, input) then
             Notify(locale('error.no_match_character_registration'), 'error', 10000)
             goto noMatch
@@ -44,7 +50,9 @@ local function createCharacter(cid)
 end
 ```
 
-Search for `spawnLastLocation` in client character and replace for: 
+### Step 2: Update `spawnLastLocation`
+
+Search for `spawnLastLocation` and replace it with the following code:
 
 ```lua
 local function spawnLastLocation()
@@ -56,12 +64,14 @@ local function spawnLastLocation()
 
     destroyPreviewCam()
 
-    pcall(function() exports.spawnmanager:spawnPlayer({
-        x = QBX.PlayerData.position.x,
-        y = QBX.PlayerData.position.y,
-        z = QBX.PlayerData.position.z,
-        heading = QBX.PlayerData.position.w
-    }) end)
+    pcall(function()
+        exports.spawnmanager:spawnPlayer({
+            x = QBX.PlayerData.position.x,
+            y = QBX.PlayerData.position.y,
+            z = QBX.PlayerData.position.z,
+            heading = QBX.PlayerData.position.w
+        })
+    end)
 
     local insideMeta = QBX.PlayerData.metadata.inside
     if insideMeta.propertyId then
@@ -70,22 +80,26 @@ local function spawnLastLocation()
 
     TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
     TriggerEvent('QBCore:Client:OnPlayerLoaded')
-    -- TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
-    -- TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
 
     while not IsScreenFadedIn() do
         Wait(0)
     end
 end
 ```
-Edit in config/server.lua in `characterDataTables`:
 
-`{'properties', 'owner'}` to `{'properties', 'owner_citizenid'}`
+## `config/server.lua`
 
+### Step 1: Update `characterDataTables`
 
-# qbx_spawn Resource Edits
+Change `{'properties', 'owner'}` in `characterDataTables = {` to `{'properties', 'owner_citizenid'}`.
 
-Find `inputHandler` in client/main.lua and replace with: 
+# QBX Spawn
+
+## `client/main.lua`
+
+### Step 1: Update `inputHandler`
+
+Replace the `inputHandler` function with the following code:
 
 ```lua
 local function inputHandler()
@@ -138,7 +152,12 @@ local function inputHandler()
     stopCamera()
 end
 ```
-Find `qbx_spawn:server:getLastLocation` in client/main.lua and replace with: 
+
+## `server/main.lua`
+
+### Step 1: Update `qbx_spawn:server:getLastLocation`
+
+Replace the callback for `qbx_spawn:server:getLastLocation` with the following code:
 
 ```lua
 lib.callback.register('qbx_spawn:server:getLastLocation', function(source)
@@ -147,7 +166,9 @@ lib.callback.register('qbx_spawn:server:getLastLocation', function(source)
 end)
 ```
 
-Find `qbx_spawn:server:getHouses` in server/main.lua and replace with: 
+### Step 2: Update `qbx_spawn:server:getHouses`
+
+Replace the callback for `qbx_spawn:server:getHouses` with the following code:
 
 ```lua
 lib.callback.register('qbx_spawn:server:getHouses', function(source)
@@ -160,13 +181,15 @@ lib.callback.register('qbx_spawn:server:getHouses', function(source)
 
     for i = 1, #houses do
         local house = houses[i]
-            if not house.apartment then
-            local door = exports['ps-housing']:getMainDoor(house.property_id, 1)
-            local coords = door.objCoords or door.coords or door.doors[1] and door.doors[1].coords or door.doors[1].objCoords
-            houseData[#houseData + 1] = {
-                label = house.street,
-                coords = coords
-            }
+        if not house.apartment then
+            local door = exports['ps-housing']:getMainDoor(house.property_id, 1, house.shell ~= 'mlo')
+            if door then
+                local coords = door.objCoords or door.coords or door.doors[1] and door.doors[1].coords or door.doors[1].objCoords
+                houseData[#houseData + 1] = {
+                    label = house.street,
+                    coords = coords
+                }
+            end
         end
     end
 
@@ -174,9 +197,13 @@ lib.callback.register('qbx_spawn:server:getHouses', function(source)
 end)
 ```
 
-# qbx_properties Resource Ddits
+# QBX Properties
 
-Replace `fxmanifest.lua` with:
+## `fxmanifest.lua`
+
+### Step 1: Update Manifest
+
+Replace the existing manifest with the following code:
 
 ```lua
 fx_version 'cerulean'
@@ -222,7 +249,11 @@ lua54 'yes'
 use_experimental_fxv2_oal 'true'
 ```
 
-Add the below code block in `apartmentselect.lua`
+## `client/apartmentselect.lua`
+
+### Step 1: Add Event Handler
+
+Add the following code to the bottom of the file:
 
 ```lua
 AddEventHandler('ps-housing:setApartments', function(data)
@@ -230,7 +261,9 @@ AddEventHandler('ps-housing:setApartments', function(data)
 end)
 ```
 
-Find `InputHandler` in apartmentselect.lua function and replace with: 
+### Step 2: Update `InputHandler`
+
+Find `InputHandler` and replace it with the following function:
 
 ```lua
 local function InputHandler()
@@ -256,9 +289,8 @@ local function InputHandler()
                 FreezeEntityPosition(cache.ped, false)
                 SetEntityCoords(cache.ped, ApartmentOptions[currentButtonID].enter.x, ApartmentOptions[currentButtonID].enter.y, ApartmentOptions[currentButtonID].enter.z - 2.0, false, false, false, false)
                 Wait(0)
-                -- TriggerServerEvent('qbx_properties:server:apartmentSelect', currentButtonID)
-                TriggerServerEvent("ps-housing:server:createNewApartment", ApartmentOptions[currentButtonID].label)
-                Wait(1000) -- Wait for player to spawn correctly so clothing menu can load in nice
+                TriggerServerEvent("ps-housing:server:createNewApartment", ApartmentOptions[currentButtonID].id)
+                Wait(1000) -- Wait for player to spawn correctly so clothing menu can load in nicely
                 TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
                 TriggerEvent('QBCore:Client:OnPlayerLoaded')
                 break
@@ -270,7 +302,8 @@ local function InputHandler()
 end
 ```
 
-head to qbx_properties/config/shared.lua and replace this table with this
+## `qbx_properties/config/shared.lua`
+### Step 1: Look For ApartmentOptions = { and replace with 
 ```lua
 ApartmentOptions = {
     {
@@ -310,12 +343,50 @@ ApartmentOptions = {
         enter = vec3(-614.58, 46.52, 43.59)
     },
 }
+ ```
+# Running The SQL
+## If You Have Previously Had qbx_properties You Will Need To Drop properties and properties_decorations, If You Are A New Server Ignore This Specific Line
+### Step 1: Open Your Preferred Database Management System (PhpMyAdmin, HeidiSQL, etc.. )
+### Step 2: Run The SQL
+
+### If you get an error for foreign Key  Restraints You Didn't Drop The Tables
+
+# Updating Your server.cfg
+
+## Step 1: look for your ensure list it should look something like this 
+```cfg
+# Qbox & Extra stuff
+ensure ox_lib
+ensure qbx_core
+ensure ox_target
+ensure [ox]
+ensure [qbx]
+ensure [standalone]
+ensure [voice]
+
 ```
 
-Since the `properties_decorations` table depends on the `properties` table, you'll keep encountering errors unless you follow these steps:
+Now Add This UNDER [ox]
+```cfg
+ensure ps-housing
+ensure ps-realtor
+ensure fivem-freecam
+```
 
-1. Drop both the `properties` and `properties_decorations` tables.
-2. Run the SQL file located in `ps-housing/README-INSTALL INSTRUCTIONS/QBOX`.
+so it should look like 
+```cfg
+# Qbox & Extra stuff
+ensure ox_lib
+ensure qbx_core
+ensure ox_target
+ensure [ox]
+ensure ps-housing
+ensure ps-realtor
+ensure fivem-freecam
+ensure [qbx]
+ensure [standalone]
+ensure [voice]
+```
 
 # Dependencies
 1. [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
