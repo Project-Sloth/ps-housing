@@ -69,10 +69,10 @@ https://github.com/complexza/ps-housing/assets/74205343/0ff26e7f-1341-45fc-8fc6-
 # Installation
 
 ## QBCore Setup
-Head over to install/qb-core
+Read setup instructions [here](https://github.com/Project-Sloth/ps-housing/tree/main/README%20-%20INSTALL%20INSTRUCTIONS/QBCore)
 
 ## QBOX Setup
-Head over to install/qbox
+Read setup instructions [here](https://github.com/Project-Sloth/ps-housing/tree/main/README%20-%20INSTALL%20INSTRUCTIONS/QBOX)
 
 # Dependencies
 1. [ps-realtor](https://github.com/Project-Sloth/ps-realtor)
