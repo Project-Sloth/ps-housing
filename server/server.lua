@@ -1,3 +1,6 @@
+DoorResource = GetResourceState('ox_doorlock') == 'started' and 'ox' or GetResourceState('qb-doorlock') == 'started' and 'qb'
+if not DoorResource then return error('Either ox or qb door system is started!!') end
+
 QBCore = exports['qb-core']:GetCoreObject()
 -- PSCore = exports['ps-core']:GetCoreObject()
 
@@ -10,13 +13,15 @@ MySQL.ready(function()
         end
         for _, v in pairs(result) do
             local id = tostring(v.property_id)
+            local has_access = json.decode(v.has_access)
+            local owner = v.owner_citizenid
             local propertyData = {
                 property_id = tostring(id),
-                owner = v.owner_citizenid,
+                owner = owner,
                 street = v.street,
                 region = v.region,
                 description = v.description,
-                has_access = json.decode(v.has_access),
+                has_access = has_access,
                 extra_imgs = json.decode(v.extra_imgs),
                 furnitures = json.decode(v.furnitures),
                 for_sale = v.for_sale,
@@ -25,15 +30,27 @@ MySQL.ready(function()
                 apartment = v.apartment,
                 door_data = json.decode(v.door_data),
                 garage_data = json.decode(v.garage_data),
+                zone_data = v.zone_data,
             }
             PropertiesTable[id] = Property:new(propertyData)
+
+            if v.shell == 'mlo' and DoorResource == 'qb' and owner then
+                local property = PropertiesTable[id]
+                -- we add door access for qb doorlock
+                property:addMloDoorsAccess(owner)
+                if has_access and #has_access > 0 then
+                    for _,citizenId in ipairs(has_access) do
+                        property:addMloDoorsAccess(citizenId)
+                    end
+                end
+            end
         end
 
         dbloaded = true
     end)
 end)
 
-lib.callback.register("ps-housing:server:requestProperties", function(source)
+lib.callback.register("ps-housing:server:requestProperties", function()
     while not dbloaded do
         Wait(100)
     end
@@ -41,18 +58,17 @@ lib.callback.register("ps-housing:server:requestProperties", function(source)
     return PropertiesTable
 end)
 
-AddEventHandler("ps-housing:server:registerProperty", function (propertyData, preventEnter) -- triggered by realtor job
-    local propertyData = propertyData
-
+function RegisterProperty(propertyData, preventEnter, source)
     propertyData.owner = propertyData.owner or nil
     propertyData.has_access = propertyData.has_access or {}
     propertyData.extra_imgs = propertyData.extra_imgs or {}
     propertyData.furnitures = propertyData.furnitures or {}
     propertyData.door_data = propertyData.door_data or {}
     propertyData.garage_data = propertyData.garage_data or {}
+    propertyData.zone_data = propertyData.zone_data or {}
     
-    local cols = "(owner_citizenid, street, region, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data)"
-    local vals = "(@owner_citizenid, @street, @region, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data)"
+    local cols = "(owner_citizenid, street, region, description, has_access, extra_imgs, furnitures, for_sale, price, shell, apartment, door_data, garage_data, zone_data)"
+    local vals = "(@owner_citizenid, @street, @region, @description, @has_access, @extra_imgs, @furnitures, @for_sale, @price, @shell, @apartment, @door_data, @garage_data, @zone_data)"
 
     local id = MySQL.insert.await("INSERT INTO properties " .. cols .. " VALUES " .. vals , {
         ["@owner_citizenid"] = propertyData.owner or nil,
@@ -64,15 +80,43 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData, pr
         ["@furnitures"] = json.encode(propertyData.furnitures),
         ["@for_sale"] = propertyData.for_sale ~= nil and propertyData.for_sale or 1,
         ["@price"] = propertyData.price or 0,
-        ["@shell"] = propertyData.shell,
+        ["@shell"] = propertyData.shell or '',
         ["@apartment"] = propertyData.apartment,
-        ["@door_data"] = json.encode(propertyData.door_data),
+        ["@door_data"] = json.encode(propertyData.shell == 'mlo' and {count = #propertyData.door_data} or propertyData.door_data),
         ["@garage_data"] = json.encode(propertyData.garage_data),
+        ["@zone_data"] = json.encode(propertyData.zone_data),
     })
+
     id = tostring(id)
+
+    if source and propertyData.shell == 'mlo' then
+        if DoorResource == 'ox' then
+            TriggerClientEvent("ps-housing:client:createOxDoors", source, {
+                id = id,
+                doors = propertyData.door_data
+            })
+        else
+            local qb_doorlock = exports['qb-doorlock']
+            for _, v in ipairs(propertyData.door_data) do
+                local isArray = v[1] and true
+                qb_doorlock:saveNewDoor(source, {
+                    locked = true,
+                    model = isArray and {v[1].model, v[2].model} or v.model,
+                    heading = isArray and {v[1].heading, v[2].heading} or v.heading,
+                    coords = isArray and {v[1].coords, v[2].coords} or v.coords,
+                    distance = 2.5,
+                    doortype = 'door',
+                    id = ('ps_mloproperty%s_%s'):format(id, _)
+                }, isArray)
+            end
+        end
+        propertyData.door_data = {count = #propertyData.door_data}
+        Wait(1000)
+    end
+
     propertyData.property_id = id
     PropertiesTable[id] = Property:new(propertyData)
-    
+
     TriggerClientEvent("ps-housing:client:addProperty", -1, propertyData)
 
     if propertyData.apartment and not preventEnter then
@@ -97,9 +141,35 @@ AddEventHandler("ps-housing:server:registerProperty", function (propertyData, pr
         Framework[Config.Notify].Notify(src, "Open radial menu for furniture menu and place down your stash and clothing locker.", "info")
 
         -- This will create the stash for the apartment and migrate the items from the old apartment stash if applicable
-        TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id)
+        if GetResourceState('qb-inventory') == 'started' then
+            TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id)
+        end
     end
+
+    return id
+end
+
+local function getMainDoor(propertyId, doorIndex, isShell)
+    -- ps_mloproperty is prefix, self.property_id is property unique id, 1 is main door index, cause mlo can have multiple doors
+
+    if isShell then
+        local property = Property.Get(propertyId)
+        if not property then return end
+        return {
+            coords = property.propertyData.door_data
+        }
+    end
+    
+    local id = ('ps_mloproperty%s_%s'):format(propertyId, doorIndex)
+    return DoorResource == 'ox' and exports.ox_doorlock:getDoorFromName(id) or DoorResource == 'qb' and exports['qb-doorlock']:getDoor(id)
+end
+exports('getMainDoor', getMainDoor)
+lib.callback.register("ps-housing:cb:getMainMloDoor", function(_, propertyId, doorIndex)
+    return getMainDoor(propertyId, doorIndex)
 end)
+
+exports('registerProperty', RegisterProperty) -- triggered by realtor job
+AddEventHandler("ps-housing:server:registerProperty", RegisterProperty)
 
 lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
     Debug("ps-housing:cb:GetOwnedApartment", source, cid)
@@ -118,6 +188,17 @@ lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
         end
         return nil
     end
+end)
+
+lib.callback.register("ps-housing:cb:inventoryHasItems", function(source, name, isOx)
+    if isOx then
+        local items = exports.ox_inventory:GetInventoryItems(name)
+        return items and items > 0
+    end
+    local query = lib.checkDependency('qb-inventory', '2.0.0') and 'SELECT items FROM inventories WHERE identifier = ?' or 'SELECT items FROM stashitems WHERE stash = ?'
+    local result = MySQL.query.await(query, { name })
+    if not result or not result[1] then return end
+    return result[1].items ~= '[]'
 end)
 
 AddEventHandler("ps-housing:server:updateProperty", function(type, property_id, data)
@@ -157,7 +238,7 @@ RegisterNetEvent("ps-housing:server:createNewApartment", function(aptLabel)
 
     Framework[Config.Logs].SendLog("Creating new apartment for " .. GetPlayerName(src) .. " in " .. apartment.label)
 
-    TriggerEvent("ps-housing:server:registerProperty", propertyData)
+    RegisterProperty(propertyData)
 end)
 
 -- we show the character creator if they spawn without starting appartment and doesn't have skin set
@@ -183,14 +264,14 @@ RegisterNetEvent("ps-housing:server:createApartmentStash", function(citizenId, p
     local stashId = string.format("property_%s", propertyId)
 
     -- Check for existing apartment and corresponding stash
-    local result = MySQL.query.await('SELECT items, stash FROM stashitems WHERE stash IN (SELECT name FROM apartments WHERE citizenid = ?)', { citizenId }) 
-   
+    local query = lib.checkDependency('qb-inventory', '2.0.0') and 'SELECT items, identifier FROM inventories WHERE identifier' or 'SELECT items, stash FROM stashitems WHERE stash'
+    local result = MySQL.query.await(('%s IN (SELECT name FROM apartments WHERE citizenid = ?)'):format(query), { citizenId })
     local items = {}
     if result[1] ~= nil then
         items = json.decode(result[1].items)
 
         -- Delete the old apartment stash as it is no longer needed
-        MySQL.Async.execute('DELETE FROM stashitems WHERE stash = ?', { result[1].stash })
+        MySQL.Async.execute('DELETE FROM stashitems WHERE stash = ?', { result[1].identifier or result[1].stash })
     end
 
     -- This will create the stash for the apartment (without requiring player to have first opened and placed item in it)
@@ -199,8 +280,7 @@ end)
 
 RegisterNetEvent('qb-apartments:returnBucket', function()
     local src = source
-    SetPlayerRoutingBucket(src, 0)
-    Player(src).state:set('instance', 0, true)
+    QBCore.Functions.SetPlayerBucket(src, 0)
 end)
 
 AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
@@ -248,7 +328,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
         Framework[Config.Notify].Notify(targetSrc, "Your apartment is now at "..apartment, "success")
         Framework[Config.Notify].Notify(realtorSrc, "You have added ".. targetToAdd.charinfo.firstname .. " " .. targetToAdd.charinfo.lastname .. " to apartment "..apartment, "success")
 
-        TriggerEvent("ps-housing:server:registerProperty", propertyData, true)
+        RegisterProperty(propertyData, true)
 
         return
     end

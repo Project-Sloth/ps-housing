@@ -2,6 +2,7 @@ Property = {
     property_id = nil,
     propertyData = nil,
     playersInside = nil,   -- src
+    playersInGarden = nil,   -- src
     playersDoorbell = nil, -- src
 
     raiding = false,
@@ -15,21 +16,32 @@ function Property:new(propertyData)
     self.propertyData = propertyData
 
     self.playersInside = {}
+    self.playersInGarden = {}
     self.playersDoorbell = {}
 
-    local stashName = string.format("property_%s", propertyData.property_id)
+    local stashName = ("property_%s"):format(propertyData.property_id)
     local stashConfig = Config.Shells[propertyData.shell].stash
 
-    Framework[Config.Inventory].RegisterInventory(stashName, propertyData.street or propertyData.apartment or stashName, stashConfig)
+    for k, v in ipairs(propertyData.furnitures) do
+        if v.type == 'storage' then
+            Framework[Config.Inventory].RegisterInventory(k == 1 and stashName or stashName..v.id, 'Property: ' ..  propertyData.street .. ' #'.. propertyData.property_id or propertyData.apartment or stashName, stashConfig)
+        end
+    end
 
     return self
 end
 
 function Property:PlayerEnter(src)
     local _src = tostring(src)
+    local isMlo = self.propertyData.shell == 'mlo'
+    local isIpl = self.propertyData.apartment and Config.Apartments[self.propertyData.apartment].interior
+
     self.playersInside[_src] = true
 
-    TriggerClientEvent('qb-weathersync:client:DisableSync', src)
+    if not isMlo then
+        TriggerClientEvent('qb-weathersync:client:DisableSync', src)
+    end
+
     TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
 
     if next(self.playersDoorbell) then
@@ -49,9 +61,10 @@ function Property:PlayerEnter(src)
         Player.Functions.SetMetaData("inside", insideMeta)
     end
 
-    local bucket = tonumber(self.property_id) -- because the property_id is a string
-    SetPlayerRoutingBucket(src, bucket)
-    Player(src).state:set('instance', bucket, true)
+    if not isMlo or isIpl then
+        local bucket = tonumber(self.property_id) -- because the property_id is a string
+        QBCore.Functions.SetPlayerBucket(src, bucket)
+    end
 end
 
 function Property:PlayerLeave(src)
@@ -70,8 +83,7 @@ function Property:PlayerLeave(src)
         Player.Functions.SetMetaData("inside", insideMeta)
     end
 
-    SetPlayerRoutingBucket(src, 0)
-    Player(src).state:set('instance', 0, true)
+    QBCore.Functions.SetPlayerBucket(src, 0)
 end
 
 function Property:CheckForAccess(citizenid)
@@ -139,7 +151,7 @@ function Property:StartRaid()
     end)
 end
 
-function Property:UpdateFurnitures(furnitures)
+function Property:UpdateFurnitures(furnitures, isGarden)
     local newfurnitures = {}
 
     for i = 1, #furnitures do
@@ -160,9 +172,15 @@ function Property:UpdateFurnitures(furnitures)
         ["@property_id"] = self.property_id
     })
 
+    if isGarden then
+        for src, _ in pairs(self.playersInGarden) do
+            TriggerClientEvent("ps-housing:client:updateFurniture", tonumber(src), self.property_id, furnitures, true)
+        end
+        return
+    end
+
     for src, _ in pairs(self.playersInside) do
-        local targetSrc = tonumber(src)
-        TriggerClientEvent("ps-housing:client:updateFurniture", targetSrc, self.property_id, furnitures)
+        TriggerClientEvent("ps-housing:client:updateFurniture", tonumber(src), self.property_id, furnitures)
     end
 end
 
@@ -244,6 +262,57 @@ function Property:UpdateShell(data)
     Debug("Changed Shell of property with id: " .. self.property_id, "by: " .. GetPlayerName(realtorSrc))
 end
 
+function Property:addMloDoorsAccess(citizenid)
+    if self.propertyData.shell ~= 'mlo' then return end
+
+    if DoorResource == 'ox' then
+        local ox_doorlock = exports.ox_doorlock
+        for i=1 , self.propertyData.door_data.count do
+            local door = ox_doorlock:getDoorFromName(('ps_mloproperty%s_%s'):format(self.property_id, i))
+            local data = door.characters or {}
+            table.insert(data, citizenid)
+            ox_doorlock:editDoor(door.id, {characters = data})
+        end
+    else
+        local qb_doorlock = exports['qb-doorlock']
+        for i=1 , self.propertyData.door_data.count do
+            local id = ('ps_mloproperty%s_%s'):format(self.property_id, i)
+            local door = qb_doorlock:getDoor(id)
+            local data = door.authorizedCitizenIDs or {}
+            data[citizenid] = true
+            qb_doorlock:updateDoor(id, {authorizedCitizenIDs = data})
+        end
+    end
+end
+
+function Property:removeMloDoorsAccess(citizenid)
+    if self.propertyData.shell ~= 'mlo' then return end
+
+    if DoorResource == 'ox' then
+        local ox_doorlock = exports.ox_doorlock
+        for i = 1, self.propertyData.door_data.count do
+            local door = ox_doorlock:getDoorFromName(('ps_mloproperty%s_%s'):format(self.property_id, i))
+            local data = door.characters or {}
+            for index, id in ipairs(data) do
+                if id == citizenid then
+                    table.remove(data, index)
+                    break
+                end
+            end
+            ox_doorlock:editDoor(door.id, {characters = data})
+        end
+    else
+        local qb_doorlock = exports['qb-doorlock']
+        for i = 1, self.propertyData.door_data.count do
+            local id = ('ps_mloproperty%s_%s'):format(self.property_id, i)
+            local door = qb_doorlock:getDoor(id)
+            local data = door.authorizedCitizenIDs or {}
+            data[citizenid] = nil
+            qb_doorlock:updateDoor(id, {authorizedCitizenIDs = data})
+        end
+    end
+end
+
 function Property:UpdateOwner(data)
     local targetSrc = data.targetSrc
     local realtorSrc = data.realtorSrc
@@ -254,10 +323,16 @@ function Property:UpdateOwner(data)
     local previousOwner = self.propertyData.owner
 
     local targetPlayer  = QBCore.Functions.GetPlayer(tonumber(targetSrc))
+    if not targetPlayer then return end
 
     local PlayerData = targetPlayer.PlayerData
     local bank = PlayerData.money.bank
     local citizenid = PlayerData.citizenid
+
+    self:addMloDoorsAccess(citizenid)
+    if self.propertyData.shell == 'mlo' and DoorResource == 'qb' then
+        Framework[Config.Notify].Notify(targetSrc, "Go far away and come back for the door to update and open/close.", "error")
+    end
 
     if self.propertyData.owner == citizenid then
         Framework[Config.Notify].Notify(targetSrc, "You already own this property", "error")
@@ -478,15 +553,27 @@ function Property.Get(property_id)
     return PropertiesTable[tostring(property_id)]
 end
 
+RegisterNetEvent('ps-housing:server:enterGarden', function (property_id)
+    local src = source
+    local property = Property.Get(property_id)
+
+    if not property then
+        Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
+        return
+    end
+
+    property.playersInGarden[tostring(src)] = true
+end)
+
 RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local src = source
     Debug("Player is trying to enter property", property_id)
 
     local property = Property.Get(property_id)
 
-    if not property then 
+    if not property then
         Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
-        return 
+        return
     end
 
     local citizenid = GetCitizenid(src)
@@ -501,7 +588,7 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
     local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
     if ringDoorbellConfirmation == "confirm" then
         property:AddToDoorbellPoolTemp(src)
-        Debug("Ringing doorbell") 
+        Debug("Ringing doorbell")
         return
     end
 end)
@@ -569,9 +656,28 @@ RegisterNetEvent('ps-housing:server:raidProperty', function(property_id)
                         if Config.Inventory == 'ox' then
                             exports.ox_inventory:RemoveItem(src, raidItem, 1)
                         else
-                            Player.Functions.RemoveItem(raidItem, 1)
-                            TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items[raidItem], "remove")
-                            TriggerEvent("inventory:server:RemoveItem", src, raidItem, 1)
+                            if lib.checkDependency('qb-inventory', '2.0.0') then
+                                TriggerClientEvent("qb-inventory:client:ItemBox", src, QBCore.Shared.Items[raidItem], "remove")
+                                exports['qb-inventory']:RemoveItem(source, raidItem, 1)
+                            else
+                                TriggerClientEvent("inventory:client:ItemBox", src, QBCore.Shared.Items[raidItem], "remove")
+                                TriggerEvent("inventory:server:RemoveItem", src, raidItem, 1)
+                            end
+                        end
+                    end
+
+                    if property.propertyData.shell == 'mlo' then
+                        if DoorResource == 'ox' then
+                            local ox_doorlock = exports.ox_doorlock
+                            for i=1 , property.propertyData.door_data.count do
+                                local door = ox_doorlock:getDoorFromName(('ps_mloproperty%s_%s'):format(property.property_id, i))
+                                ox_doorlock:setDoorState(door.id, 0)
+                            end
+                        else
+                            for i=1 , property.propertyData.door_data.count do
+                                local id = ('ps_mloproperty%s_%s'):format(property.property_id, i)
+                                TriggerEvent('qb-doorlock:server:updateState', id, false, false, false, false, true, true, src)
+                            end
                         end
                     end
                 end
@@ -595,7 +701,7 @@ end)
 
 
 
-lib.callback.register('ps-housing:cb:getFurnitures', function(source, property_id)
+lib.callback.register('ps-housing:cb:getFurnitures', function(_, property_id)
     local property = Property.Get(property_id)
     if not property then return end
     return property.propertyData.furnitures or {}
@@ -649,20 +755,19 @@ end)
 
 --@@ NEED TO REDO THIS DOG SHIT
 -- I think its not bad anymore but if u got a better idea lmk
-RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, price)
+RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, price, isGarden)
     local src = source
 
     local citizenid = GetCitizenid(src)
     local PlayerData = GetPlayerData(src)
     local Player = GetPlayer(src)
-    -- ik ik, i cbf rn. if your reading this and its still shit, tell me
 
     local property = Property.Get(property_id)
     if not property then return end
 
     if not property:CheckForAccess(citizenid) then return end
 
-    local price = tonumber(price)
+    price = tonumber(price)
 
     if price > PlayerData.money.bank and price > PlayerData.money.cash then
         Framework[Config.Notify].Notify(src, "You do not have enough money!", "error")
@@ -675,20 +780,48 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         Player.Functions.RemoveMoney('bank', price, "Bought furniture")
     end
 
-    local numFurnitures = #property.propertyData.furnitures
+    local propertyData = property.propertyData
+    local numFurnitures = #propertyData.furnitures
+    local firstStorage = true
 
-    for i = 1, #items do
-        numFurnitures = numFurnitures + 1
-        property.propertyData.furnitures[numFurnitures] = items[i]
+    for _,v in ipairs(propertyData.furnitures) do
+        if v.type == 'storage' then
+            firstStorage = false
+            break
+        end
     end
 
-    property:UpdateFurnitures(property.propertyData.furnitures)
+    for i = 1, #items do
+        local item = items[i]
+        if item.type == 'storage' then
+            local stashName = ("property_%s"):format(propertyData.property_id)
+            local stashConfig = Config.Shells[propertyData.shell].stash
+            Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName..item.id, 'Property: ' ..  propertyData.street .. ' #'.. propertyData.property_id or propertyData.apartment or stashName, stashConfig)
+        end
+        numFurnitures = numFurnitures + 1
+        propertyData.furnitures[numFurnitures] = item
+    end
+
+    property:UpdateFurnitures(propertyData.furnitures, isGarden)
 
     Framework[Config.Notify].Notify(src, "You bought furniture for $" .. price, "success")
 
     Framework[Config.Logs].SendLog("**Player ".. GetPlayerName(src) .. "** bought furniture for **$" .. price .. "**")
 
     Debug("Player bought furniture for $" .. price, "by: " .. GetPlayerName(src))
+end)
+
+RegisterNetEvent("ps-housing:server:openQBInv", function(data)
+    local src = source
+    local stashId, stashData, propertyId in data
+
+    local property = Property.Get(propertyId)
+    if not property then return end
+
+    local citizenid = GetCitizenid(src)
+    if not property:CheckForAccess(citizenid) then return end
+
+    exports['qb-inventory']:OpenInventory(src, stashId, stashData)
 end)
 
 RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, itemid)
@@ -702,7 +835,7 @@ RegisterNetEvent("ps-housing:server:removeFurniture", function(property_id, item
 
     local currentFurnitures = property.propertyData.furnitures
 
-    for k, v in pairs(currentFurnitures) do
+    for k, v in ipairs(currentFurnitures) do
         if v.id == itemid then
             table.remove(currentFurnitures, k)
             break
@@ -725,7 +858,7 @@ RegisterNetEvent("ps-housing:server:updateFurniture", function(property_id, item
 
     local currentFurnitures = property.propertyData.furnitures
 
-    for k, v in pairs(currentFurnitures) do
+    for k, v in ipairs(currentFurnitures) do
         if v.id == item.id then
             currentFurnitures[k] = item
             Debug("Updated furniture", json.encode(item))
@@ -756,6 +889,7 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
 
     if not property:CheckForAccess(targetCitizenid) then
         has_access[#has_access+1] = targetCitizenid
+        property:addMloDoorsAccess(targetCitizenid)
         property:UpdateHas_access(has_access)
 
         Framework[Config.Notify].Notify(src, "You added access to " .. targetPlayer.charinfo.firstname .. " " .. targetPlayer.charinfo.lastname, "success")
@@ -763,6 +897,29 @@ RegisterNetEvent("ps-housing:server:addAccess", function(property_id, srcToAdd)
     else
         Framework[Config.Notify].Notify(src, "This person already has access to this property!", "error")
     end
+end)
+
+
+RegisterNetEvent("ps-housing:server:qbxRegisterHouse", function(property_id)
+    local property = Property.Get(property_id)
+    if not property then return end
+
+    local propertyData = property.propertyData
+    local label = propertyData.street .. property.property_id .. " Garage"
+    local garageData = propertyData.garage_data
+    local coords = vec4(garageData.x, garageData.y, garageData.z, garageData.h)
+
+    exports.qbx_garages:RegisterGarage('housegarage-'..property_id, {
+        label = label,
+        vehicleType = 'car',
+        groups = propertyData.owner,
+        accessPoints = {
+            {
+                coords = coords,
+                spawn = coords,
+            }
+        },
+    })
 end)
 
 RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizenidToRemove)
@@ -779,7 +936,6 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizen
     end
 
     local has_access = property.propertyData.has_access
-    local citizenidToRemove = citizenidToRemove
 
     if property:CheckForAccess(citizenidToRemove) then
         for i = 1, #has_access do
@@ -789,6 +945,7 @@ RegisterNetEvent("ps-housing:server:removeAccess", function(property_id, citizen
             end
         end 
 
+        property:removeMloDoorsAccess(citizenidToRemove)
         property:UpdateHas_access(has_access)
 
         local playerToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenidToRemove) or QBCore.Functions.GetOfflinePlayerByCitizenId(citizenidToRemove)

@@ -4,6 +4,7 @@ local AptNames = {
     ["apartment3"] = "Integrity Way",
     ["apartment4"] = "Tinsel Towers",
     ["apartment5"] = "Fantastic Plaza",
+    ["apartment6"] = "Modern 1 Apartment",
 }
 
 local Shells = {
@@ -25,9 +26,6 @@ local Shells = {
 }
 
 RegisterCommand("migrateapartments", function()
-
-    local properties = {}
-
     local qbApt = MySQL.Sync.fetchAll("SELECT * FROM apartments")
 
     CreateThread(function()
@@ -44,7 +42,7 @@ RegisterCommand("migrateapartments", function()
                 apartment = aptName,
             }
 
-            TriggerEvent("ps-housing:server:registerProperty", propertyData)
+            RegisterProperty(propertyData)
         end
         print("Finished migrating apartments")
     end)
@@ -118,7 +116,7 @@ RegisterNetEvent('ps-housing:server:migratehouses', function()
                 garage_data = garage
             }
 
-            TriggerEvent("ps-housing:server:registerProperty", propertyData)
+            RegisterProperty(propertyData)
         end
         print("Finished migrating houses")
     end)
