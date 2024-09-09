@@ -943,10 +943,15 @@ end)
 RegisterNetEvent("ps-housing:client:createOxDoors", function(data)
     local doors, id in data
 
-    for _, v in ipairs(doors) do
-        local isArray = v[1] and true
-        v.name = ('ps_mloproperty%s_%s'):format(id, _)
-        TriggerServerEvent('ox_doorlock:editDoorlock', false, isArray and {doors = v} or v)
+    for index, door in ipairs(doors) do
+        local isArray = door[1] ~= nil
+        local name = ('ps_mloproperty%s_%s'):format(id, index)
+
+        door.name = not isArray and name
+
+        local payload = isArray and { doors = door, name = name } or door
+
+        TriggerServerEvent('ox_doorlock:editDoorlock', false, payload)
     end
 end)
 
