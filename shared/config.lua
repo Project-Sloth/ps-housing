@@ -84,7 +84,7 @@ Config.Apartments = {
         },
         shell = "Apartment Furnished",
     },
-    
+
     ["South Rockford Drive"] = {
         label = "South Rockford Drive",
         door = { x = -667.02, y = -1105.24, z = 14.63, h = 242.32, length = 1, width = 2 },
