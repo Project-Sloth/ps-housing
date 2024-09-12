@@ -82,8 +82,8 @@ Read setup instructions [here](https://github.com/Project-Sloth/ps-housing/tree/
  
 ```
 ensure ox_lib
-ensure ps-housing
 ensure ps-realtor
+ensure ps-housing
 ensure fivem-freecam
 ```
 
