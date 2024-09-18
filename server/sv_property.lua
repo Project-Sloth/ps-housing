@@ -579,8 +579,8 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn
 
     if property:CheckForAccess(citizenid) then
         Debug("Player has access to property")
-        if spawn == 'spawn' then 
-            TriggerClientEvent("ps-housing:client:enterProperty", src, property_id, spawn)
+        if spawn == 'spawn' then -- checks if from spawn 
+            TriggerClientEvent("ps-housing:client:enterProperty", src, property_id, spawn) -- sends if its from spawn
         else
             property:PlayerEnter(src)
         end
@@ -799,7 +799,11 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         if item.type == 'storage' then
             local stashName = ("property_%s"):format(propertyData.property_id)
             local stashConfig = Config.Shells[propertyData.shell].stash
-            Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName..item.id, 'Property: ' ..  propertyData.street .. ' #'.. propertyData.property_id or propertyData.apartment or stashName, stashConfig)
+            if not propertyData.apartment then -- checks if apartment, if so pulls apartment name, if not pulls up street name
+                Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName .. item.id, 'Property: ' .. propertyData.street .. '#' .. propertyData.property_id, stashConfig)
+            else 
+               Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName .. item.id, 'Property: ' .. propertyData.apartment .. '#' .. propertyData.property_id, stashConfig)
+            end
         end
         numFurnitures = numFurnitures + 1
         propertyData.furnitures[numFurnitures] = item
