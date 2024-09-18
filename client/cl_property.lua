@@ -909,9 +909,16 @@ function Property.Get(property_id)
     return PropertiesTable[tostring(property_id)]
 end
 
-RegisterNetEvent("ps-housing:client:enterProperty", function(property_id)
+RegisterNetEvent("ps-housing:client:enterProperty", function(property_id, spawn)
     local property = Property.Get(property_id)
-    property:EnterShell()
+    if spawn == 'spawn' then 
+        local data = lib.callback.await("ps-housing:cb:getMainMloDoor", false, property_id, 1)
+        if not data then property:EnterShell() return end
+        SetEntityCoords(PlayerPedId(), data.objCoords.x, data.objCoords.y, data.objCoords.z)
+        return
+    else
+        property:EnterShell()
+    end
 end)
 
 RegisterNetEvent("ps-housing:client:updateDoorbellPool", function(property_id, data)

@@ -41,8 +41,8 @@ function Property:PlayerEnter(src)
     if not isMlo then
         TriggerClientEvent('qb-weathersync:client:DisableSync', src)
     end
-
-    TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id)
+    print(src, self.property_id)
+    TriggerClientEvent('ps-housing:client:enterProperty', src, self.property_id, isMlo, self.propertyData)
 
     if next(self.playersDoorbell) then
         TriggerClientEvent("ps-housing:client:updateDoorbellPool", src, self.property_id, self.playersDoorbell)
@@ -565,12 +565,11 @@ RegisterNetEvent('ps-housing:server:enterGarden', function (property_id)
     property.playersInGarden[tostring(src)] = true
 end)
 
-RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
+RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn)
     local src = source
     Debug("Player is trying to enter property", property_id)
 
     local property = Property.Get(property_id)
-
     if not property then
         Debug("Properties returned", json.encode(PropertiesTable, {indent = true}))
         return
@@ -580,7 +579,11 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id)
 
     if property:CheckForAccess(citizenid) then
         Debug("Player has access to property")
-        property:PlayerEnter(src)
+        if spawn == 'spawn' then 
+            TriggerClientEvent("ps-housing:client:enterProperty", src, property_id, spawn)
+        else
+            property:PlayerEnter(src)
+        end
         Debug("Player entered property")
         return
     end
@@ -796,11 +799,7 @@ RegisterNetEvent("ps-housing:server:buyFurniture", function(property_id, items, 
         if item.type == 'storage' then
             local stashName = ("property_%s"):format(propertyData.property_id)
             local stashConfig = Config.Shells[propertyData.shell].stash
-            if not propertyData.apartment then 
-               Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName .. item.id, 'Property: ' .. propertyData.street .. '#' .. propertyData.property_id, stashConfig)
-            else 
-               Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName .. item.id, 'Property: ' .. propertyData.apartment .. '#' .. propertyData.property_id, stashConfig)
-            end
+            Framework[Config.Inventory].RegisterInventory(firstStorage and stashName or stashName..item.id, 'Property: ' ..  propertyData.street .. ' #'.. propertyData.property_id or propertyData.apartment or stashName, stashConfig)
         end
         numFurnitures = numFurnitures + 1
         propertyData.furnitures[numFurnitures] = item
