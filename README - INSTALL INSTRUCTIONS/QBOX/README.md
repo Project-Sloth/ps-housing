@@ -121,7 +121,7 @@ local function inputHandler()
 
             local spawnData = spawns[currentButtonID]
             if spawnData.propertyId then
-                TriggerServerEvent('ps-housing:server:enterProperty', tostring(spawnData.propertyId))
+                TriggerServerEvent('ps-housing:server:enterProperty', tostring(spawnData.propertyId), 'spawn') -- sends data to see if from spawn
             else
                 SetEntityCoords(cache.ped, spawnData.coords.x, spawnData.coords.y, spawnData.coords.z, false, false, false, false)
                 SetEntityHeading(cache.ped, spawnData.coords.w or 0.0)
