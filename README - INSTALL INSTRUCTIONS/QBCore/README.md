@@ -168,7 +168,7 @@ RegisterNUICallback('spawnplayer', function(data, cb)
         TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
         TriggerEvent('QBCore:Client:OnPlayerLoaded')
         local property_id = data.spawnloc.property_id
-        TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id))
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(property_id), 'spawn') -- sends string to check to ps server and client 
         PostSpawnPlayer()
     elseif type == "normal" then
         local pos = QB.Spawns[location].coords
