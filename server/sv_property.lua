@@ -580,7 +580,7 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn
     if property:CheckForAccess(citizenid) then
         Debug("Player has access to property")
         if spawn == 'spawn' then -- checks if from spawn 
-            TriggerClientEvent("ps-housing:client:enterProperty", src, property_id, spawn) -- sends if its from spawn
+            TriggerClientEvent("ps-housing:client:enterProperty", src, property_id, spawn)
         else
             property:PlayerEnter(src)
         end
