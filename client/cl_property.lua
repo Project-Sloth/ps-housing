@@ -911,10 +911,10 @@ end
 
 RegisterNetEvent("ps-housing:client:enterProperty", function(property_id, spawn)
     local property = Property.Get(property_id)
-    if spawn == 'spawn' then -- added this to check if from spawn menu
+    if spawn == 'spawn' then
         local data = lib.callback.await("ps-housing:cb:getMainMloDoor", false, property_id, 1)
-        if not data then property:EnterShell() return end -- checks if mlo if not enters shell
-        SetEntityCoords(PlayerPedId(), data.objCoords.x, data.objCoords.y, data.objCoords.z) -- sets location to front door
+        if not data then property:EnterShell() return end
+        SetEntityCoords(PlayerPedId(), data.objCoords.x, data.objCoords.y, data.objCoords.z)
         return
     else
         property:EnterShell()
