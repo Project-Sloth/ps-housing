@@ -10,7 +10,7 @@ Config = {}
 Config.Target = "qb" -- "ox" or "qb"
 Config.Notify = "qb" -- "ox" or "qb"
 Config.Radial = "qb" -- "ox" or "qb"
-Config.Inventory = "ox" -- "ox" or "qb"
+Config.Inventory = "qb" -- "ox" or "qb"
 Config.Logs = "qb" -- "qb"
 
 -- Anyone provided with keys to a property has the ability to modify its furnishings.
