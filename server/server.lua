@@ -192,7 +192,7 @@ end)
 
 lib.callback.register("ps-housing:cb:inventoryHasItems", function(source, name, isOx)
     if isOx then
-        local items = exports.ox_inventory:GetInventoryItems(name)
+        local items = #exports.ox_inventory:GetInventoryItems(name)
         return items and items > 0
     end
     local query = lib.checkDependency('qb-inventory', '2.0.0') and 'SELECT items FROM inventories WHERE identifier = ?' or 'SELECT items FROM stashitems WHERE stash = ?'
