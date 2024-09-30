@@ -587,7 +587,7 @@ Modeler = {
     RemoveOwnedItem = function (self, data)
         if data.type == 'storage' then
             local property = Property.Get(self.property_id).storageTarget[data.entity]
-            local hasItems = Framework[Config.Radial].inventoryHasItems(property)
+            local hasItems = Framework[Config.Inventory].inventoryHasItems(property)
             if hasItems then Framework[Config.Notify].Notify('Stash is not empty', 'error') return end
         end
         local item = data
