@@ -174,6 +174,33 @@ lib.callback.register('qbx_spawn:server:getHouses', function(source)
 end)
 ```
 
+# ox_doorlock 
+
+Find `ox_doorlock:editDoorlock` in ox_doorlock/server/main.lua and add this code below under it
+
+```lua
+function GetNameFromDoor(name)
+    local results = MySQL.query.await('SELECT * FROM ox_doorlock WHERE name LIKE ?', {'%' .. name .. '%'})
+    if results and #results > 0 then
+        return results
+    end
+    return nil
+end
+
+RegisterNetEvent('ox_doorlock:RemoveDoorlock', function(name)
+	local doorData = GetNameFromDoor(name)
+
+    if doorData and #doorData > 0 then
+        for _, door in ipairs(doorData) do
+			MySQL.update('DELETE FROM ox_doorlock WHERE id = ?', { door.id })
+			TriggerClientEvent('ox_doorlock:editDoorlock', -1, door.id, nil)
+        end
+    else
+        print('No doors found with the name:', name)
+    end
+end)
+```
+
 # qbx_properties Resource Ddits
 
 Replace `fxmanifest.lua` with:
