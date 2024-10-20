@@ -226,7 +226,7 @@ Delete `qb-apartments/config.lua` references in `qb-garages` fxmanifest.lua.
 
 # 
 
-### For qb-garages 2.0 version: 
+### For qb-garages 2.0 version: https://github.com/qbcore-framework/qb-garages
 `qb-garages > server > main.lua > around line 118` on event `qb-garages:server:canDeposit`
 
 Find:
@@ -238,13 +238,61 @@ And replace with:
 if type == 'house' and not exports['ps-housing']:IsOwner(source, garage) then
 ```
 
+`qb-garages > server > main.lua > around line 72` on event `qb-garages:server:getHouseGarage`
+
+Find 
+```lua
+QBCore.Functions.CreateCallback('qb-garages:server:getHouseGarage', function(_, cb, house)
+    local houseInfo = MySQL.single.await('SELECT * FROM houselocations WHERE name = ?', { house })
+    cb(houseInfo)
+end)
+```
+
+And replace with: 
+```lua
+QBCore.Functions.CreateCallback('qb-garages:server:getHouseGarage', function(_, cb, house)
+    local houseInfo = MySQL.single.await('SELECT * FROM properties WHERE property_id = ?', { house })
+    cb(houseInfo)
+end)
+```
+
 `qb-garages > client > main.lua > ` add under event `qb-garages:client:addHouseGarage`
 ```lua
 RegisterNetEvent('qb-garages:client:removeHouseGarage', function(house)
-    Config.Garages[house] = nil
+    local formattedHouseName = string.gsub(string.lower(house), ' ', '')
+    local zoneName = 'house_' .. formattedHouseName
+    RemoveHouseZone(zoneName)
+    Config.Garages[formattedHouseName] = nil
 end)
 ```
 Delete `qb-apartments/config.lua` references in `qb-garages` fxmanifest.lua.
+
+# If you are using ox_doorlock 
+
+Find `ox_doorlock:editDoorlock` in ox_doorlock/server/main.lua and add this code below under it
+
+```lua
+function GetNameFromDoor(name)
+    local results = MySQL.query.await('SELECT * FROM ox_doorlock WHERE name LIKE ?', {'%' .. name .. '%'})
+    if results and #results > 0 then
+        return results
+    end
+    return nil
+end
+
+RegisterNetEvent('ox_doorlock:RemoveDoorlock', function(name)
+	local doorData = GetNameFromDoor(name)
+
+    if doorData and #doorData > 0 then
+        for _, door in ipairs(doorData) do
+			MySQL.update('DELETE FROM ox_doorlock WHERE id = ?', { door.id })
+			TriggerClientEvent('ox_doorlock:editDoorlock', -1, door.id, nil)
+        end
+    else
+        print('No doors found with the name:', name)
+    end
+end)
+```
 
 #
 
@@ -261,3 +309,4 @@ Delete `qb-apartments/config.lua` references in `qb-garages` fxmanifest.lua.
 2. [fivem-freecam](https://github.com/Deltanic/fivem-freecam)
 3. [ox_lib](https://github.com/overextended/ox_lib/releases)
 4. [ox_target](https://github.com/overextended/ox_target) or [qb-target](https://github.com/qbcore-framework/qb-target)
+5. [ox_doorlock](https://github.com/overextended/ox_doorlock) or [ox_doorlock](https://github.com/qbcore-framework/qb-doorlock)

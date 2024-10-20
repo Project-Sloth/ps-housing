@@ -661,8 +661,31 @@ function Property:UnloadFurnitures()
     end
 end
 
+function getCenter(zone)
+    local sumX, sumY, sumZ, count = 0, 0, 0, 0
+    for i = 1, #zone do
+        count = count + 1
+        sumX = sumX + zone[i].x
+        sumY = sumY + zone[i].y
+        sumZ = sumZ + zone[i].z
+    end
+
+    local centerX = sumX / count
+    local centerY = sumY / count
+    local centerZ = sumY / count
+
+    return {x = centerX, y = centerY, z = centerZ}
+end
+
 function Property:CreateBlip()
     local door_data = self.propertyData.door_data
+    if door_data.x == nil then
+        local zone_data = self.propertyData.zone_data
+        if type(zone_data) == "string" then
+            zone_data = json.decode(zone_data)
+        end
+        door_data = getCenter(zone_data.points)
+    end
     local blip = AddBlipForCoord(door_data.x, door_data.y, door_data.z)
     if self.propertyData.garage_data.x ~= nil then
         SetBlipSprite(blip, 492)
@@ -714,7 +737,8 @@ function Property:RemoveProperty()
 
     self:RemoveBlip()
     self:LeaveShell()
-
+    self:UnregisterGarageZone()
+    TriggerEvent('ps-housing:client:DeleteOxDoors',self.property_id)
     --@@ comeback to this
     -- Think it works now
     if self.propertyData.apartment then
@@ -960,6 +984,11 @@ RegisterNetEvent("ps-housing:client:createOxDoors", function(data)
 
         TriggerServerEvent('ox_doorlock:editDoorlock', false, payload)
     end
+end)
+
+RegisterNetEvent("ps-housing:client:DeleteOxDoors", function(propertyid)
+    local name = ('ps_mloproperty%s'):format(propertyid)
+    TriggerServerEvent('ox_doorlock:RemoveDoorlock', name)
 end)
 
 AddEventHandler("ps-housing:client:openManagePropertyAccessMenu", function(data)
