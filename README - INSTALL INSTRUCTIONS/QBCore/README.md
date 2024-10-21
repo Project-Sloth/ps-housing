@@ -269,7 +269,7 @@ Delete `qb-apartments/config.lua` references in `qb-garages` fxmanifest.lua.
 
 # If you are using ox_doorlock 
 
-Find `ox_doorlock:editDoorlock` in ox_doorlock/server/main.lua and add this code below under it
+Find `ox_doorlock:editDoorlock` in ox_doorlock/server/main.lua and add this code under it
 
 ```lua
 function GetNameFromDoor(name)
