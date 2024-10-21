@@ -315,7 +315,7 @@ AddEventHandler("ps-housing:server:addTenantToApartment", function (data)
         local targetToAdd = QBCore.Functions.GetPlayerByCitizenId(citizenid).PlayerData
         local propertyData = {
             owner = targetCitizenid,
-            description = string.format("This is %s's apartment in %s", targetToAdd.charinfo.firstname .. " " .. targetToAdd.charinfo.lastname, apartment.label),
+            description = string.format("This is %s's apartment in %s", targetToAdd.charinfo.firstname .. " " .. targetToAdd.charinfo.lastname, newApartment.label),
             for_sale = 0,
             shell = newApartment.shell,
             apartment = newApartment.label,
