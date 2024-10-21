@@ -226,7 +226,7 @@ Delete `qb-apartments/config.lua` references in `qb-garages` fxmanifest.lua.
 
 # 
 
-### For qb-garages 2.0 version: https://github.com/qbcore-framework/qb-garages
+### For [qb-garages 2.0 version](https://github.com/qbcore-framework/qb-garages):
 `qb-garages > server > main.lua > around line 118` on event `qb-garages:server:canDeposit`
 
 Find:
