@@ -7,7 +7,10 @@ QBCore = exports['qb-core']:GetCoreObject()
 local dbloaded = false
 MySQL.ready(function()
     MySQL.query('SELECT * FROM properties', {}, function(result)
-        if not result then return end
+        if not result then
+            print("Error: No result returned from properties query.")
+            return
+        end
         if result.id then -- If only one result
             result = {result}
         end
@@ -39,7 +42,7 @@ MySQL.ready(function()
                 -- we add door access for qb doorlock
                 property:addMloDoorsAccess(owner)
                 if has_access and #has_access > 0 then
-                    for _,citizenId in ipairs(has_access) do
+                    for _, citizenId in ipairs(has_access) do
                         property:addMloDoorsAccess(citizenId)
                     end
                 end
@@ -47,6 +50,8 @@ MySQL.ready(function()
         end
 
         dbloaded = true
+    end, function(err)
+        print("Error querying properties: " .. err)
     end)
 end)
 
@@ -87,8 +92,6 @@ function RegisterProperty(propertyData, preventEnter, source)
         ["@zone_data"] = json.encode(propertyData.zone_data),
     })
 
-    id = tostring(id)
-
     if source and propertyData.shell == 'mlo' then
         if DoorResource == 'ox' then
             TriggerClientEvent("ps-housing:client:createOxDoors", source, {
@@ -99,15 +102,20 @@ function RegisterProperty(propertyData, preventEnter, source)
             local qb_doorlock = exports['qb-doorlock']
             for _, v in ipairs(propertyData.door_data) do
                 local isArray = v[1] and true
-                qb_doorlock:saveNewDoor(source, {
-                    locked = true,
-                    model = isArray and {v[1].model, v[2].model} or v.model,
-                    heading = isArray and {v[1].heading, v[2].heading} or v.heading,
-                    coords = isArray and {v[1].coords, v[2].coords} or v.coords,
-                    distance = 2.5,
-                    doortype = 'door',
-                    id = ('ps_mloproperty%s_%s'):format(id, _)
-                }, isArray)
+                local success, err = pcall(function()
+                    qb_doorlock:saveNewDoor(source, {
+                        locked = true,
+                        model = isArray and {v[1].model, v[2].model} or v.model,
+                        heading = isArray and {v[1].heading, v[2].heading} or v.heading,
+                        coords = isArray and {v[1].coords, v[2].coords} or v.coords,
+                        distance = 2.5,
+                        doortype = 'door',
+                        id = ('ps_mloproperty%s_%s'):format(id, _)
+                    }, isArray)
+                end)
+                if not success then
+                    print("Error saving new door: " .. err)
+                end
             end
         end
         propertyData.door_data = {count = #propertyData.door_data}
@@ -121,9 +129,18 @@ function RegisterProperty(propertyData, preventEnter, source)
 
     if propertyData.apartment and not preventEnter then
         local player = QBCore.Functions.GetPlayerByCitizenId(propertyData.owner)
-        local src = player.PlayerData.source
+        if not player then
+            print("Error: Player not found for citizen ID " .. propertyData.owner)
+            return
+        end
 
+        local src = player.PlayerData.source
         local property = Property.Get(id)
+        if not property then
+            print("Error: Property not found for ID " .. id)
+            return
+        end
+
         property:PlayerEnter(src)
 
         Wait(1000)
@@ -143,6 +160,8 @@ function RegisterProperty(propertyData, preventEnter, source)
         -- This will create the stash for the apartment and migrate the items from the old apartment stash if applicable
         if GetResourceState('qb-inventory') == 'started' then
             TriggerEvent("ps-housing:server:createApartmentStash", propertyData.owner, id)
+        else
+            print("Error: qb-inventory is not started")
         end
     end
 
@@ -173,31 +192,62 @@ AddEventHandler("ps-housing:server:registerProperty", RegisterProperty)
 
 lib.callback.register("ps-housing:cb:GetOwnedApartment", function(source, cid)
     Debug("ps-housing:cb:GetOwnedApartment", source, cid)
+    local result
     if cid ~= nil then
-        local result = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { cid })
-        if result[1] ~= nil then
-            return result[1]
+        local success, err = pcall(function()
+            result = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { cid })
+        end)
+        if not success then
+            print("Error querying database for owned apartment with cid: " .. cid .. " - " .. err)
+            return nil
         end
-        return nil
     else
         local src = source
         local Player = QBCore.Functions.GetPlayer(src)
-        local result = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { Player.PlayerData.citizenid })
-        if result[1] ~= nil then
-            return result[1]
+        if not Player then
+            print("Error: Player not found for source: " .. src)
+            return nil
         end
+        local success, err = pcall(function()
+            result = MySQL.query.await('SELECT * FROM properties WHERE owner_citizenid = ? AND apartment IS NOT NULL AND apartment <> ""', { Player.PlayerData.citizenid })
+        end)
+        if not success then
+            print("Error querying database for owned apartment with citizenid: " .. Player.PlayerData.citizenid .. " - " .. err)
+            return nil
+        end
+    end
+
+    if result and result[1] then
+        return result[1]
+    else
+        print("No owned apartment found for the given criteria.")
         return nil
     end
 end)
 
 lib.callback.register("ps-housing:cb:inventoryHasItems", function(source, name, isOx)
+    local success, result
     if isOx then
         local items = #exports.ox_inventory:GetInventoryItems(name)
         return items and items > 0
     end
+
     local query = lib.checkDependency('qb-inventory', '2.0.0') and 'SELECT items FROM inventories WHERE identifier = ?' or 'SELECT items FROM stashitems WHERE stash = ?'
-    local result = MySQL.query.await(query, { name })
-    if not result or not result[1] then return end
+    
+    success, result = pcall(function()
+        return MySQL.query.await(query, { name })
+    end)
+
+    if not success then
+        print("Error querying database for inventory items: " .. result)
+        return false
+    end
+
+    if not result or not result[1] then
+        print("No items found for inventory: " .. name)
+        return false
+    end
+
     return result[1].items ~= '[]'
 end)
 
@@ -248,7 +298,15 @@ RegisterNetEvent("QBCore:Server:OnPlayerLoaded", function()
     local src = source
     local citizenid = GetCitizenid(src)
     local query = "SELECT skin FROM playerskins WHERE citizenid = ?"
-    local result = MySQL.Sync.fetchAll(query, {citizenid})
+    
+    local success, result = pcall(function()
+        return MySQL.Sync.fetchAll(query, {citizenid})
+    end)
+
+    if not success then
+        print("Error querying database for player skin: " .. result)
+        return
+    end
 
     if result and result[1] then
         Debug("Player: " .. citizenid .. " skin already exists!")
@@ -265,17 +323,38 @@ RegisterNetEvent("ps-housing:server:createApartmentStash", function(citizenId, p
 
     -- Check for existing apartment and corresponding stash
     local query = lib.checkDependency('qb-inventory', '2.0.0') and 'SELECT items, identifier FROM inventories WHERE identifier' or 'SELECT items, stash FROM stashitems WHERE stash'
-    local result = MySQL.query.await(('%s IN (SELECT name FROM apartments WHERE citizenid = ?)'):format(query), { citizenId })
+    local success, result = pcall(function()
+        return MySQL.query.await(('%s IN (SELECT name FROM apartments WHERE citizenid = ?)'):format(query), { citizenId })
+    end)
+
+    if not success then
+        print("Error querying database for existing apartment stash: " .. result)
+        return
+    end
+
     local items = {}
     if result[1] ~= nil then
         items = json.decode(result[1].items)
 
         -- Delete the old apartment stash as it is no longer needed
-        MySQL.Async.execute('DELETE FROM stashitems WHERE stash = ?', { result[1].identifier or result[1].stash })
+        local deleteSuccess, deleteResult = pcall(function()
+            MySQL.Async.execute('DELETE FROM stashitems WHERE stash = ?', { result[1].identifier or result[1].stash })
+        end)
+
+        if not deleteSuccess then
+            print("Error deleting old apartment stash: " .. deleteResult)
+            return
+        end
     end
 
     -- This will create the stash for the apartment (without requiring player to have first opened and placed item in it)
-    TriggerEvent('qb-inventory:server:SaveStashItems', stashId, items)
+    local saveSuccess, saveResult = pcall(function()
+        TriggerEvent('qb-inventory:server:SaveStashItems', stashId, items)
+    end)
+
+    if not saveSuccess then
+        print("Error saving new apartment stash: " .. saveResult)
+    end
 end)
 
 RegisterNetEvent('qb-apartments:returnBucket', function()
@@ -384,8 +463,3 @@ function GetPlayer(src)
     if not Player then return end
     return Player
 end
-
--- if PSCore then
---     PSCore.Functions.CheckForUpdates()
---     PSCore.Functions.CheckResourceName()
--- end
