@@ -707,7 +707,7 @@ function Property:RemoveBlip()
     self.blip = nil
 end
 
-function Property:RemoveProperty()
+function Property:RemoveProperty(doors)
     if Config.Target == "ox" then
         Framework[Config.Target].RemoveTargetZone(self.entranceTarget)
     else
@@ -738,7 +738,7 @@ function Property:RemoveProperty()
     self:RemoveBlip()
     self:LeaveShell()
     self:UnregisterGarageZone()
-    TriggerEvent('ps-housing:client:DeleteOxDoors',self.property_id)
+    if doors then TriggerEvent('ps-housing:client:DeleteOxDoors', self.property_id) end
     --@@ comeback to this
     -- Think it works now
     if self.propertyData.apartment then
