@@ -122,6 +122,7 @@ function RegisterProperty(propertyData, preventEnter, source)
         Wait(1000)
     end
 
+    id = tostring(id)
     propertyData.property_id = id
     PropertiesTable[id] = Property:new(propertyData)
 
