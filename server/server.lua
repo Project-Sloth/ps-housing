@@ -1,5 +1,7 @@
 DoorResource = GetResourceState('ox_doorlock') == 'started' and 'ox' or GetResourceState('qb-doorlock') == 'started' and 'qb'
-if not DoorResource then return error('Either ox or qb door system is started!!') end
+if not DoorResource then 
+    return error('ox_doorlock/qb-doorlock must be started before ps-housing.') 
+end
 
 QBCore = exports['qb-core']:GetCoreObject()
 -- PSCore = exports['ps-core']:GetCoreObject()
