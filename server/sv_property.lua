@@ -404,7 +404,7 @@ function Property:UpdateImgs(data)
     local imgs = data.imgs
     local realtorSrc = data.realtorSrc
 
-    self.propertyData.imgs = imgs
+    self.propertyData.extra_imgs = imgs
 
     MySQL.update("UPDATE properties SET extra_imgs = @extra_imgs WHERE property_id = @property_id", {
         ["@extra_imgs"] = json.encode(imgs),
