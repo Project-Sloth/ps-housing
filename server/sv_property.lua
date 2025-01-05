@@ -329,11 +329,6 @@ function Property:UpdateOwner(data)
     local bank = PlayerData.money.bank
     local citizenid = PlayerData.citizenid
 
-    self:addMloDoorsAccess(citizenid)
-    if self.propertyData.shell == 'mlo' and DoorResource == 'qb' then
-        Framework[Config.Notify].Notify(targetSrc, "Go far away and come back for the door to update and open/close.", "error")
-    end
-
     if self.propertyData.owner == citizenid then
         Framework[Config.Notify].Notify(targetSrc, "You already own this property", "error")
         Framework[Config.Notify].Notify(realtorSrc, "Client already owns this property", "error")
@@ -380,6 +375,11 @@ function Property:UpdateOwner(data)
     end
     
     realtor.Functions.AddMoney('bank', commission, "Commission from Property: " .. self.propertyData.street .. " " .. self.property_id)
+
+    self:addMloDoorsAccess(citizenid)
+    if self.propertyData.shell == 'mlo' and DoorResource == 'qb' then
+        Framework[Config.Notify].Notify(targetSrc, "Go far away and come back for the door to update and open/close.", "error")
+    end
 
     self.propertyData.owner = citizenid
 
