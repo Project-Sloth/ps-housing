@@ -299,7 +299,7 @@ end
 
 head to qbx_properties/config/shared.lua and replace this table with this
 ```lua
-ApartmentOptions = {
+apartmentOptions = {
     {
         interior = 'DellPerroHeightsApt4',
         label = 'Fantastic Plaza',
