@@ -61,8 +61,8 @@ RegisterNetEvent('qb-multicharacter:client:spawnLastLocation', function(coords, 
     local PlayerData = QBCore.Functions.GetPlayerData()
     local insideMeta = PlayerData.metadata["inside"]
     DoScreenFadeOut(500)
-    if insideMeta.propertyId then
-        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.propertyId))
+    if insideMeta.property_id then
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.property_id))
     else
         SetEntityCoords(ped, coords.x, coords.y, coords.z)
         SetEntityHeading(ped, coords.w)
