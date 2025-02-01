@@ -64,14 +64,12 @@ local function spawnLastLocation()
     }) end)
 
     local insideMeta = QBX.PlayerData.metadata.inside
-    if insideMeta.propertyId then
-        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.propertyId))
+    if insideMeta.property_id then
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.property_id))
     end
 
     TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
     TriggerEvent('QBCore:Client:OnPlayerLoaded')
-    -- TriggerServerEvent('qb-houses:server:SetInsideMeta', 0, false)
-    -- TriggerServerEvent('qb-apartments:server:SetInsideMeta', 0, 0, false)
 
     while not IsScreenFadedIn() do
         Wait(0)
