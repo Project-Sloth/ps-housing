@@ -64,8 +64,8 @@ local function spawnLastLocation()
     }) end)
 
     local insideMeta = QBX.PlayerData.metadata.inside
-    if insideMeta.propertyId then
-        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.propertyId))
+    if insideMeta.property_id then
+        TriggerServerEvent('ps-housing:server:enterProperty', tostring(insideMeta.property_id))
     end
 
     TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
@@ -91,20 +91,20 @@ Find `inputHandler` in client/main.lua and replace with:
 local function inputHandler()
     while DoesCamExist(previewCam) do
         if IsControlJustReleased(0, 188) then
-            previousButtonID = currentButtonID
-            currentButtonID -= 1
+            previousButtonId = currentButtonId
+            currentButtonId -= 1
 
-            if currentButtonID < 1 then
-                currentButtonID = #spawns
+            if currentButtonId < 1 then
+                currentButtonId = #spawns
             end
 
             updateScaleform()
         elseif IsControlJustReleased(0, 187) then
-            previousButtonID = currentButtonID
-            currentButtonID += 1
+            previousButtonId = currentButtonId
+            currentButtonId += 1
 
-            if currentButtonID > #spawns then
-                currentButtonID = 1
+            if currentButtonId > #spawns then
+                currentButtonId = 1
             end
 
             updateScaleform()
@@ -147,10 +147,10 @@ lib.callback.register('qbx_spawn:server:getLastLocation', function(source)
 end)
 ```
 
-Find `qbx_spawn:server:getHouses` in server/main.lua and replace with: 
+Find `qbx_spawn:server:getProperties` in server/main.lua and replace with: 
 
 ```lua
-lib.callback.register('qbx_spawn:server:getHouses', function(source)
+lib.callback.register('qbx_spawn:server:getProperties', function(source)
     local player = exports.qbx_core:GetPlayer(source)
     local houseData = {}
 
