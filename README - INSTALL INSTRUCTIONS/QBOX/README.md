@@ -117,7 +117,7 @@ local function inputHandler()
             TriggerEvent('QBCore:Client:OnPlayerLoaded')
             FreezeEntityPosition(cache.ped, false)
 
-            local spawnData = spawns[currentButtonID]
+            local spawnData = spawns[currentButtonId]
             if spawnData.propertyId then
                 TriggerServerEvent('ps-housing:server:enterProperty', tostring(spawnData.propertyId), 'spawn')
             else
