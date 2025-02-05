@@ -136,7 +136,7 @@ local function inputHandler()
     stopCamera()
 end
 ```
-Find `qbx_spawn:server:getLastLocation` in client/main.lua and replace with: 
+Find `qbx_spawn:server:getLastLocation` in server/main.lua and replace with: 
 
 ```lua
 lib.callback.register('qbx_spawn:server:getLastLocation', function(source)
