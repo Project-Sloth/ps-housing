@@ -565,7 +565,7 @@ RegisterNetEvent('ps-housing:server:enterGarden', function (property_id)
     property.playersInGarden[tostring(src)] = true
 end)
 
-RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn)
+RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn,isanmlo)
     local src = source
     Debug("Player is trying to enter property", property_id)
 
@@ -577,7 +577,7 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn
 
     local citizenid = GetCitizenid(src)
 
-    if property:CheckForAccess(citizenid) then
+    if property:CheckForAccess(citizenid) and not isanmlo then
         Debug("Player has access to property")
         if spawn == 'spawn' then
             TriggerClientEvent("ps-housing:client:enterProperty", src, property_id, spawn)
@@ -586,13 +586,17 @@ RegisterNetEvent('ps-housing:server:enterProperty', function (property_id, spawn
         end
         Debug("Player entered property")
         return
+    else
+        property:PlayerEnter(src)
     end
 
-    local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
-    if ringDoorbellConfirmation == "confirm" then
-        property:AddToDoorbellPoolTemp(src)
-        Debug("Ringing doorbell")
-        return
+    if not isanmlo then
+        local ringDoorbellConfirmation = lib.callback.await('ps-housing:cb:ringDoorbell', src)
+        if ringDoorbellConfirmation == "confirm" then
+            property:AddToDoorbellPoolTemp(src)
+            Debug("Ringing doorbell")
+            return
+        end
     end
 end)
 

@@ -147,7 +147,7 @@ function Property:RegisterMlo()
             thickness = zoneData.thickness + 3,
             debug = Config.DebugMode,
             onEnter = function()
-                TriggerServerEvent("ps-housing:server:enterProperty", self.property_id)
+                TriggerServerEvent("ps-housing:server:enterProperty", self.property_id,nil,true)
             end,
             onExit = function()
                 self:LeaveShell()
