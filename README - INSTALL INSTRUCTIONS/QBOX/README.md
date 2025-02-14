@@ -136,7 +136,7 @@ local function inputHandler()
     stopCamera()
 end
 ```
-Find `qbx_spawn:server:getLastLocation` in client/main.lua and replace with: 
+Find `qbx_spawn:server:getLastLocation` in server/main.lua and replace with: 
 
 ```lua
 lib.callback.register('qbx_spawn:server:getLastLocation', function(source)
@@ -247,7 +247,7 @@ lua54 'yes'
 use_experimental_fxv2_oal 'true'
 ```
 
-Add the below code block in `apartmentselect.lua`
+Add the below code block in `client/apartmentselect.lua`
 
 ```lua
 AddEventHandler('ps-housing:setApartments', function(data)
