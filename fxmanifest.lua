@@ -3,7 +3,7 @@ fx_version 'cerulean'
 game "gta5"
 
 author "Xirvin#0985 and Project Sloth"
-version '2.0.7'
+version '2.0.8'
 
 repository 'Project-Sloth/ps-housing'
 
