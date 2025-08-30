@@ -175,3 +175,39 @@ ps-housing owes its existence to the exceptional coding expertise of [Xirvin#098
 -   [K4MB1](https://www.k4mb1maps.com/)
 -   [Candrex](https://github.com/CandrexDev)
 -   [Complexza](https://github.com/complexza)
+
+---
+
+# 1of1 Servers - VPS & Dedicated Servers
+
+[![1of1 Servers](https://github.com/user-attachments/assets/29e4ef8e-7b24-4821-a6ce-7c9e3c111fd1)](https://billing.1of1servers.com/aff.php?aff=1)
+
+We are a VPS and dedicated server provider, specializing in strong gaming DDoS protection and 99.9% uptime.  
+
+We host some of the biggest FiveM servers in the industry such as Prodigy RP, Smile RP, The Academy RP, and many more.  
+
+---
+
+### Features
+- 4 Tbps DDoS Protection by CosmicGuard  
+- 99.9% Network Uptime  
+- NVMe SSD Storage  
+- Unlimited Player Slots  
+- Free transfer of files and setup  
+- Free Windows licenses  
+- Windows Remote Desktop  
+- 24/7 Support with ~30 min average ticket response  
+
+---
+
+### Locations
+- USA: Dallas, Ashburn, Los Angeles, Chicago  
+- Europe: UK, Germany, Netherlands  
+- Asia: Singapore  
+- Australia: Sydney  
+
+---
+
+### Links
+- [Website](https://billing.1of1servers.com/aff.php?aff=1)
+- [Discord](https://discord.gg/1of1servers)  
