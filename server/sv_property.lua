@@ -329,11 +329,6 @@ function Property:UpdateOwner(data)
     local bank = PlayerData.money.bank
     local citizenid = PlayerData.citizenid
 
-    self:addMloDoorsAccess(citizenid)
-    if self.propertyData.shell == 'mlo' and DoorResource == 'qb' then
-        Framework[Config.Notify].Notify(targetSrc, "Go far away and come back for the door to update and open/close.", "error")
-    end
-
     if self.propertyData.owner == citizenid then
         Framework[Config.Notify].Notify(targetSrc, "You already own this property", "error")
         Framework[Config.Notify].Notify(realtorSrc, "Client already owns this property", "error")
@@ -381,6 +376,11 @@ function Property:UpdateOwner(data)
     
     realtor.Functions.AddMoney('bank', commission, "Commission from Property: " .. self.propertyData.street .. " " .. self.property_id)
 
+    self:addMloDoorsAccess(citizenid)
+    if self.propertyData.shell == 'mlo' and DoorResource == 'qb' then
+        Framework[Config.Notify].Notify(targetSrc, "Go far away and come back for the door to update and open/close.", "error")
+    end
+
     self.propertyData.owner = citizenid
 
     MySQL.update("UPDATE properties SET owner_citizenid = @owner_citizenid, for_sale = @for_sale WHERE property_id = @property_id", {
@@ -404,7 +404,7 @@ function Property:UpdateImgs(data)
     local imgs = data.imgs
     local realtorSrc = data.realtorSrc
 
-    self.propertyData.imgs = imgs
+    self.propertyData.extra_imgs = imgs
 
     MySQL.update("UPDATE properties SET extra_imgs = @extra_imgs WHERE property_id = @property_id", {
         ["@extra_imgs"] = json.encode(imgs),
