@@ -69,9 +69,6 @@ Config.Commissions = {
 -- Set this value to false if you don't want to assign a starting apartment.
 Config.StartingApartment = true
 
---- With this enabled, the customizer will open when starting apartment is false.
-Config.ShowCustomizerWhenNoStartingApartment = true
-
 Config.Apartments = {
     ["Integrity Way"] = {
         label = "Integrity Way",

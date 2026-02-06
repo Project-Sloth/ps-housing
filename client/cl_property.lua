@@ -879,7 +879,7 @@ function Property:UpdateOwner(newOwner)
 end
 
 function Property:UpdateImgs(newImgs)
-    self.propertyData.imgs = newImgs
+    self.propertyData.extra_imgs = newImgs
 end
 
 function Property:UpdateDoor(newDoor, newStreet, newRegion)
